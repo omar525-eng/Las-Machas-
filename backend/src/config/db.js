@@ -10,7 +10,7 @@ export const dbConfig = {
     encrypt: true,                       
     trustServerCertificate: false        
   }
-};
+}
 
 export const getConnection = async () => {
   try {
@@ -20,4 +20,5 @@ export const getConnection = async () => {
     console.error("Error de conexión DB:", error)
     throw error
   }
-};
+}
+getConnection()
