@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-actualizar-producto',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './actualizar-producto.html',
-  styleUrl: './actualizar-producto.css',
+  styleUrl: './actualizar-producto.css'
 })
-export class ActualizarProducto {
-
-}
+export class ActualizarProducto { }

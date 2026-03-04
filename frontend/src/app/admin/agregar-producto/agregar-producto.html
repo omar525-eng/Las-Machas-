@@ -1,79 +1,80 @@
-<<<<<<< HEAD
-<p>agregar-producto works!</p>
-=======
-<div style="padding: 20px; max-width: 600px;">
-  <h2>Añadir Nueva Presentación</h2>
-  <p>Ingresa los datos del nuevo producto para el inventario.</p>
+<div style="padding: 20px; max-width: 800px; margin: 0 auto;">
+  
+  <h2 class="titulo-tarjeta" style="margin-bottom: 5px;">Añadir Nuevo Producto</h2>
+  <p style="color: var(--texto-secundario); margin-bottom: 24px;">Registra una nueva presentación en el inventario.</p>
 
-  <form style="display: flex; flex-direction: column; gap: 15px;">
+  <div style="background-color: var(--color-tarjeta); border-radius: var(--radio-borde); box-shadow: var(--sombra-tarjeta); padding: 24px;">
     
-    <fieldset style="padding: 15px; border: 1px solid #ccc;">
-      <legend><strong>Datos Generales de la Salsa</strong></legend>
-      
-      <div style="margin-bottom: 10px;">
-        <label>Nombre del Producto:</label><br>
-        <input type="text" placeholder="Ej. Salsa Macha con Cacahuate" style="width: 100%; padding: 5px;">
-      </div>
+    <form style="display: flex; flex-direction: column; gap: 24px;">
 
-      <div style="margin-bottom: 10px;">
-        <label>Categoría:</label><br>
-        <select style="width: 100%; padding: 5px;">
-          <option>Salsas</option>
-          <option>Encurtidos</option>
-          <option>Otros</option>
-        </select>
-      </div>
-
-      <div style="margin-bottom: 10px;">
-        <label>URL de la Imagen:</label><br>
-        <input type="text" placeholder="https://..." style="width: 100%; padding: 5px;">
-      </div>
-    </fieldset>
-
-    <fieldset style="padding: 15px; border: 1px solid #ccc;">
-      <legend><strong>Detalles de Inventario y Precios</strong></legend>
-      
-      <div style="margin-bottom: 10px;">
-        <label>Tamaño / Presentación:</label><br>
-        <select style="width: 100%; padding: 5px;">
-          <option>Frasco 250ml</option>
-          <option>Frasco 500ml</option>
-        </select>
-      </div>
-
-      <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-        <div style="flex: 1;">
-          <label>Precio Regular ($):</label><br>
-          <input type="number" placeholder="0.00" style="width: 100%; padding: 5px;">
+      <div>
+        <h3 style="font-size: 16px; color: var(--color-primario); margin-bottom: 12px; border-bottom: 1px solid #eee; padding-bottom: 8px;">1. Datos Generales</h3>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <div>
+            <label style="font-size: 14px; font-weight: bold; color: var(--color-tipografia);">Nombre del Producto</label>
+            <input type="text" placeholder="Ej. Salsa Macha con Ajo" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-top: 6px; font-family: 'Inter', sans-serif; outline-color: var(--color-primario);">
+          </div>
+          <div>
+            <label style="font-size: 14px; font-weight: bold; color: var(--color-tipografia);">Categoría</label>
+            <select style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-top: 6px; font-family: 'Inter', sans-serif; outline-color: var(--color-primario); background-color: white;">
+              <option>Salsas</option>
+              <option>Encurtidos</option>
+            </select>
+          </div>
         </div>
-        <div style="flex: 1;">
-          <label>Precio Mayoreo ($):</label><br>
-          <input type="number" placeholder="0.00" style="width: 100%; padding: 5px;">
+
+        <div style="margin-top: 16px;">
+          <label style="font-size: 14px; font-weight: bold; color: var(--color-tipografia);">URL de la Imagen</label>
+          <input type="text" placeholder="https://..." style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-top: 6px; font-family: 'Inter', sans-serif; outline-color: var(--color-primario);">
         </div>
       </div>
 
-      <div style="display: flex; gap: 10px;">
-        <div style="flex: 1;">
-          <label>Stock Inicial (Cantidad):</label><br>
-          <input type="number" placeholder="0" style="width: 100%; padding: 5px;">
+      <div>
+        <h3 style="font-size: 16px; color: var(--color-primario); margin-bottom: 12px; border-bottom: 1px solid #eee; padding-bottom: 8px;">2. Precios e Inventario (SKU)</h3>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <div>
+            <label style="font-size: 14px; font-weight: bold; color: var(--color-tipografia);">Tamaño / Presentación</label>
+            <select style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-top: 6px; font-family: 'Inter', sans-serif; outline-color: var(--color-primario); background-color: white;">
+              <option>Frasco 250ml</option>
+              <option>Frasco 500ml</option>
+            </select>
+          </div>
+          
+          <div style="display: flex; gap: 12px;">
+            <div style="flex: 1;">
+              <label style="font-size: 14px; font-weight: bold; color: var(--color-tipografia);">Precio Regular</label>
+              <input type="number" placeholder="$ 0.00" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-top: 6px; font-family: 'Inter', sans-serif; outline-color: var(--color-primario);">
+            </div>
+            <div style="flex: 1;">
+              <label style="font-size: 14px; font-weight: bold; color: var(--color-tipografia);">Precio Mayoreo</label>
+              <input type="number" placeholder="$ 0.00" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-top: 6px; font-family: 'Inter', sans-serif; outline-color: var(--color-primario);">
+            </div>
+          </div>
         </div>
-        <div style="flex: 1;">
-          <label>Stock Mínimo (Alerta):</label><br>
-          <input type="number" placeholder="5" style="width: 100%; padding: 5px;">
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px;">
+          <div>
+            <label style="font-size: 14px; font-weight: bold; color: var(--color-tipografia);">Stock Inicial</label>
+            <input type="number" placeholder="0" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-top: 6px; font-family: 'Inter', sans-serif; outline-color: var(--color-primario);">
+          </div>
+          <div>
+            <label style="font-size: 14px; font-weight: bold; color: var(--color-tipografia);">Stock Mínimo (Alerta)</label>
+            <input type="number" placeholder="5" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-top: 6px; font-family: 'Inter', sans-serif; outline-color: var(--color-primario);">
+          </div>
         </div>
       </div>
-    </fieldset>
 
-    <div style="display: flex; gap: 10px; margin-top: 10px;">
-      <button type="button" routerLink="/admin/catalogo" style="padding: 10px; background-color: #4CAF50; color: white; border: none; cursor: pointer; flex: 1;">
-        Guardar Producto
-      </button>
-      
-      <button type="button" routerLink="/admin/catalogo" style="padding: 10px; background-color: #f44336; color: white; border: none; cursor: pointer; flex: 1;">
-        Cancelar
-      </button>
-    </div>
+      <div style="display: flex; gap: 16px; margin-top: 10px;">
+        <button type="button" routerLink="/admin/catalogo" style="flex: 1; padding: 14px; background-color: #f5f5f5; color: var(--texto-secundario); font-weight: bold; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+          Cancelar
+        </button>
+        <button type="button" routerLink="/admin/catalogo" class="btn-machas" style="flex: 2; padding: 14px;">
+          Guardar Producto
+        </button>
+      </div>
 
-  </form>
+    </form>
+  </div>
 </div>
->>>>>>> e728bd5f14d5bff5daef54f8ab4c62507b7ace5c

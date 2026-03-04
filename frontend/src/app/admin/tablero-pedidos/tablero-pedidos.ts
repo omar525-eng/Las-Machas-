@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-tablero-pedidos',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './tablero-pedidos.html',
-  styleUrl: './tablero-pedidos.css',
+  styleUrl: './tablero-pedidos.css'
 })
-export class TableroPedidos {
-
-}
+export class TableroPedidos { }
