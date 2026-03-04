@@ -1,0 +1,23 @@
+<div style="max-width: 400px; margin: 50px auto; background: var(--color-tarjeta); padding: 30px; border-radius: var(--radio-borde); box-shadow: var(--sombra-tarjeta); text-align: center;">
+  
+  <h2 style="color: var(--color-primario); margin-bottom: 10px;">¡Hola, Macha! 🌶️</h2>
+  <p style="color: var(--texto-secundario); margin-bottom: 20px;">Acceso exclusivo para administradores</p>
+
+  <form style="display: flex; flex-direction: column; gap: 15px; text-align: left;">
+    <div>
+      <label style="font-size: 14px; font-weight: bold;">Correo Electrónico</label>
+      <input type="email" placeholder="admin@lasmachas.com" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; margin-top: 5px;">
+    </div>
+    
+    <div>
+      <label style="font-size: 14px; font-weight: bold;">Contraseña</label>
+      <input type="password" placeholder="********" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; margin-top: 5px;">
+    </div>
+
+    <button type="button" class="btn-machas" routerLink="/admin/catalogo" style="margin-top: 10px;">Entrar al Panel</button>
+  </form>
+
+  <p style="margin-top: 20px; font-size: 14px;">
+    <a routerLink="/tienda" style="color: var(--texto-secundario); text-decoration: underline;">← Ir a la tienda como cliente</a>
+  </p>
+</div>

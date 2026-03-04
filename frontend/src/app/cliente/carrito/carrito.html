@@ -1,0 +1,74 @@
+<div style="padding: 20px; max-width: 800px; margin: 40px auto; background: var(--color-tarjeta); border-radius: var(--radio-borde); box-shadow: var(--sombra-tarjeta);">
+  
+  <h2 style="color: var(--color-primario); margin-bottom: 20px; border-bottom: 2px solid var(--color-fondo); padding-bottom: 10px;">Tu Carrito 🛒</h2>
+
+  <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;">
+    
+    <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 15px; border-bottom: 1px solid #eee; flex-wrap: wrap; gap: 10px;">
+      
+      <div style="display: flex; align-items: center; gap: 15px;">
+        <img src="https://images.unsplash.com/photo-1558160074-4d7d8bdf4256?auto=format&fit=crop&q=80&w=150" style="width: 60px; height: 60px; border-radius: 8px; object-fit: cover;">
+        <div>
+          <h4 style="margin: 0; font-size: 16px; color: var(--color-tipografia);">Salsa Macha Roja</h4>
+          <p style="margin: 0; font-size: 12px; color: var(--texto-secundario);">Frasco 250ml</p>
+        </div>
+      </div>
+      
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <button style="width: 30px; height: 30px; border-radius: 50%; border: 1px solid #ccc; background: white; cursor: pointer; font-weight: bold; color: var(--texto-secundario);">-</button>
+        <span style="font-weight: bold; width: 20px; text-align: center; color: var(--color-tipografia);">2</span>
+        <button style="width: 30px; height: 30px; border-radius: 50%; border: 1px solid #ccc; background: white; cursor: pointer; font-weight: bold; color: var(--color-primario);">+</button>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 15px;">
+        <div style="font-weight: bold; color: var(--color-primario); width: 80px; text-align: right;">$100.00</div>
+        <button style="background: transparent; border: none; color: #e53935; cursor: pointer; font-size: 18px;" title="Eliminar del carrito">🗑️</button>
+      </div>
+
+    </div>
+
+    <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 15px; border-bottom: 1px solid #eee; flex-wrap: wrap; gap: 10px;">
+      
+      <div style="display: flex; align-items: center; gap: 15px;">
+        <img src="https://images.unsplash.com/photo-1558160074-4d7d8bdf4256?auto=format&fit=crop&q=80&w=150" style="width: 60px; height: 60px; border-radius: 8px; object-fit: cover; filter: hue-rotate(120deg);">
+        <div>
+          <h4 style="margin: 0; font-size: 16px; color: var(--color-tipografia);">Chimichurri Arg.</h4>
+          <p style="margin: 0; font-size: 12px; color: var(--texto-secundario);">Frasco 500ml</p>
+        </div>
+      </div>
+      
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <button style="width: 30px; height: 30px; border-radius: 50%; border: 1px solid #ccc; background: white; cursor: pointer; font-weight: bold; color: var(--texto-secundario);">-</button>
+        <span style="font-weight: bold; width: 20px; text-align: center; color: var(--color-tipografia);">1</span>
+        <button style="width: 30px; height: 30px; border-radius: 50%; border: 1px solid #ccc; background: white; cursor: pointer; font-weight: bold; color: var(--color-primario);">+</button>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 15px;">
+        <div style="font-weight: bold; color: var(--color-primario); width: 80px; text-align: right;">$95.00</div>
+        <button style="background: transparent; border: none; color: #e53935; cursor: pointer; font-size: 18px;" title="Eliminar del carrito">🗑️</button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div style="background: var(--color-fondo); padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+    <div style="display: flex; justify-content: space-between; margin-bottom: 10px; color: var(--texto-secundario);">
+      <span>Subtotal de productos:</span>
+      <span>$195.00</span>
+    </div>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 10px; color: var(--texto-secundario);">
+      <span>Costo de envío:</span>
+      <span style="font-style: italic;">Se calcula en el siguiente paso</span>
+    </div>
+    <hr style="border: 0.5px solid #ccc; margin: 15px 0;">
+    <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 20px; color: var(--color-tipografia);">
+      <span>Total a Pagar:</span>
+      <span style="color: var(--color-primario);">$195.00</span>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 15px;">
+    <button class="btn-machas" routerLink="/checkout" style="font-size: 18px; padding: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+      Proceder al Pago!
+    </button>
