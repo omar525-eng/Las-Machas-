@@ -1,24 +1,27 @@
-import sql from "mssql"
+import sql from "mssql";
 
 export const dbConfig = {
-  user: "server-ornelasomar-machasDB",   
-  password: "LasMachas12345+",           
-  database: "MachasDB",                  
+  user: "server-ornelasomar-machasDB",
+  password: "LasMachas12345+",
+  database: "MachasDB",
   server: "server-machascloud-omar.database.windows.net",
-  port: 1433,                            
+  port: 1433,
   options: {
-    encrypt: true,                       
-    trustServerCertificate: false        
+    encrypt: true,
+    trustServerCertificate: false
   }
-}
+};
 
 export const getConnection = async () => {
   try {
-    const pool = await sql.connect(dbConfig)
+    const pool = await sql.connect(dbConfig);
+    console.log("Conexión exitosa a la base de datos");
     return pool;
   } catch (error) {
-    console.error("Error de conexión DB:", error)
-    throw error
+    console.error("Error de conexión DB:", error);
+    throw error;
   }
-}
-getConnection()
+};
+
+// Ejecutar una prueba de conexión
+getConnection();
