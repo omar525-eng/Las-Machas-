@@ -1,1 +1,79 @@
+<<<<<<< HEAD
 <p>agregar-producto works!</p>
+=======
+<div style="padding: 20px; max-width: 600px;">
+  <h2>Añadir Nueva Presentación</h2>
+  <p>Ingresa los datos del nuevo producto para el inventario.</p>
+
+  <form style="display: flex; flex-direction: column; gap: 15px;">
+    
+    <fieldset style="padding: 15px; border: 1px solid #ccc;">
+      <legend><strong>Datos Generales de la Salsa</strong></legend>
+      
+      <div style="margin-bottom: 10px;">
+        <label>Nombre del Producto:</label><br>
+        <input type="text" placeholder="Ej. Salsa Macha con Cacahuate" style="width: 100%; padding: 5px;">
+      </div>
+
+      <div style="margin-bottom: 10px;">
+        <label>Categoría:</label><br>
+        <select style="width: 100%; padding: 5px;">
+          <option>Salsas</option>
+          <option>Encurtidos</option>
+          <option>Otros</option>
+        </select>
+      </div>
+
+      <div style="margin-bottom: 10px;">
+        <label>URL de la Imagen:</label><br>
+        <input type="text" placeholder="https://..." style="width: 100%; padding: 5px;">
+      </div>
+    </fieldset>
+
+    <fieldset style="padding: 15px; border: 1px solid #ccc;">
+      <legend><strong>Detalles de Inventario y Precios</strong></legend>
+      
+      <div style="margin-bottom: 10px;">
+        <label>Tamaño / Presentación:</label><br>
+        <select style="width: 100%; padding: 5px;">
+          <option>Frasco 250ml</option>
+          <option>Frasco 500ml</option>
+        </select>
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+        <div style="flex: 1;">
+          <label>Precio Regular ($):</label><br>
+          <input type="number" placeholder="0.00" style="width: 100%; padding: 5px;">
+        </div>
+        <div style="flex: 1;">
+          <label>Precio Mayoreo ($):</label><br>
+          <input type="number" placeholder="0.00" style="width: 100%; padding: 5px;">
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 10px;">
+        <div style="flex: 1;">
+          <label>Stock Inicial (Cantidad):</label><br>
+          <input type="number" placeholder="0" style="width: 100%; padding: 5px;">
+        </div>
+        <div style="flex: 1;">
+          <label>Stock Mínimo (Alerta):</label><br>
+          <input type="number" placeholder="5" style="width: 100%; padding: 5px;">
+        </div>
+      </div>
+    </fieldset>
+
+    <div style="display: flex; gap: 10px; margin-top: 10px;">
+      <button type="button" routerLink="/admin/catalogo" style="padding: 10px; background-color: #4CAF50; color: white; border: none; cursor: pointer; flex: 1;">
+        Guardar Producto
+      </button>
+      
+      <button type="button" routerLink="/admin/catalogo" style="padding: 10px; background-color: #f44336; color: white; border: none; cursor: pointer; flex: 1;">
+        Cancelar
+      </button>
+    </div>
+
+  </form>
+</div>
+>>>>>>> e728bd5f14d5bff5daef54f8ab4c62507b7ace5c
