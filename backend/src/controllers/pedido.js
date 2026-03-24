@@ -1,5 +1,4 @@
 import { insertarPedido, obtenerTodosPedidos } from "../models/pedido.js"
-
 // GET /api/pedidos
 export const obtenerPedidos = async (req, res) => {
   try {
@@ -13,14 +12,11 @@ export const obtenerPedidos = async (req, res) => {
     res.status(500).json({ error: error.message })
   }
 }
-
 // POST /api/pedidos
 export const crearPedido = async (req, res) => {
   try {
     const pedido = req.body
-
     await insertarPedido(pedido)
-
     res.json({
       message: "Pedido creado correctamente",
       data: pedido
