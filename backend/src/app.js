@@ -3,7 +3,6 @@ import cors from "cors"
 
 // Importar rutas
 import catalogoRoutes from "./routes/catalogos.js"
-import productosRoutes from "./routes/productos.js"
 import pedidosRoutes from "./routes/pedidos.js"
 //import skusRoutes from "./routes/skus.js"
 
@@ -15,7 +14,6 @@ app.use(express.json())
 
 // Rutas principales
 app.use("/api/catalogos", catalogoRoutes)
-app.use("/api/productos", productosRoutes)
 app.use("/api/pedidos", pedidosRoutes)
 //app.use("/api/skus", skusRoutes)
 
