@@ -4,7 +4,8 @@ import cors from "cors"
 // Importar rutas
 import catalogoRoutes from "./routes/catalogos.js"
 import pedidosRoutes from "./routes/pedidos.js"
-//import skusRoutes from "./routes/skus.js"
+import skusRoutes from "./routes/skus.js"
+import productoRoutes from "./routes/productos.js"
 
 const app = express()
 
@@ -15,7 +16,8 @@ app.use(express.json())
 // Rutas principales
 app.use("/api/catalogos", catalogoRoutes)
 app.use("/api/pedidos", pedidosRoutes)
-//app.use("/api/skus", skusRoutes)
+app.use("/api/skus", skusRoutes)
+app.use("/api/productos", productoRoutes)
 
 // Servidor
 const PORT = process.env.PORT || 3000
