@@ -1,30 +1,49 @@
-@if (authService.currentRole() || router.url !== '/login') {
-  <header style="background-color: var(--color-primario); padding: 15px; color: white; position: sticky; top: 0; z-index: 1000;">
+@if (router.url !== '/login') {
+  <header style="background-color: var(--color-primario); padding: 15px; color: white; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-      <h1 style="font-size: 20px; margin: 0;">Las Machas</h1>
-      <button routerLink="/carrito" style="background: none; border: none; color: white; cursor: pointer;">
-        🛒 <span style="font-size: 12px;">({{ cartService.itemCount() }})</span>
+      <h1 style="font-size: 20px; margin: 0; font-weight: bold;">Las Machas</h1>
+      <button routerLink="/carrito" style="background: none; border: none; color: white; cursor: pointer; position: relative;">
+        <span style="font-size: 24px;">🛒</span>
+        <span style="position: absolute; top: -5px; right: -10px; background: white; color: var(--color-primario); border-radius: 50%; padding: 2px 6px; font-size: 10px; font-weight: bold;">
+          {{ cartService.itemCount() }}
+        </span>
       </button>
     </div>
 
     <div style="background: white; border-radius: 20px; padding: 8px 15px; display: flex; align-items: center;">
-      <input type="text" (input)="actualizarBusqueda($event)" placeholder="¿Qué salsa buscas hoy?" style="border: none; outline: none; width: 100%; color: var(--color-tipografia);">
+      <span style="margin-right: 8px;">🔍</span>
+      <input type="text" 
+             (input)="actualizarBusqueda($event)" 
+             placeholder="¿Qué salsa buscas hoy?" 
+             style="border: none; outline: none; width: 100%; color: var(--color-tipografia); font-size: 14px;">
     </div>
   </header>
 }
 
-<main style="padding-bottom: 80px;">
+<main style="padding-bottom: 90px; min-height: 80vh;">
   <router-outlet></router-outlet>
 </main>
 
-@if (authService.currentRole() || router.url !== '/login') {
-  <nav style="position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 10px; border-top: 1px solid #eee;">
-    <button routerLink="/tienda" style="background: none; border: none; display: flex; flex-direction: column; align-items: center; color: var(--color-primario);">
-      🏠 <span style="font-size: 10px;">Tienda</span>
+@if (router.url !== '/login') {
+  <nav style="position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px; border-top: 1px solid #eee; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 1000;">
+    <button routerLink="/tienda" 
+            style="background: none; border: none; display: flex; flex-direction: column; align-items: center; color: var(--color-primario); cursor: pointer;">
+      <span style="font-size: 20px;">🏠</span>
+      <span style="font-size: 10px; font-weight: bold;">Tienda</span>
     </button>
-    <button routerLink="/carrito" style="background: none; border: none; display: flex; flex-direction: column; align-items: center; color: var(--color-primario);">
-      🛒 <span style="font-size: 10px;">Carrito</span>
+    
+    <button routerLink="/carrito" 
+            style="background: none; border: none; display: flex; flex-direction: column; align-items: center; color: var(--color-primario); cursor: pointer;">
+      <span style="font-size: 20px;">🛒</span>
+      <span style="font-size: 10px; font-weight: bold;">Carrito</span>
     </button>
+
+    @if (authService.currentRole()?.toLowerCase() === 'admin') {
+      <button routerLink="/admin/catalogo" 
+              style="background: none; border: none; display: flex; flex-direction: column; align-items: center; color: #555; cursor: pointer;">
+        <span style="font-size: 20px;">⚙️</span>
+        <span style="font-size: 10px; font-weight: bold;">Gestión</span>
+      </button>
+    }
   </nav>
-  <span>({{ cartService.itemCount() }})</span>
 }
