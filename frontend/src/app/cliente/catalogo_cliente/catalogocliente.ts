@@ -1,5 +1,4 @@
 import { Component, OnInit, inject, computed, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { CatalogoService } from '../../core/services/catalogo.service';
 import { SearchService } from '../../core/services/search.service'; // <--- Importante
 import { CartService } from '../../core/services/cart.service';
@@ -27,7 +26,7 @@ export class CatalogoCliente implements OnInit {
     
     return this.productosBD().filter((p: Producto) => 
       p.Nombre.toLowerCase().includes(term) || 
-      p.Categoria.toLowerCase().includes(term)
+      (p.Categoria && p.Categoria.toLowerCase().includes(term))
     );
   });
 
@@ -46,7 +45,9 @@ export class CatalogoCliente implements OnInit {
       id: producto.ProductoID,
       nombre: producto.Nombre,
       precio: producto.PrecioRegular,
-      cantidad: 1
+      cantidad: 1,
+      imagen: producto.ImagenURL,
+      tamano: producto.Tamano
     });
     alert(`¡${producto.Nombre} lista para enviar!`);
   }

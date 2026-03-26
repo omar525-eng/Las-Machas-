@@ -1,51 +1,68 @@
-// buscador.ts
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Component, OnInit, inject, computed, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { CatalogoService } from '../../core/services/catalogo.service';
 import { CartService } from '../../core/services/cart.service';
 import { SearchService } from '../../core/services/search.service';
-import { FormsModule } from '@angular/forms';
+import { Producto } from '../../core/models/producto.interface';
 
 @Component({
   selector: 'app-buscador',
   standalone: true,
-  imports: [FormsModule],
+  imports: [CommonModule],
   templateUrl: './buscador.html',
-  styleUrl: './buscador.css',
+  styleUrl: './buscador.css'
 })
 export class Buscador implements OnInit {
-  productosBD: any[] = []; 
+  private catalogoService = inject(CatalogoService);
+  private searchService = inject(SearchService);
+  public cartService = inject(CartService);
+  private router = inject(Router);
 
-  private http = inject(HttpClient);
-  private cartService = inject(CartService);
-  public searchService = inject(SearchService);
-  private cdr = inject(ChangeDetectorRef);
+  // Usamos signal para que Angular detecte cuando llegan los datos
+  productos = signal<Producto[]>([]);
 
-  get productos() {
-    const term = this.searchService.searchTerm().toLowerCase();
-    if (!term) return this.productosBD;
+  // El filtro reacciona automáticamente a la búsqueda y a los productos
+  productosFiltrados = computed(() => {
+    const termino = this.searchService.searchTerm().toLowerCase();
+    const listaActual = this.productos();
     
-    return this.productosBD.filter(p => 
-      (p.Nombre?.toLowerCase().includes(term)) ||
-      (p.Categoria?.toLowerCase().includes(term))
+    return listaActual.filter((p: Producto) => 
+      p.Nombre.toLowerCase().includes(termino) || 
+      p.Tamano.toLowerCase().includes(termino)
     );
-  }
+  });
+
+  enviarDudaWhatsApp() {
+  const msg = `¡Hola! Estoy viendo el catálogo de *Las Machas* y tengo una duda... 🌶️`;
+  const numeroTel = "52461130968"; 
+  const url = `https://wa.me/${numeroTel}?text=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank');
+}
 
   ngOnInit() {
-    this.http.get<any>('http://localhost:3000/api/catalogos').subscribe({
-      next: (res) => {
-        this.productosBD = res.data || res;
-        this.cdr.detectChanges();
-      }
+    this.catalogoService.obtenerProductos().subscribe({
+      next: (res: any) => {
+        // Guardamos los datos que vienen de la API
+        const data = res.data || res;
+        this.productos.set(data);
+      },
+      error: (err) => console.error('Error al cargar salsas', err)
     });
   }
 
-  agregarAlCarrito(producto: any) {
+  verDetalle(id: number) {
+    this.router.navigate(['/producto', id]);
+  }
+
+  agregar(producto: Producto) {
     this.cartService.addToCart({
       id: producto.ProductoID,
       nombre: producto.Nombre,
       precio: producto.PrecioRegular,
-      cantidad: 1
+      cantidad: 1,
+      imagen: producto.ImagenURL,
+      tamano: producto.Tamano
     });
-    alert(`¡${producto.Nombre} añadido!`);
   }
 }

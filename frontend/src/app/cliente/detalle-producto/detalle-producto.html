@@ -1,26 +1,29 @@
-<div style="padding: 20px; max-width: 800px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 30px; background: var(--color-tarjeta); border-radius: var(--radio-borde); box-shadow: var(--sombra-tarjeta); margin-top: 40px;">
-  
-  <div style="flex: 1; min-width: 300px;">
-    <img src="https://images.unsplash.com/photo-1558160074-4d7d8bdf4256?auto=format&fit=crop&q=80&w=600" style="width: 100%; border-radius: 12px; object-fit: cover;">
-  </div>
+<div class="detalle-container" *ngIf="producto">
+  <button class="btn-regresar" (click)="regresar()">
+    &larr; Regresar al Catálogo
+  </button>
 
-  <div style="flex: 1; min-width: 300px; display: flex; flex-direction: column; justify-content: center;">
-    <h2 style="font-size: 28px; margin-bottom: 10px; color: var(--color-tipografia);">Salsa Macha Roja</h2>
-    <p style="font-size: 24px; color: var(--color-primario); font-weight: bold; margin-bottom: 15px;">$50.00 MXN</p>
-    
-    <p style="color: var(--texto-secundario); line-height: 1.5; margin-bottom: 20px;">
-      Nuestra receta original. Hecha con una mezcla de chiles secos, aceite de oliva y cacahuates tostados. Perfecta para cualquier platillo.
-    </p>
-
-    <div style="margin-bottom: 20px;">
-      <label style="font-weight: bold; display: block; margin-bottom: 5px;">Presentación:</label>
-      <select style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc;">
-        <option>Frasco 250ml</option>
-        <option>Frasco 500ml (+$45.00)</option>
-      </select>
+  <div class="tarjeta-detalle">
+    <div class="imagen-container">
+      <img [src]="producto.ImagenURL || 'assets/placeholder.jpg'" [alt]="producto.Nombre" class="img-producto">
     </div>
 
-    <button class="btn-machas" routerLink="/carrito">🛒 Agregar al Carrito</button>
-    <button (click)="goBack()" style="margin-top: 15px; background: transparent; border: none; color: var(--texto-secundario); cursor: pointer; text-decoration: underline;">Volver a la tienda</button>
+    <div class="info-container">
+      <h2 class="titulo">{{ producto.Nombre }}</h2>
+      <p class="categoria">{{ producto.Categoria }} | {{ producto.Tamano }}</p>
+      
+      <div class="precio-container">
+        <p class="precio">${{ producto.PrecioRegular | number:'1.2-2' }} MXN</p>
+      </div>
+
+      <div class="descripcion">
+        <h3>Descripción</h3>
+        <p>{{ producto.Descripcion || 'Nuestra receta original elaborada con ingredientes seleccionados de alta calidad para darle a tus platillos el toque perfecto.' }}</p>
+      </div>
+
+      <button class="btn-agregar" (click)="agregarAlCarrito()">
+        🛒 Agregar al Carrito
+      </button>
+    </div>
   </div>
 </div>

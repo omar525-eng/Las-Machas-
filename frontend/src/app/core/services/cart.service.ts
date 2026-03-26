@@ -5,6 +5,8 @@ export interface ProductoCarrito {
   nombre: string;
   precio: number;
   cantidad: number;
+  imagen?: string;
+  tamano?: string;
 }
 
 @Injectable({
@@ -35,8 +37,35 @@ export class CartService {
   // Calculamos el total de items en el carrito
   public itemCount = computed(() => this.items().reduce((acc, item) => acc + item.cantidad, 0));
   
-  // Calculamos el precio total
-  public total = computed(() => this.items().reduce((acc, item) => acc + (item.precio * item.cantidad), 0));
+  // Verificamos si aplica el descuento de mayoreo en botes de 500ml
+  public aplicaDescuento500ml = computed(() => {
+    const cantidad500ml = this.items()
+      .filter(item => item.nombre.includes('500') || item.tamano?.includes('500'))
+      .reduce((acc, item) => acc + item.cantidad, 0);
+    return cantidad500ml > 10;
+  });
+
+  // Calculamos el precio total aplicando las reglas de descuento
+  public total = computed(() => {
+    const descuentoActivo = this.aplicaDescuento500ml();
+    
+    return this.items().reduce((acc, item) => {
+      let precioUnitario = item.precio;
+      // Si el producto es de 500ml y aplica el descuento, baja a $85 pesos
+      if (descuentoActivo && (item.nombre.includes('500') || item.tamano?.includes('500'))) {
+        precioUnitario = 85;
+      }
+      return acc + (precioUnitario * item.cantidad);
+    }, 0);
+  });
+
+  // Helper para saber a cuánto le sale ese producto específico (para la interfaz)
+  getPrecioUnitarioFinal(item: ProductoCarrito): number {
+    if (this.aplicaDescuento500ml() && (item.nombre.includes('500') || item.tamano?.includes('500'))) {
+      return 85;
+    }
+    return item.precio;
+  }
 
   addToCart(producto: ProductoCarrito) {
     this.items.update(currentItems => {
@@ -54,5 +83,13 @@ export class CartService {
 
   clearCart() {
     this.items.set([]);
+  }
+
+  updateQuantity(id: number, change: number) {
+    this.items.update(currentItems =>
+      currentItems.map(item =>
+        item.id === id ? { ...item, cantidad: Math.max(0, item.cantidad + change) } : item
+      ).filter(item => item.cantidad > 0) // Elimina el producto si la cantidad es 0
+    );
   }
 }

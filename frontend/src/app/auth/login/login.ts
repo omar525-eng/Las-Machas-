@@ -1,3 +1,4 @@
+
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
@@ -18,7 +19,6 @@ export class Login {
   private router = inject(Router);
   private authService = inject(AuthService);
 
-  // Definición del formulario con validaciones básicas
   loginForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required]
@@ -26,21 +26,13 @@ export class Login {
 
   onSubmit() {
     if (this.loginForm.valid) {
-      const credentials = this.loginForm.value;
-      
+      const credentials = this.loginForm.getRawValue();
       this.http.post<any>('http://localhost:3000/api/auth/login', credentials).subscribe({
         next: (response) => {
-          // 1. Guardamos el token y el rol en el servicio
           this.authService.login(response.token, response.role);
-          
-          // 2. EL IF DE REDIRECCIÓN
-          if (response.role && response.role.toLowerCase() === 'admin') {
-            this.router.navigate(['/admin/catalogo']);
-          } else {
-            this.router.navigate(['/tienda']); 
-          }
+          this.router.navigate([this.authService.isAdmin() ? '/admin/catalogo' : '/tienda']);
         },
-        error: (err) => alert('Usuario no encontrado o credenciales incorrectas.')
+        error: (err) => alert('Usuario no encontrado o credenciales incorrectas: ' + err.message)
       });
     } else {
       alert('Por favor, completa el formulario correctamente.');

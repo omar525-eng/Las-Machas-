@@ -1,1 +1,69 @@
-/* You can add global styles to this file, and also import other style files */
+/* ==========================================================================
+   SISTEMA DE DISEÑO GLOBAL - LAS MACHAS v2.0 (Pegar en styles.css)
+   ========================================================================== */
+
+/* 🔤 Importación de Tipografías desde Google Fonts (Montserrat e Inter) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Montserrat:wght@700&display=swap');
+
+:root {
+  /* 🎨 Paleta de Colores Oficial (Desde UI Kit) */
+  --color-primario: #E75A88;      /* Rosa vibrante */
+  --color-secundario: #F57F17;    /* Naranja */
+  --color-fondo: #FAFAFA;         /* Fondo clarito oficial */
+  --color-tipografia: #212121;    /* Texto principal oscuro */
+  
+  /* Colores de apoyo (Inferidos del diseño) */
+  --color-tarjeta: #FFFFFF;       /* Fondo de las cards */
+  --texto-secundario: #757575;    /* Gris medio para "Frasco 250ml" y precios */
+  --texto-blanco: #FFFFFF;        /* Para botones y header */
+  
+  /* 📏 Espaciados y Bordes (Auto Layout) */
+  --padding-tarjeta: 16px;
+  --radio-borde: 12px;
+  --sombra-tarjeta: 0px 4px 10px rgba(0, 0, 0, 0.06); /* Sombra suave y elegante */
+}
+
+/* ==========================================================================
+   RESETEO BÁSICO Y FONDOS
+   ========================================================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--color-fondo);
+  color: var(--color-tipografia);
+  font-family: 'Inter', sans-serif; /* Fuente base para todo el proyecto */
+}
+
+/* Tipografía específica para Encabezados (Salsa Macha Roja, etc.) */
+h1, h2, h3, .titulo-tarjeta {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  color: var(--color-tipografia);
+}
+
+/* ==========================================================================
+   CLASES REUTILIZABLES (Componentes Maestros)
+   ========================================================================== */
+
+/* Botón Principal Rosa */
+.btn-machas {
+  background-color: var(--color-primario);
+  color: var(--texto-blanco);
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 16px;
+  width: 100%; 
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.btn-machas:hover {
+  opacity: 0.9;
+}

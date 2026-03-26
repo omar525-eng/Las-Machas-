@@ -13,15 +13,11 @@ import { SearchService } from './core/services/search.service';
   styleUrl: './app.css'
 })
 export class App {
-  // Inyectamos los servicios necesarios
   public authService = inject(AuthService);
   public cartService = inject(CartService);
   public searchService = inject(SearchService);
   public router = inject(Router);
 
-  title = 'Las Machas';
-
-  // Función para que el buscador funcione
   actualizarBusqueda(event: Event) {
     const elemento = event.target as HTMLInputElement;
     this.searchService.searchTerm.set(elemento.value);

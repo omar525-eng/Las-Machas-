@@ -1,39 +1,59 @@
-<div style="padding: 20px; max-width: 800px; margin: 40px auto; background: var(--color-tarjeta); border-radius: 12px; box-shadow: var(--sombra-tarjeta);">
-  
-  <h2 style="color: var(--color-primario); margin-bottom: 20px; border-bottom: 2px solid var(--color-fondo); padding-bottom: 10px;">Tu Carrito 🛒</h2>
+<div style="padding: 20px; max-width: 800px; margin: 0 auto;">
+  <h2 style="color: var(--color-tipografia); margin-bottom: 20px;">Tu Carrito 🛒</h2>
 
-  <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;">
-    
-    @for (item of cartService.getItems()(); track item.id) {
-      <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 15px; border-bottom: 1px solid #eee;">
-        <div style="display: flex; align-items: center; gap: 15px;">
-          <div style="font-weight: bold;">{{ item.nombre }}</div>
+  @if (cartService.getItems()().length > 0) {
+    <div style="display: flex; flex-direction: column; gap: 15px;">
+      
+      @for (item of cartService.getItems()(); track item.id) {
+        <div style="display: flex; align-items: center; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); gap: 15px;">
+          <img [src]="item.imagen" [alt]="item.nombre" style="width: 70px; height: 70px; object-fit: contain; border-radius: 8px;">
+          
+          <div style="flex: 1;">
+            <h4 style="margin: 0; font-size: 16px;">{{ item.nombre }}</h4>
+            <p style="margin: 5px 0; color: var(--color-primario); font-weight: bold;">
+              ${{ cartService.getPrecioUnitarioFinal(item) }} c/u
+              @if (cartService.getPrecioUnitarioFinal(item) < item.precio) {
+                <span style="color: green; font-size: 12px; display: block;">¡Recibiste un descuento!</span>
+              }
+            </p>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 10px; background: #f5f5f5; padding: 5px 12px; border-radius: 20px;">
+            <button (click)="decrementar(item.id)" style="border: none; background: none; cursor: pointer; font-weight: bold; font-size: 18px;">-</button>
+            <span style="font-weight: bold;">{{ item.cantidad }}</span>
+            <button (click)="incrementar(item.id)" style="border: none; background: none; cursor: pointer; font-weight: bold; font-size: 18px;">+</button>
+          </div>
+
+          <button (click)="eliminar(item.id)" style="border: none; background: none; color: #ff5252; cursor: pointer; font-size: 18px;">🗑️</button>
         </div>
+      }
+
+      <div style="margin-top: 20px; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+        <div style="display: flex; justify-content: space-between; font-size: 18px; margin-bottom: 10px;">
+          <span>Subtotal:</span>
+          <span>${{ cartService.total() }}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 22px; font-weight: bold; color: var(--color-tipografia); margin-top: 10px; border-top: 2px dashed #eee; padding-top: 15px;">
+          <span>Total:</span>
+          <span>${{ cartService.total() }}</span>
+        </div>
+
+        <button routerLink="/checkout" style="width: 100%; background: var(--color-primario); color: white; border: none; padding: 18px; border-radius: 12px; font-size: 18px; font-weight: bold; margin-top: 25px; cursor: pointer; box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);">
+          Continuar al Pago 💳
+        </button>
         
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <span>Cantidad: {{ item.cantidad }}</span>
-        </div>
-
-        <div style="display: flex; align-items: center; gap: 15px;">
-          <div style="font-weight: bold; color: var(--color-primario);">$ {{ item.precio * item.cantidad }}</div>
-          <button (click)="cartService.removeFromCart(item.id)" style="background: none; border: none; cursor: pointer;">🗑️</button>
-        </div>
+        <button routerLink="/tienda" style="width: 100%; background: none; border: none; color: #888; margin-top: 15px; cursor: pointer; text-decoration: underline;">
+          Seguir comprando
+        </button>
       </div>
-    } @empty {
-      <p style="text-align: center;">El carrito está vacío.</p>
-    }
-
-  </div>
-
-  <div style="background: var(--color-fondo); padding: 20px; border-radius: 8px;">
-    <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 20px;">
-      <span>Total a Pagar:</span>
-      <span style="color: var(--color-primario);">$ {{ cartService.total() }}</span>
     </div>
-  </div>
-
-  <div style="display: flex; gap: 10px; margin-top: 20px;">
-    <button class="btn-machas" routerLink="/tienda" style="background: gray; flex: 1;">Seguir Comprando</button>
-    <button class="btn-machas" routerLink="/checkout" style="flex: 2;">Proceder al Pago!</button>
-  </div>
+  } @else {
+    <div style="text-align: center; padding: 60px 20px;">
+      <span style="font-size: 60px;">📭</span>
+      <h3 style="margin-top: 20px; color: #888;">Tu carrito está vacío</h3>
+      <button routerLink="/tienda" style="background: var(--color-primario); color: white; border: none; padding: 12px 25px; border-radius: 10px; margin-top: 20px; cursor: pointer; font-weight: bold;">
+        Ver Salsas
+      </button>
+    </div>
+  }
 </div>
