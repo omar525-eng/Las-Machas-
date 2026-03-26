@@ -1,0 +1,33 @@
+import { Injectable, signal, inject } from '@angular/core';
+import { Router } from '@angular/router';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthService {
+  private router = inject(Router);
+  
+  // Leemos el rol inicial del localStorage de forma segura
+  currentRole = signal<string | null>(typeof window !== 'undefined' ? localStorage.getItem('role') : null);
+
+  login(token: string, role: string) {
+    localStorage.setItem('token', token);
+    localStorage.setItem('role', role);
+    this.currentRole.set(role);
+  }
+
+  logout() {
+    localStorage.clear();
+    this.currentRole.set(null);
+    this.router.navigate(['/login']);
+  }
+
+ isAdmin() {
+  const role = this.currentRole();
+  return role?.toLowerCase() === 'admin';
+}
+
+  isUser() {
+    return this.currentRole() === 'user';
+  }
+}

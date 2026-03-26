@@ -1,12 +1,29 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { RouterOutlet, RouterLink, Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { AuthService } from './core/services/auth.service';
+import { CartService } from './core/services/cart.service';
+import { SearchService } from './core/services/search.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  standalone: true,
+  imports: [RouterOutlet, RouterLink, CommonModule],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('papeleria-web');
+  // Inyectamos los servicios necesarios
+  public authService = inject(AuthService);
+  public cartService = inject(CartService);
+  public searchService = inject(SearchService);
+  public router = inject(Router);
+
+  title = 'Las Machas';
+
+  // Función para que el buscador funcione
+  actualizarBusqueda(event: Event) {
+    const elemento = event.target as HTMLInputElement;
+    this.searchService.searchTerm.set(elemento.value);
+  }
 }

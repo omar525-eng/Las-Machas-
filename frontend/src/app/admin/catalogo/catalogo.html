@@ -1,0 +1,40 @@
+ "<div style="padding: 20px; max-width: 1200px; margin: 0 auto;">
+  
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <div>
+      <h2 class="titulo-tarjeta">Inventario de Salsas</h2>
+      <p style="color: var(--texto-secundario);">Gestión visual de existencias.</p>
+    </div>
+    <button class="btn-machas" routerLink="/admin/agregar-producto" style="width: auto;">
+      + Añadir Nueva Presentación
+    </button>
+  </div>
+
+  <div class="grid-catalogo">
+
+    @for (producto of productos; track producto.ProductoID) {
+      <div style="background: var(--color-tarjeta); border-radius: 12px; padding: 16px; box-shadow: var(--sombra-tarjeta); display: flex; flex-direction: column;">
+        
+        <img [src]="producto.ImagenURL" [alt]="producto.Nombre" routerLink="/admin/detalle-producto" style="width: 100%; height: 180px; object-fit: cover; border-radius: 8px; margin-bottom: 12px; cursor: pointer;">
+        
+        <div style="color: var(--color-secundario); font-size: 12px; font-weight: bold; text-transform: uppercase; margin-bottom: 4px;">Inventario</div>
+        <h3 routerLink="/admin/detalle-producto" style="font-size: 18px; margin-bottom: 4px; color: var(--color-tipografia); cursor: pointer;">{{ producto.Nombre }}</h3>
+        
+        <div style="color: var(--texto-secundario); font-size: 14px; margin-bottom: 8px;">{{ producto.Tamano }}</div>
+        <div style="font-size: 20px; font-weight: bold; margin-bottom: 8px;">${{ producto.PrecioRegular }}</div>
+        <div style="font-size: 14px; font-weight: bold; color: #2e7d32; margin-bottom: 16px;">Stock: {{ producto.Stock }} pzas</div>
+        
+        <div style="display: flex; gap: 8px; margin-top: auto;">
+          <button class="btn-machas" routerLink="/admin/actualizar-producto" style="background: var(--color-secundario); flex: 1; padding: 10px; font-size: 14px;">Editar</button>
+          <button class="btn-machas" style="background: #e53935; flex: 1; padding: 10px; font-size: 14px;">Baja</button>
+        </div>
+      </div>
+
+    } @empty {
+      <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--texto-secundario); background: #f9f9f9; border-radius: 8px; border: 1px dashed #ccc;">
+        <p style="font-weight: bold;">No hay productos registrados en el inventario.</p>
+      </div>
+    }
+
+  </div>
+</div>"

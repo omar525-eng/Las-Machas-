@@ -1,0 +1,25 @@
+/* Esto es lo que crea las filas y columnas */
+.grid-catalogo {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  justify-items: center; /* Centra las tarjetas */
+}
+
+/* Estilo para que tus tarjetas se vean elevadas */
+.tarjeta-cliente {
+  background: white;
+  border-radius: 15px;
+  padding: 15px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  width: 100%;
+  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s;
+}
+
+.tarjeta-cliente:hover {
+  transform: translateY(-5px);
+}

@@ -1,0 +1,39 @@
+<div style="padding: 20px; max-width: 800px; margin: 40px auto; background: var(--color-tarjeta); border-radius: 12px; box-shadow: var(--sombra-tarjeta);">
+  
+  <h2 style="color: var(--color-primario); margin-bottom: 20px; border-bottom: 2px solid var(--color-fondo); padding-bottom: 10px;">Tu Carrito 🛒</h2>
+
+  <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;">
+    
+    @for (item of cartService.getItems()(); track item.id) {
+      <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 15px; border-bottom: 1px solid #eee;">
+        <div style="display: flex; align-items: center; gap: 15px;">
+          <div style="font-weight: bold;">{{ item.nombre }}</div>
+        </div>
+        
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span>Cantidad: {{ item.cantidad }}</span>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 15px;">
+          <div style="font-weight: bold; color: var(--color-primario);">$ {{ item.precio * item.cantidad }}</div>
+          <button (click)="cartService.removeFromCart(item.id)" style="background: none; border: none; cursor: pointer;">🗑️</button>
+        </div>
+      </div>
+    } @empty {
+      <p style="text-align: center;">El carrito está vacío.</p>
+    }
+
+  </div>
+
+  <div style="background: var(--color-fondo); padding: 20px; border-radius: 8px;">
+    <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 20px;">
+      <span>Total a Pagar:</span>
+      <span style="color: var(--color-primario);">$ {{ cartService.total() }}</span>
+    </div>
+  </div>
+
+  <div style="display: flex; gap: 10px; margin-top: 20px;">
+    <button class="btn-machas" routerLink="/tienda" style="background: gray; flex: 1;">Seguir Comprando</button>
+    <button class="btn-machas" routerLink="/checkout" style="flex: 2;">Proceder al Pago!</button>
+  </div>
+</div>
