@@ -6,6 +6,8 @@ import catalogoRoutes from "./routes/catalogos.js"
 import pedidosRoutes from "./routes/pedidos.js"
 import skusRoutes from "./routes/skus.js"
 import productoRoutes from "./routes/productos.js"
+import actualizar_productoRoutes from "./routes/actualizar_productos.js"
+
 
 const app = express()
 
@@ -18,6 +20,7 @@ app.use("/api/catalogos", catalogoRoutes)
 app.use("/api/pedidos", pedidosRoutes)
 app.use("/api/skus", skusRoutes)
 app.use("/api/productos", productoRoutes)
+app.use("/api/actualizar-productos", actualizar_productoRoutes)
 
 // Servidor
 const PORT = process.env.PORT || 3000

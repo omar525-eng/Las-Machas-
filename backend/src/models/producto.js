@@ -1,6 +1,6 @@
 import { getConnection } from "../config/db.js"
 
-// 🔵 Actualizar producto
+// Actualizar producto
 export const actualizarProducto = async (producto) => {
   const pool = await getConnection()
 
