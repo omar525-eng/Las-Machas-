@@ -1,15 +1,15 @@
 import sql from "mssql";
-
+import dotenv from "dotenv";
+dotenv.config();
 export const dbConfig = {
-  user: "server-ornelasomar-machasDB",
-  password: "LasMachas12345+",
-  database: "MachasDB",
-  server: "server-machascloud-omar.database.windows.net",
-  port: 1433,
-  options: {
-    encrypt: true,
-    trustServerCertificate: false
-  }
+user: process.env.DB_USER,
+password: process.env.DB_PASSWORD,
+database: process.env.DB_NAME,
+server: process.env.DB_SERVER,
+port: 1433,
+options: {
+encrypt: true,
+trustServerCertificate: false}
 };
 
 export const getConnection = async () => {
