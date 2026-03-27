@@ -6,45 +6,70 @@
   </div>
 
   <div style="display: flex; gap: 10px; margin-bottom: 24px; overflow-x: auto; padding-bottom: 5px;">
-    <button style="background: var(--color-primario); color: white; border: none; padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; cursor: pointer;">Nuevos (1)</button>
-    <button style="background: white; color: var(--texto-secundario); border: 1px solid #ddd; padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; cursor: pointer;">En Proceso</button>
-    <button style="background: white; color: var(--texto-secundario); border: 1px solid #ddd; padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; cursor: pointer;">Entregados</button>
+    
+    <button (click)="cambiarFiltro('Todos')" 
+            [ngStyle]="{'background': filtroActual === 'Todos' ? 'var(--color-primario)' : 'white', 'color': filtroActual === 'Todos' ? 'white' : 'var(--texto-secundario)', 'border': filtroActual === 'Todos' ? 'none' : '1px solid #ddd'}" 
+            style="padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.3s;">
+      Todos
+    </button>
+    
+    <button (click)="cambiarFiltro('En Proceso')"
+            [ngStyle]="{'background': filtroActual === 'En Proceso' ? 'var(--color-primario)' : 'white', 'color': filtroActual === 'En Proceso' ? 'white' : 'var(--texto-secundario)', 'border': filtroActual === 'En Proceso' ? 'none' : '1px solid #ddd'}" 
+            style="padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.3s;">
+      En Proceso
+    </button>
+    
+    <button (click)="cambiarFiltro('Entregados')"
+            [ngStyle]="{'background': filtroActual === 'Entregados' ? 'var(--color-primario)' : 'white', 'color': filtroActual === 'Entregados' ? 'white' : 'var(--texto-secundario)', 'border': filtroActual === 'Entregados' ? 'none' : '1px solid #ddd'}" 
+            style="padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.3s;">
+      Entregados
+    </button>
+
   </div>
 
-  <div style="display: flex; flex-direction: column; gap: 16px;">
+  <div style="display: flex; flex-direction: column; gap: 16px; width: 100%;">
 
-    <div style="background-color: var(--color-tarjeta); border-radius: var(--radio-borde); box-shadow: var(--sombra-tarjeta); padding: 16px; border-left: 5px solid #F57F17;">
-      
-      <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
-        <span style="font-weight: bold; font-size: 16px; color: var(--color-tipografia);">Folio: #PED-1042</span>
-        <span style="background-color: #FFF9C4; color: #F57F17; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: bold;">Pendiente</span>
-      </div>
-      
-      <div style="margin-bottom: 4px; font-size: 14px;"><strong>Cliente:</strong> Arturo Esparza</div>
-      <div style="margin-bottom: 4px; color: var(--texto-secundario); font-size: 14px;"><strong>Fecha:</strong> 04 Mar 2026 - 10:30 AM</div>
-      <div style="margin-bottom: 16px; color: var(--texto-secundario); font-size: 14px;"><strong>Total a cobrar:</strong> $145.00</div>
+    @for (pedido of pedidosFiltrados; track pedido.PedidoID || pedido.id) {
 
-      <div style="display: flex; gap: 10px;">
-        <button class="btn-machas" routerLink="/admin/detalle-pedido" style="flex: 1; padding: 10px 0; font-size: 14px;">Ver Detalles</button>
-        <button style="flex: 1; padding: 10px 0; font-size: 14px; background: white; color: #4CAF50; border: 1px solid #4CAF50; border-radius: 8px; font-weight: bold; cursor: pointer;">Marcar Entregado</button>
-      </div>
-    </div>
+      <div [ngStyle]="{'border-left-color': (pedido.Estado === 'Entregado' ? '#4CAF50' : '#F57F17')}"
+           style="background-color: var(--color-tarjeta); border-radius: var(--radio-borde); box-shadow: var(--sombra-tarjeta); padding: 16px; border-left-width: 5px; border-left-style: solid; width: 100%;">
+        
+        <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+          <span style="font-weight: bold; font-size: 16px; color: var(--color-tipografia);">Folio: #{{ pedido.PedidoID || pedido.id || 'N/A' }}</span>
 
-    <div style="background-color: var(--color-tarjeta); border-radius: var(--radio-borde); box-shadow: var(--sombra-tarjeta); padding: 16px; border-left: 5px solid #4CAF50;">
-      
-      <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
-        <span style="font-weight: bold; font-size: 16px; color: var(--color-tipografia);">Folio: #PED-1041</span>
-        <span style="background-color: #E8F5E9; color: #2E7D32; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: bold;">Entregado</span>
-      </div>
-      
-      <div style="margin-bottom: 4px; font-size: 14px;"><strong>Cliente:</strong> Mariana Ríos</div>
-      <div style="margin-bottom: 4px; color: var(--texto-secundario); font-size: 14px;"><strong>Fecha:</strong> 03 Mar 2026 - 04:15 PM</div>
-      <div style="margin-bottom: 16px; color: var(--texto-secundario); font-size: 14px;"><strong>Total pagado:</strong> $285.00</div>
+          <span [ngStyle]="{'background-color': (pedido.Estado === 'Entregado' ? '#E8F5E9' : '#FFF9C4'), 'color': (pedido.Estado === 'Entregado' ? '#2E7D32' : '#F57F17')}"
+                style="padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: bold;">
+            {{ pedido.Estado || 'Pendiente' }}
+          </span>
+        </div>
+        
+        <div style="margin-bottom: 4px; font-size: 14px;"><strong>Cliente:</strong> {{ pedido.Cliente || pedido.NombreCliente || 'Usuario' }}</div>
+        <div style="margin-bottom: 4px; color: var(--texto-secundario); font-size: 14px;"><strong>Fecha:</strong> {{ pedido.Fecha || 'Reciente' }}</div>
+        <div style="margin-bottom: 16px; color: var(--texto-secundario); font-size: 14px;"><strong>Total:</strong> ${{ pedido.Total || pedido.Monto || '0.00' }}</div>
 
-      <div style="display: flex; gap: 10px;">
-        <button class="btn-machas" routerLink="/admin/detalle-pedido" style="width: 100%; padding: 10px 0; font-size: 14px; background-color: #f5f5f5; color: var(--texto-secundario); border: none;">Ver Historial</button>
+        @if (pedido.Estado !== 'Entregado') {
+          <div style="display: flex; gap: 10px; width: 100%;">
+            <button class="btn-machas" routerLink="/admin/detalle-pedido" style="flex: 1; padding: 10px 0; font-size: 14px;">
+              Ver Detalles
+            </button>
+            <button (click)="marcarComoEntregado(pedido)" style="flex: 1; padding: 10px 0; font-size: 14px; background: white; color: #4CAF50; border: 1px solid #4CAF50; border-radius: 8px; font-weight: bold; cursor: pointer;">
+              Marcar Entregado
+            </button>
+          </div>
+        } @else {
+          <div style="display: flex; gap: 10px; width: 100%;">
+            <button class="btn-machas" routerLink="/admin/detalle-pedido" style="width: 100%; padding: 10px 0; font-size: 14px; background-color: #f5f5f5; color: var(--texto-secundario); border: none;">
+              Ver Historial
+            </button>
+          </div>
+        }
+        
       </div>
-    </div>
+    } @empty {
+      <div style="text-align: center; padding: 40px; color: var(--texto-secundario); background: #f9f9f9; border-radius: 8px; border: 1px dashed #ccc;">
+        <p style="font-weight: bold;">No hay pedidos en esta categoría.</p>
+      </div>
+    }
 
   </div>
 </div>

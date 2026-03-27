@@ -16,6 +16,7 @@ export class AgregarProducto {
 
   productoForm = new FormGroup({
     Nombre: new FormControl('', Validators.required),
+    Descripcion: new FormControl(''), 
     Categoria: new FormControl('Salsas', Validators.required),
     ImagenURL: new FormControl(''),
     Tamano: new FormControl('Frasco 250ml', Validators.required),
@@ -24,7 +25,8 @@ export class AgregarProducto {
     Stock: new FormControl('', Validators.required),
     StockMinimo: new FormControl('')
   });
-guardarProducto() {
+
+  guardarProducto() {
     if (this.productoForm.valid) {
       console.log('Paquete listo para cuando el backend exista:', this.productoForm.value);
       

@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 
 // Tus importaciones (Admin)
+import { MisDatosComponent } from './admin/mis datos/mis-datos'; 
 import { Catalogo } from './admin/catalogo/catalogo';
 import { AgregarProducto } from './admin/agregar-producto/agregar-producto';
 import { TableroPedidos } from './admin/tablero-pedidos/tablero-pedidos';
@@ -20,6 +21,7 @@ export const routes: Routes = [
   { path: '', redirectTo: 'admin/catalogo', pathMatch: 'full' },
 
   // --- TUS RUTAS (ADMIN) ---
+  { path: 'admin/mis-datos', component: MisDatosComponent },
   { path: 'admin/catalogo', component: Catalogo },
   { path: 'admin/agregar-producto', component: AgregarProducto },
   { path: 'admin/tablero-pedidos', component: TableroPedidos },

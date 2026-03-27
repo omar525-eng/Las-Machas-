@@ -1,0 +1,71 @@
+.contenedor-mis-datos {
+  padding: 20px;
+  max-width: 500px;
+  margin: 40px auto; /* Lo centramos en la pantalla */
+}
+
+h2 {
+  color: var(--color-primario); /* El rosita de Las Machas */
+  font-family: 'Montserrat', sans-serif;
+  margin-bottom: 5px;
+}
+
+.subtitulo {
+  color: var(--texto-secundario);
+  font-family: 'Inter', sans-serif;
+  margin-bottom: 20px;
+}
+
+.tarjeta-datos {
+  background-color: var(--color-tarjeta);
+  border-radius: var(--radio-borde);
+  padding: var(--padding-tarjeta);
+  box-shadow: var(--sombra-tarjeta);
+}
+
+.form-group {
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  color: var(--color-tipografia);
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+input, textarea {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: var(--color-tipografia);
+}
+
+input:focus, textarea:focus {
+  outline: none;
+  border-color: var(--color-primario);
+  box-shadow: 0 0 0 2px rgba(231, 90, 136, 0.2); /* Un resplandor rosita al escribir */
+}
+
+.btn-guardar {
+  background-color: var(--color-secundario); /* Naranja */
+  color: var(--texto-blanco);
+  border: none;
+  padding: 14px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-family: 'Montserrat', sans-serif;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+  transition: opacity 0.3s;
+}
+
+.btn-guardar:hover {
+  opacity: 0.85;
+}
