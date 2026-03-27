@@ -1,13 +1,14 @@
 import express from "express"
 import cors from "cors"
-
+import dotenv from 'dotenv';
+dotenv.config();
 // Importar rutas
 import catalogoRoutes from "./routes/catalogos.js"
 import pedidosRoutes from "./routes/pedidos.js"
 import skusRoutes from "./routes/skus.js"
 import productoRoutes from "./routes/productos.js"
 import actualizar_productoRoutes from "./routes/actualizar_productos.js"
-
+import usuariosRoutes from './routes/usuarios.js';
 
 const app = express()
 
@@ -22,6 +23,7 @@ app.use("/api/skus", skusRoutes)
 app.use("/api/productos", productoRoutes)
 app.use("/api/actualizar-productos", actualizar_productoRoutes)
 
+app.use('/usuarios', usuariosRoutes);
 // Servidor
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {
