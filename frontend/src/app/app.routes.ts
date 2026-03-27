@@ -14,6 +14,7 @@ import { Buscador } from './cliente/buscador/buscador';
 import { DetalleProducto } from './cliente/detalle-producto/detalle-producto';
 import { Carrito } from './cliente/carrito/carrito';
 import { Checkout } from './cliente/checkout/checkout';
+import { MisDatosComponent } from './cliente/mis-datos/mis-datos';
 
 export const routes: Routes = [
   // --- RUTA POR DEFECTO ---
@@ -33,6 +34,7 @@ export const routes: Routes = [
   { path: 'producto', component: DetalleProducto },
   { path: 'carrito', component: Carrito },
   { path: 'checkout', component: Checkout },
+  { path: 'cliente/mis-datos', component: MisDatosComponent },
 
   // --- RUTA COMODÍN ---
   { path: '**', redirectTo: 'admin/catalogo' }
