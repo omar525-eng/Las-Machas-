@@ -5,6 +5,7 @@ import { findUserByEmail } from '../models/userM.js';
 export async function login(req, res) {
   console.log('Entrando a login:');
   try {
+    console.log('Datos recibidos:', req.body);
     const { correo, password } = req.body;
     console.log('Datos recibidos:', { correo, password: password ? '****' : null });
     // Validación de entrada

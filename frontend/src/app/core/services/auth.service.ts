@@ -10,10 +10,11 @@ export class AuthService {
   // Leemos el rol inicial del localStorage de forma segura
   currentRole = signal<string | null>(typeof window !== 'undefined' ? localStorage.getItem('role') : null);
 
-  login(token: string, role: string) {
+  login(token: string, role: string | number) {
+    const roleStr = String(role);
     localStorage.setItem('token', token);
-    localStorage.setItem('role', role);
-    this.currentRole.set(role);
+    localStorage.setItem('role', roleStr);
+    this.currentRole.set(roleStr);
   }
 
   logout() {
@@ -24,10 +25,10 @@ export class AuthService {
 
  isAdmin() {
   const role = this.currentRole();
-  return role?.toLowerCase() === 'admin';
+  return role === '1';
 }
 
   isUser() {
-    return this.currentRole() === 'user';
+    return this.currentRole() === '2';
   }
 }

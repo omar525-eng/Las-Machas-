@@ -9,7 +9,14 @@
       <input type="text" [(ngModel)]="nombre" placeholder="Ej. Juan Pérez" 
              style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; outline: none; box-sizing: border-box;">
     </div>
-
+    
+    <!-- NUEVO CAMPO: Teléfono -->
+    <div>
+      <label style="font-weight: bold; font-size: 14px; display: block; margin-bottom: 5px; color: #333;">Teléfono:</label>
+      <input type="tel" [(ngModel)]="telefono" placeholder="Ej. 449 123 4567" 
+             style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; outline: none; box-sizing: border-box;">
+    </div>
+    
     <div>
       <label style="font-weight: bold; font-size: 14px; display: block; margin-bottom: 5px; color: #333;">Dirección de Entrega:</label>
       <input type="text" [(ngModel)]="direccion" placeholder="Calle, Número, Colonia..." 

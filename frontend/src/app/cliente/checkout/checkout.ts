@@ -13,6 +13,7 @@ export class Checkout {
   public cartService = inject(CartService);
   nombre: string = '';
   direccion: string = '';
+  telefono: string = '';
 
   enviarWhatsApp() {
     const productos = this.cartService.getItems()();
@@ -24,7 +25,7 @@ export class Checkout {
 
     msg += `\n*Total: $${this.cartService.total()}*`;
     
-    const url = `https://wa.me/52461130968?text=${encodeURIComponent(msg)}`;
+    const url = `https://wa.me/+523461130968?text=${encodeURIComponent(msg)}`;
     window.open(url, '_blank');
   }
 }

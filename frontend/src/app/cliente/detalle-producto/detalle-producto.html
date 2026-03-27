@@ -1,24 +1,25 @@
-<div class="detalle-container" *ngIf="producto">
+@if (producto(); as prod) {
+<div class="detalle-container">
   <button class="btn-regresar" (click)="regresar()">
-    &larr; Regresar al Catálogo
+    &larr; Regresar a la Tienda
   </button>
 
   <div class="tarjeta-detalle">
     <div class="imagen-container">
-      <img [src]="producto.ImagenURL || 'assets/placeholder.jpg'" [alt]="producto.Nombre" class="img-producto">
+      <img [src]="prod.ImagenURL || 'assets/placeholder.jpg'" [alt]="prod.Nombre" class="img-producto">
     </div>
 
     <div class="info-container">
-      <h2 class="titulo">{{ producto.Nombre }}</h2>
-      <p class="categoria">{{ producto.Categoria }} | {{ producto.Tamano }}</p>
+      <h2 class="titulo">{{ prod.Nombre }}</h2>
+      <p class="categoria">{{ prod.Categoria }} | {{ prod.Tamano }}</p>
       
       <div class="precio-container">
-        <p class="precio">${{ producto.PrecioRegular | number:'1.2-2' }} MXN</p>
+        <p class="precio">${{ prod.PrecioRegular | number:'1.2-2' }} MXN</p>
       </div>
 
       <div class="descripcion">
         <h3>Descripción</h3>
-        <p>{{ producto.Descripcion || 'Nuestra receta original elaborada con ingredientes seleccionados de alta calidad para darle a tus platillos el toque perfecto.' }}</p>
+        <p>{{ prod.Descripcion || 'Nuestra receta original elaborada con ingredientes seleccionados de alta calidad para darle a tus platillos el toque perfecto.' }}</p>
       </div>
 
       <button class="btn-agregar" (click)="agregarAlCarrito()">
@@ -27,3 +28,8 @@
     </div>
   </div>
 </div>
+} @else {
+<div style="text-align: center; padding: 50px; color: var(--texto-secundario);">
+  <h2>Cargando información de tu Macha... 🌶️</h2>
+</div>
+}

@@ -20,14 +20,14 @@ export class Login {
   private authService = inject(AuthService);
 
   loginForm = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
+    correo: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required]
   });
 
   onSubmit() {
     if (this.loginForm.valid) {
       const credentials = this.loginForm.getRawValue();
-      this.http.post<any>('http://localhost:3000/api/auth/login', credentials).subscribe({
+      this.http.post<any>('http://localhost:3000/usuarios/login', credentials).subscribe({
         next: (response) => {
           this.authService.login(response.token, response.role);
           this.router.navigate([this.authService.isAdmin() ? '/admin/catalogo' : '/tienda']);

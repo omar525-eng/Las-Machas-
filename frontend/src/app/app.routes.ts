@@ -4,7 +4,8 @@ import { Buscador } from './cliente/buscador/buscador';
 import { Carrito } from './cliente/carrito/carrito';
 import { Checkout } from './cliente/checkout/checkout';
 import { Catalogo } from './admin/catalogo/catalogo';
-import { DetalleProducto } from './cliente/detalle-producto/detalle-producto';
+import { DetalleProductoComponent } from './cliente/detalle-producto/detalle-producto';
+
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -13,6 +14,6 @@ export const routes: Routes = [
   { path: 'carrito', component: Carrito },
   { path: 'checkout', component: Checkout },
   { path: 'admin/catalogo', component: Catalogo },
-  { path: "producto/:id", component: DetalleProducto }, 
+  { path: 'producto/:id', component: DetalleProductoComponent },
   { path: '**', redirectTo: 'login' }
 ];

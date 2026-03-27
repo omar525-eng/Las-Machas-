@@ -1,53 +1,53 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { CatalogoService } from '../../core/services/catalogo.service';
-import { CartService } from '../../core/services/cart.service';
+import { ActivatedRoute } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 import { Producto } from '../../core/models/producto.interface';
+import { CartService } from '../../core/services/cart.service';
 
 @Component({
   selector: 'app-detalle-producto',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule],
   templateUrl: './detalle-producto.html',
   styleUrl: './detalle-producto.css'
 })
-export class DetalleProducto implements OnInit {
+export class DetalleProductoComponent implements OnInit {
   private route = inject(ActivatedRoute);
-  private catalogoService = inject(CatalogoService);
-  public cartService = inject(CartService);
+  private http = inject(HttpClient);
+  private cartService = inject(CartService);
   private location = inject(Location);
 
-  producto?: Producto;
+  producto = signal<Producto | null>(null);
 
-  ngOnInit() {
-    // Obtenemos el ID de la URL
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    
-    this.catalogoService.obtenerProductos().subscribe({
-      next: (productos: any) => {
-        const data = productos.data || productos;
-        this.producto = data.find((p: Producto) => p.ProductoID === id);
-      },
-      error: (err) => console.error('Error al cargar detalle', err)
+  ngOnInit(): void {
+    this.route.paramMap.subscribe(params => {
+      const id = params.get('id');
+      if (id) {
+        // Hacemos la petición a la API para obtener un solo producto
+        this.http.get<any>(`http://localhost:3000/api/productos/${id}`).subscribe({
+          next: (response) => {
+            // Asignamos el producto a nuestro signal para que la vista se actualice
+            this.producto.set(response.data || response);
+          },
+          error: (err) => {
+            console.error('Error al cargar los detalles del producto', err);
+            this.producto.set(null);
+          }
+        });
+      }
     });
   }
 
-  regresar() {
-    this.location.back();
+  agregarAlCarrito(): void {
+    const p = this.producto();
+    if (p) {
+      this.cartService.addToCart({ id: p.ProductoID, nombre: p.Nombre, precio: p.PrecioRegular, cantidad: 1, imagen: p.ImagenURL, tamano: p.Tamano });
+      alert(`¡${p.Nombre} se agregó al carrito!`);
+    }
   }
 
-  agregarAlCarrito() {
-    if (this.producto) {
-      this.cartService.addToCart({
-        id: this.producto.ProductoID,
-        nombre: this.producto.Nombre,
-        precio: this.producto.PrecioRegular,
-        cantidad: 1,
-        imagen: this.producto.ImagenURL,
-        tamano: this.producto.Tamano
-      });
-      alert('¡Salsa añadida al carrito! 🌶️');
-    }
+  regresar(): void {
+    this.location.back();
   }
 }

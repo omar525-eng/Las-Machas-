@@ -4,11 +4,12 @@ import { SearchService } from '../../core/services/search.service'; // <--- Impo
 import { CartService } from '../../core/services/cart.service';
 import { Producto } from '../../core/models/producto.interface';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-catalogo-cliente',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './catalogocleinte.html',
   styleUrl: './catalogocliente.css'
 })

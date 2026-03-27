@@ -20,7 +20,7 @@ export async function findUserByEmail(correo) {
 // Registrar usuario usando SP
 export async function registrarUsuario({ rol, nombreCompleto, correo, passwordHash, telefono, direccionDefecto }) {
   try {
-    const pool = await getConnection();
+    const pool = await getConnection(); 
 
     const result = await pool.request()
       .input('Rol', sql.VarChar(50), rol)
