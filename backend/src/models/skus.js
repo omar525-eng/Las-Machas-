@@ -11,5 +11,6 @@ export const actualizarSKU = async (sku) => {
     .input("PrecioMayoreo", sku.PrecioMayoreo)
     .input("Stock", sku.Stock)
     .input("StockMinimo", sku.StockMinimo)
+    .input("SkuEstado", sku.Estado) // corresponde al SP
     .execute("sp_ActualizarSKU")
 }
