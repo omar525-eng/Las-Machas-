@@ -1,5 +1,5 @@
-import bcrypt from 'bcrypt';
-import { registrarUsuario as registrarUsuarioModel } from '../models/userM.js';
+import bcrypt from "bcrypt";
+import { registrarUsuario as registrarUsuarioModel } from "../models/userM.js";
 
 // Registrar usuario
 export async function registrarUsuario(req, res) {
@@ -15,9 +15,10 @@ export async function registrarUsuario(req, res) {
       correo,
       passwordHash,
       telefono,
-      direccionDefecto
+      direccionDefecto,
     });
 
+    // El SP devuelve -1 si hay error (rol inválido o correo duplicado)
     if (result.UsuarioID === -1) {
       return res.status(400).json({ error: result.Mensaje });
     }
@@ -25,7 +26,6 @@ export async function registrarUsuario(req, res) {
     res.status(201).json({ usuarioId: result.UsuarioID, mensaje: result.Mensaje });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Error del servidor.' });
+    res.status(500).json({ error: "Error del servidor." });
   }
 }
-
