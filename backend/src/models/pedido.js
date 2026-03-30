@@ -15,12 +15,23 @@ export const insertarPedido = async (pedido) => {
   return result.recordsets
 }
 
-// Obtener pedidos usando SP
+// Obtener TODOS los pedidos usando SP
 export const obtenerTodosPedidos = async () => {
   const pool = await getConnection()
 
   const result = await pool.request()
     .execute("sp_ObtenerPedidos")
+
+  return result.recordset
+}
+
+// Obtener detalle de pedido
+export const obtenerDetallePedido = async (pedidoID) => {
+  const pool = await getConnection()
+
+  const result = await pool.request()
+    .input("PedidoID", pedidoID)
+    .execute("sp_ObtenerDetallePedido")
 
   return result.recordset
 }

@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { registrarUsuario, actualizarUsuario } from '../models/userM.js';
+import { registrarUsuario, actualizarUsuario, obtenerUsuario } from '../models/userM.js';
 
 // POST /api/usuarios/registrar
 export async function registrarUsuarioController(req, res) {
@@ -36,5 +36,31 @@ export async function actualizarUsuarioController(req, res) {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error al actualizar el usuario.' });
+  }
+}
+
+// GET /api/usuarios/:id
+export const getUsuario = async (req, res) => {
+  try {
+    const id = req.params.id
+
+    const usuario = await obtenerUsuario(id)
+
+    if (!usuario) {
+      return res.status(404).json({
+        message: "Usuario no encontrado"
+      })
+    }
+
+    res.json({
+      message: "Usuario obtenido correctamente",
+      data: usuario
+    })
+
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({
+      error: error.message
+    })
   }
 }

@@ -40,5 +40,5 @@ export const crearProducto = async (producto) => {
     .input("Descripcion", producto.Descripcion)
     .execute("sp_CrearProducto")
 
-  return result.recordset[0].NuevoProductoID // 🔥 aprovechamos el SP
+  return result.recordset[0].NuevoProductoID 
 }

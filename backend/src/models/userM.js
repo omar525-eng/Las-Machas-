@@ -1,5 +1,4 @@
 import { getConnection } from '../config/db.js';
-import sql from 'mssql';
 
 // Buscar usuario por correo
 export async function findUserByEmail(correo) {
@@ -44,13 +43,24 @@ export async function actualizarUsuario(usuarioID, nombreCompleto, telefono, dir
     const pool = await getConnection();
 
     await pool.request()
-      .input('UsuarioID', sql.Int, usuarioID)
-      .input('NombreCompleto', sql.VarChar(150), nombreCompleto)
-      .input('Telefono', sql.VarChar(20), telefono)
-      .input('DireccionDefecto', sql.VarChar(255), direccionDefecto)
+      .input('UsuarioID', usuarioID)
+      .input('NombreCompleto', nombreCompleto)
+      .input('Telefono', telefono)
+      .input('DireccionDefecto', direccionDefecto)
       .execute('sp_ActualizarUsuario');
   } catch (error) {
     console.error(error);
     throw error;
   }
+}
+
+// Obtener usuario por ID
+export const obtenerUsuario = async (usuarioID) => {
+  const pool = await getConnection()
+
+  const result = await pool.request()
+    .input("UsuarioID", usuarioID)
+    .execute("sp_ObtenerUsuario")
+
+  return result.recordset[0] // solo un usuario
 }

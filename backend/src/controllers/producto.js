@@ -49,7 +49,7 @@ export const postProducto = async (req, res) => {
       Nombre: data.Nombre,
       CategoriaID: data.CategoriaID,
       ImagenURL: data.ImagenURL,
-      Estado: data.Estado ?? 1, // 🔥 importante
+      Estado: data.Estado ?? 1, 
       Descripcion: data.Descripcion
     }
 
