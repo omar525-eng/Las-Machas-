@@ -11,7 +11,7 @@
 
   <div style="background: white; border-radius: 20px; padding: 10px 15px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#757575" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 10px;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-    <input type="text" placeholder="Buscar por nombre, categoría o presentación..." style="border: none; outline: none; width: 100%; font-family: 'Inter', sans-serif; font-size: 14px; color: var(--color-tipografia);">
+    <input type="text" (input)="onBuscar($event)" placeholder="Buscar por nombre, categoría o presentación..." style="border: none; outline: none; width: 100%; font-family: 'Inter', sans-serif; font-size: 14px; color: var(--color-tipografia);">
   </div>
 
 </header>
