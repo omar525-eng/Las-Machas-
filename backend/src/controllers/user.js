@@ -11,6 +11,7 @@ export async function registrarUsuarioController(req, res) {
 
     const result = await registrarUsuario(rol, nombreCompleto, correo, passwordHash, telefono, direccionDefecto);
 
+    // El SP devuelve -1 si hay error (rol inválido o correo duplicado)
     if (result.UsuarioID === -1) {
       return res.status(400).json({ error: result.Mensaje });
     }
@@ -19,7 +20,7 @@ export async function registrarUsuarioController(req, res) {
 
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Error del servidor.' });
+    res.status(500).json({ error: "Error del servidor." });
   }
 }
 

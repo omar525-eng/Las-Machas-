@@ -22,13 +22,13 @@ export async function registrarUsuario(rol, nombreCompleto, correo, passwordHash
     const pool = await getConnection();
 
     const result = await pool.request()
-      .input('Rol', sql.VarChar(50), rol)
-      .input('NombreCompleto', sql.VarChar(150), nombreCompleto)
-      .input('Correo', sql.VarChar(100), correo)
-      .input('PasswordHash', sql.VarChar(255), passwordHash)
-      .input('Telefono', sql.VarChar(20), telefono)
-      .input('DireccionDefecto', sql.VarChar(255), direccionDefecto)
-      .execute('sp_RegistrarUsuario');
+      .input("Rol",              sql.VarChar(50),  rol)
+      .input("NombreCompleto",   sql.VarChar(150), nombreCompleto)
+      .input("Correo",           sql.VarChar(100), correo)
+      .input("PasswordHash",     sql.VarChar(255), passwordHash)
+      .input("Telefono",         sql.VarChar(20),  telefono)
+      .input("DireccionDefecto", sql.VarChar(255), direccionDefecto)
+      .execute("sp_RegistrarUsuario");
 
     return result.recordset[0];
   } catch (error) {
