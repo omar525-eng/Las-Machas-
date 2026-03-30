@@ -14,11 +14,13 @@ export class AgregarProducto {
   private router = inject(Router);
   private catalogoService = inject(CatalogoService); 
 
+  imagenSeleccionada: File | null = null;
+  imagenPreview: string | ArrayBuffer | null = null;
+
   productoForm = new FormGroup({
     Nombre: new FormControl('', Validators.required),
     Descripcion: new FormControl(''), 
     Categoria: new FormControl('Salsas', Validators.required),
-    ImagenURL: new FormControl(''),
     Tamano: new FormControl('Frasco 250ml', Validators.required),
     PrecioRegular: new FormControl('', Validators.required),
     PrecioMayoreo: new FormControl(''),
@@ -26,11 +28,30 @@ export class AgregarProducto {
     StockMinimo: new FormControl('')
   });
 
+  onFileSelected(event: any) {
+    const file: File = event.target.files[0];
+    if (file) {
+      this.imagenSeleccionada = file; 
+
+      const reader = new FileReader();
+      reader.onload = e => this.imagenPreview = reader.result;
+      reader.readAsDataURL(file);
+    }
+  }
+
   guardarProducto() {
     if (this.productoForm.valid) {
-      console.log('Paquete listo para cuando el backend exista:', this.productoForm.value);
+      const formData = new FormData();
+      formData.append('datos', JSON.stringify(this.productoForm.value));
       
-      alert('¡Formulario funcional! (Esperando a que el backend habilite la ruta)');
+      if (this.imagenSeleccionada) {
+        formData.append('imagen', this.imagenSeleccionada); 
+      }
+
+      console.log('Datos del producto:', this.productoForm.value);
+      console.log('Foto adjunta lista para el back:', this.imagenSeleccionada?.name);
+      
+      alert('¡Producto y foto capturados con éxito! (Esperando ruta del backend)');
       
       this.router.navigate(['/admin/catalogo']); 
     } else {
