@@ -27,3 +27,13 @@ export const actualizarSKU = async (sku) => {
     .input("StockMinimo",    sku.StockMinimo)
     .execute("sp_ActualizarSKU")
 }
+
+// Cambiar estado de SKU
+export const cambiarEstadoSKU = async (skuID, estado) => {
+  const pool = await getConnection()
+
+  await pool.request()
+    .input("SkuID", skuID)
+    .input("Estado", estado)
+    .execute("sp_CambiarEstadoSKU")
+} 

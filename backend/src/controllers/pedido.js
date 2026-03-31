@@ -1,4 +1,5 @@
-import { insertarPedido, obtenerTodosPedidos, obtenerDetallePedido } from "../models/pedido.js"
+import { insertarPedido, obtenerTodosPedidos, obtenerDetallePedido, cambiarEstatusPedido } from "../models/pedido.js"
+
 // GET /api/pedidos
 export const obtenerPedidos = async (req, res) => {
   try {
@@ -65,6 +66,25 @@ export const getDetallePedido = async (req, res) => {
         cabecera,
         detalle
       }
+    })
+
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ error: error.message })
+  }
+}
+
+// PATCH /api/pedidos/:id/estatus
+export const updateEstatusPedido = async (req, res) => {
+  try {
+    const id = req.params.id
+    const { Estatus } = req.body
+
+    const data = await cambiarEstatusPedido(id, Estatus)
+
+    res.json({
+      message: "Estatus actualizado correctamente",
+      data
     })
 
   } catch (error) {

@@ -35,3 +35,15 @@ export const obtenerDetallePedido = async (pedidoID) => {
 
   return result.recordset
 }
+
+// Cambiar estatus de pedido
+export const cambiarEstatusPedido = async (pedidoID, nuevoEstatus) => {
+  const pool = await getConnection()
+
+  const result = await pool.request()
+    .input("PedidoID", pedidoID)
+    .input("NuevoEstatus", nuevoEstatus)
+    .execute("sp_CambiarEstatusPedido")
+
+  return result.recordset[0] 
+}
