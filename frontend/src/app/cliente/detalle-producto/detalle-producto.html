@@ -14,16 +14,16 @@
       <p class="categoria">{{ prod.Categoria }} | {{ prod.Tamano }}</p>
       
       <div class="precio-container">
-        <p class="precio">${{ prod.PrecioRegular | number:'1.2-2' }} MXN</p>
+        <p class="precio">${{ prod.PrecioRegular }} MXN</p>
       </div>
 
       <div class="descripcion">
         <h3>Descripción</h3>
-        <p>{{ prod.Descripcion || 'Nuestra receta original elaborada con ingredientes seleccionados de alta calidad para darle a tus platillos el toque perfecto.' }}</p>
+        <p>{{ prod.Descripcion || 'Sin descripción disponible.' }}</p>
       </div>
 
       <button class="btn-agregar" (click)="agregarAlCarrito()">
-        🛒 Agregar al Carrito
+        Agregar al Carrito
       </button>
     </div>
   </div>

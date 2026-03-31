@@ -7,19 +7,26 @@ import { Router } from '@angular/router';
 export class AuthService {
   private router = inject(Router);
   
-  // Leemos el rol inicial del localStorage de forma segura
-  currentRole = signal<string | null>(typeof window !== 'undefined' ? localStorage.getItem('role') : null);
+  // Iniciamos siempre en nulo para poder probar el login cada vez que recargamos
+  currentRole = signal<string | null>(null);
+  
+  // Forzamos a que la sesión inicie en falso
+  isLoggedIn = signal<boolean>(false);
 
   login(token: string, role: string | number) {
     const roleStr = String(role);
     localStorage.setItem('token', token);
     localStorage.setItem('role', roleStr);
     this.currentRole.set(roleStr);
+    // Avisamos de inmediato a toda la app que ya hay sesión
+    this.isLoggedIn.set(true);
   }
 
   logout() {
     localStorage.clear();
     this.currentRole.set(null);
+    // Avisamos que se cerró la sesión
+    this.isLoggedIn.set(false);
     this.router.navigate(['/login']);
   }
 
@@ -30,5 +37,9 @@ export class AuthService {
 
   isUser() {
     return this.currentRole() === '2';
+  }
+
+  isAuthenticated(): boolean {
+    return this.isLoggedIn();
   }
 }

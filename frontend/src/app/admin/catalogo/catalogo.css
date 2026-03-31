@@ -1,30 +1,10 @@
 /* ==========================================================================
    SISTEMA DE GRID (RESPONSIVE DESIGN PARA EL CATÁLOGO)
    ========================================================================== */
-
-/* Contenedor principal del Catálogo (Mobile First - 2 columnas por defecto) */
 .grid-catalogo {
   display: grid;
-  /* En celular, forzamos 2 columnas exactamente como en el diseño de Figma */
-  grid-template-columns: repeat(2, 1fr); 
-  gap: 16px; /* Separación entre tarjetas */
-  padding: 16px; /* Aire a los lados de la pantalla */
-  max-width: 1200px; /* Para que en monitores gigantes no se estire al infinito */
-  margin: 0 auto; /* Centra el catálogo en la pantalla */
-}
-
-/* 📱 TABLETS (Pantallas medianas, de 768px en adelante) */
-@media (min-width: 768px) {
-  .grid-catalogo {
-    grid-template-columns: repeat(3, 1fr); /* Cambia a 3 columnas */
-    gap: 24px; /* Un poco más de aire porque hay más espacio */
-  }
-}
-
-/* 💻 LAPTOPS Y ESCRITORIO (Pantallas grandes, de 1024px en adelante) */
-@media (min-width: 1024px) {
-  .grid-catalogo {
-    grid-template-columns: repeat(4, 1fr); /* Cambia a 4 columnas */
-    gap: 32px;
-  }
+  /* Este es un enfoque más flexible que las columnas fijas. */
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 20px;
 }

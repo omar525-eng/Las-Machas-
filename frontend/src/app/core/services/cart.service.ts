@@ -7,6 +7,7 @@ export interface ProductoCarrito {
   cantidad: number;
   imagen?: string;
   tamano?: string;
+  cartItemId?: string; // ID único para el item en el carrito
 }
 
 @Injectable({
@@ -20,7 +21,15 @@ export class CartService {
   constructor() {
     const storedItems = localStorage.getItem('cartItems');
     if (storedItems) {
-      this.items.set(JSON.parse(storedItems));
+      const items: ProductoCarrito[] = JSON.parse(storedItems);
+      // Migración para asegurar que todos los items tengan un cartItemId
+      const migratedItems = items.map(item => {
+        if (!item.cartItemId) {
+          return { ...item, cartItemId: `${item.id}-${item.tamano || ''}` };
+        }
+        return item;
+      });
+      this.items.set(migratedItems);
     }
 
     // Un efecto que guarda el carrito en localStorage cada vez que cambia
@@ -42,7 +51,7 @@ export class CartService {
     const cantidad500ml = this.items()
       .filter(item => item.nombre.includes('500') || item.tamano?.includes('500'))
       .reduce((acc, item) => acc + item.cantidad, 0);
-    return cantidad500ml > 10;
+    return cantidad500ml >= 10;
   });
 
   // Calculamos el precio total aplicando las reglas de descuento
@@ -68,27 +77,32 @@ export class CartService {
   }
 
   addToCart(producto: ProductoCarrito) {
+    const cartItemId = `${producto.id}-${producto.tamano || ''}`;
     this.items.update(currentItems => {
-      const existingItem = currentItems.find(item => item.id === producto.id);
+      const existingItem = currentItems.find(item => item.cartItemId === cartItemId);
       if (existingItem) {
-        return currentItems.map(item => item.id === producto.id ? { ...item, cantidad: item.cantidad + producto.cantidad } : item);
+        return currentItems.map(item =>
+          item.cartItemId === cartItemId
+            ? { ...item, cantidad: item.cantidad + producto.cantidad }
+            : item
+        );
       }
-      return [...currentItems, producto];
+      return [...currentItems, { ...producto, cartItemId }];
     });
   }
 
-  removeFromCart(id: number) {
-    this.items.update(currentItems => currentItems.filter(item => item.id !== id));
+  removeFromCart(cartItemId: string) {
+    this.items.update(currentItems => currentItems.filter(item => item.cartItemId !== cartItemId));
   }
 
   clearCart() {
     this.items.set([]);
   }
 
-  updateQuantity(id: number, change: number) {
+  updateQuantity(cartItemId: string, change: number) {
     this.items.update(currentItems =>
       currentItems.map(item =>
-        item.id === id ? { ...item, cantidad: Math.max(0, item.cantidad + change) } : item
+        item.cartItemId === cartItemId ? { ...item, cantidad: Math.max(0, item.cantidad + change) } : item
       ).filter(item => item.cantidad > 0) // Elimina el producto si la cantidad es 0
     );
   }

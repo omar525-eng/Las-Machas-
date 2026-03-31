@@ -3,13 +3,14 @@ import { CatalogoService } from '../../core/services/catalogo.service';
 import { SearchService } from '../../core/services/search.service'; // <--- Importante
 import { CartService } from '../../core/services/cart.service';
 import { Producto } from '../../core/models/producto.interface';
-import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common'; 
+import { RouterLink, RouterOutlet } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-catalogo-cliente',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, RouterOutlet],
   templateUrl: './catalogocleinte.html',
   styleUrl: './catalogocliente.css'
 })
@@ -17,6 +18,7 @@ export class CatalogoCliente implements OnInit {
   private catalogoService = inject(CatalogoService);
   private searchService = inject(SearchService);
   private cartService = inject(CartService);
+  public authService = inject(AuthService);
 
   productosBD = signal<Producto[]>([]); // Guardamos los datos de Azure aquí
 

@@ -14,15 +14,15 @@ export class Carrito {
   public cartService = inject(CartService);
 
   // Funciones para controlar cantidades
-  incrementar(id: number) {
+  incrementar(id: string) {
     this.cartService.updateQuantity(id, 1);
   }
 
-  decrementar(id: number) {
+  decrementar(id: string) {
     this.cartService.updateQuantity(id, -1);
   }
 
-  eliminar(id: number) {
+  eliminar(id: string) {
     this.cartService.removeFromCart(id);
   }
 }

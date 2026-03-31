@@ -1,26 +1,31 @@
 <div style="padding: 20px; max-width: 1200px; margin: 0 auto;">
   
   <div style="text-align: center; margin-bottom: 30px;">
-    <h2 style="font-size: 28px; color: var(--color-primario);">Nuestra Tienda de Salsas</h2>
+    <h2 style="font-size: 28px; color: var(--color-primario); font-weight: bold;">Nuestra Tienda de Salsas</h2>
     <p style="color: var(--texto-secundario);">Elige tu favorita!!</p>
   </div>
 
   <div class="grid-catalogo">
     @for (producto of productosFiltrados(); track producto.ProductoID) {
-      <div class="tarjeta-salsa">
-        <img [src]="producto.ImagenURL" [alt]="producto.Nombre" class="img-salsa" [routerLink]="['/producto', producto.ProductoID]" style="cursor: pointer;">
+      <div class="tarjeta-macha">
+        <img [src]="producto.ImagenURL" 
+             [alt]="producto.Nombre" 
+             class="img-salsa" 
+             [routerLink]="['/producto', producto.ProductoID]">
         
         <div class="info-salsa">
-          <h3 [routerLink]="['/producto', producto.ProductoID]" style="cursor: pointer;">{{ producto.Nombre }}</h3>
+          <h3 [routerLink]="['/producto', producto.ProductoID]" style="cursor: pointer;">
+            {{ producto.Nombre }}
+          </h3>
           <p class="tamano">{{ producto.Tamano }}</p>
-          <div class="precio">${{ producto.PrecioRegular }}</div>
+          <div class="precio-tag">${{ producto.PrecioRegular }}</div>
           
-          <button class="btn-machas" (click)="agregarAlCarrito(producto)">
-            🛒 Añadir al Carrito
+          <button class="btn-agregar" (click)="agregarAlCarrito(producto)">
+             Añadir al Carrito
           </button>
         </div>
       </div>
-    } @empty {
+    } @empty { 
       <div class="vacio">No encontramos salsas con ese nombre.</div>
     }
   </div>
