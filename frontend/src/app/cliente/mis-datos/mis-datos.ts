@@ -1,38 +1,59 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-mis-datos',
   standalone: true,
-  imports: [FormsModule],
-  templateUrl: './mis-datos.html',
-  styleUrls: ['./mis-datos.css']
+  imports: [CommonModule, FormsModule],
+  templateUrl: './mis-datos.html'
 })
 export class MisDatosComponent implements OnInit {
-
-  // Este objeto guardará la info del cliente
+  private http = inject(HttpClient);
+  
   usuario = {
-    nombreCompleto: '',
+    nombre: '',
     telefono: '',
-    direccionDefecto: ''
+    direccion: ''
   };
 
-  constructor() { }
-
-  ngOnInit(): void {
-    // Aquí es donde Mike conectará el servicio HTTP para llamar al SP_ObtenerUsuario
-    // Por ahora, le ponemos datos falsos para que veas que funciona la UI
-    this.usuario = {
-      nombreCompleto: 'Omar Ornelas',
-      telefono: '4491112233',
-      direccionDefecto: 'Av. Universidad, Aguascalientes'
-    };
+  ngOnInit() {
+    this.cargarDatos();
   }
 
-  guardarDatos(): void {
-    // Aquí mandaremos a llamar a SP_ActualizarUsuario
-    console.log('Enviando datos al backend...', this.usuario);
-    alert('¡Datos guardados con éxito!');
+  cargarDatos() {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    this.http.get<any>('http://localhost:3000/api/usuarios/perfil', {
+      headers: { Authorization: `Bearer ${token}` }
+    }).subscribe({
+      next: (res) => {
+        const data = res.data || res;
+        this.usuario.nombre= data.nombre || data.Nombre || '';
+        this.usuario.telefono = data.telefono || data.Telefono || '';
+        this.usuario.direccion = data.direccion|| data.Direccion || '';
+      },
+      error: (err) => console.error('Error al cargar los datos del usuario:', err)
+    });
   }
 
+  guardarDatos() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('Debes iniciar sesión para actualizar tus datos.');
+      return;
+    }
+
+    this.http.put('http://localhost:3000/api/usuarios/perfil', this.usuario, {
+      headers: { Authorization: `Bearer ${token}` }
+    }).subscribe({
+      next: () => alert('¡Tus datos han sido actualizados correctamente!'),
+      error: (err) => {
+        console.error('Error al guardar datos:', err);
+        alert('No se pudieron guardar los datos.');
+      }
+    });
+  }
 }

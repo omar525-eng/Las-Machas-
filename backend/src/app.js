@@ -8,6 +8,7 @@ import pedidosRoutes from "./routes/pedidos.js"
 import skusRoutes from "./routes/skus.js"
 import productoRoutes from "./routes/productos.js"
 import usuariosRoutes from './routes/usuarios.js';
+import inventarioRoutes from "./routes/inventarios.js"
 
 const app = express()
 
@@ -20,8 +21,9 @@ app.use("/api/catalogos", catalogoRoutes)
 app.use("/api/pedidos", pedidosRoutes)
 app.use("/api/skus", skusRoutes)
 app.use("/api/productos", productoRoutes)
+app.use('/api/usuarios', usuariosRoutes);
+app.use("/api/inventario", inventarioRoutes)
 
-app.use('/usuarios', usuariosRoutes);
 // Servidor
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {

@@ -15,7 +15,7 @@ export const insertarPedido = async (pedido) => {
   return result.recordsets
 }
 
-// Obtener pedidos usando SP
+// Obtener TODOS los pedidos usando SP
 export const obtenerTodosPedidos = async () => {
   const pool = await getConnection()
 
@@ -23,4 +23,27 @@ export const obtenerTodosPedidos = async () => {
     .execute("sp_ObtenerPedidos")
 
   return result.recordset
+}
+
+// Obtener detalle de pedido
+export const obtenerDetallePedido = async (pedidoID) => {
+  const pool = await getConnection()
+
+  const result = await pool.request()
+    .input("PedidoID", pedidoID)
+    .execute("sp_ObtenerDetallePedido")
+
+  return result.recordset
+}
+
+// Cambiar estatus de pedido
+export const cambiarEstatusPedido = async (pedidoID, nuevoEstatus) => {
+  const pool = await getConnection()
+
+  const result = await pool.request()
+    .input("PedidoID", pedidoID)
+    .input("NuevoEstatus", nuevoEstatus)
+    .execute("sp_CambiarEstatusPedido")
+
+  return result.recordset[0] 
 }

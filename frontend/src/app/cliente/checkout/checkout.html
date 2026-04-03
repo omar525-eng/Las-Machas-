@@ -1,54 +1,40 @@
-<div style="padding: 20px; max-width: 500px; margin: 40px auto; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); font-family: sans-serif;">
+<div style="padding: 20px; max-width: 600px; margin: 40px auto; background: var(--color-tarjeta); border-radius: var(--radio-borde); box-shadow: var(--sombra-tarjeta);">
+  <h2 style="text-align: center; color: var(--color-primario); margin-bottom: 5px;">Finalizar Pedido</h2>
+  <p style="text-align: center; color: var(--texto-secundario); margin-bottom: 25px;">Llena tus datos para coordinar la entrega</p>
   
-  <h2 style="text-align: center; color: #e91e63; margin-bottom: 5px;">Finalizar Pedido</h2>
-  <p style="text-align: center; color: #666; font-size: 14px; margin-bottom: 25px;">Llena tus datos para coordinar la entrega</p>
+  <form (ngSubmit)="enviarPedido()" style="display: flex; flex-direction: column; gap: 15px;">
+    <div>
+      <label style="font-weight: bold; font-size: 14px;">Nombre Completo:</label>
+      <input type="text" [(ngModel)]="usuario.nombre" name="nombre" placeholder="Ej. Juan Pérez" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; margin-top: 5px;" required>
+    </div>
+    <div>
+      <label style="font-weight: bold; font-size: 14px;">Teléfono (WhatsApp):</label>
+      <input type="tel" [(ngModel)]="usuario.telefono" name="telefono" placeholder="Ej. 4491234567" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; margin-top: 5px;" required>
+    </div>
+    <div>
+      <label style="font-weight: bold; font-size: 14px;">Dirección de Entrega:</label>
+      <input type="text" [(ngModel)]="usuario.direccion" name="direccion" placeholder="Calle, Número, Colonia..." style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; margin-top: 5px;" required>
+    </div>
 
-  <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px;">
-    <div>
-      <label style="font-weight: bold; font-size: 14px; display: block; margin-bottom: 5px; color: #333;">Nombre Completo:</label>
-      <input type="text" [(ngModel)]="nombre" placeholder="Ej. Juan Pérez" 
-             style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; outline: none; box-sizing: border-box;">
-    </div>
-    
-    <!-- NUEVO CAMPO: Teléfono -->
-    <div>
-      <label style="font-weight: bold; font-size: 14px; display: block; margin-bottom: 5px; color: #333;">Teléfono:</label>
-      <input type="tel" [(ngModel)]="telefono" placeholder="Ej. 449 123 4567" 
-             style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; outline: none; box-sizing: border-box;">
-    </div>
-    
-    <div>
-      <label style="font-weight: bold; font-size: 14px; display: block; margin-bottom: 5px; color: #333;">Dirección de Entrega:</label>
-      <input type="text" [(ngModel)]="direccion" placeholder="Calle, Número, Colonia..." 
-             style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; outline: none; box-sizing: border-box;">
-    </div>
-  </div>
-
-  <div style="background: #f9f9f9; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
-    <h4 style="margin: 0 0 15px 0; border-bottom: 1px solid #eee; padding-bottom: 10px;">Resumen:</h4>
-    
-    @for (item of cartService.getItems()(); track item.id) {
-      <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px; color: #444;">
-        <span>{{ item.cantidad }}x {{ item.nombre }}</span>
-        <span>${{ (item.precio * item.cantidad).toFixed(2) }}</span>
+    <div style="background: var(--color-fondo); padding: 15px; border-radius: 8px; margin-top: 10px;">
+      <h4 style="margin-bottom: 10px;">Resumen de tu pedido:</h4>
+      @for (item of cartService.getItems()(); track item.cartItemId) {
+        <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 5px;">
+          <span>{{ item.cantidad }}x {{ item.nombre }}</span>
+          <span>${{ cartService.getPrecioUnitarioFinal(item) * item.cantidad }}</span>
+        </div>
+      }
+      <hr style="border: 0.5px solid #ddd; margin: 10px 0;">
+      <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 16px;">
+        <span>Total a pagar:</span>
+        <span style="color: var(--color-primario);">${{ cartService.total() }}</span>
       </div>
-    }
-
-    <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 18px; margin-top: 15px; border-top: 2px dashed #eee; padding-top: 15px;">
-      <span>Total a pagar:</span>
-      <span style="color: #e91e63;">${{ cartService.total().toFixed(2) }}</span>
     </div>
-  </div>
 
-  <button (click)="enviarWhatsApp()" 
-          style="width: 100%; background-color: #25D366; color: white; border: none; border-radius: 8px; padding: 15px; font-size: 16px; font-weight: bold; display: flex; justify-content: center; align-items: center; gap: 10px; cursor: pointer; transition: 0.3s;">
-    <span>💬</span> Enviar Pedido por WhatsApp
-  </button>
-
-  <div style="text-align: center; margin-top: 15px;">
-    <a routerLink="/carrito" style="color: #666; text-decoration: underline; font-size: 14px; cursor: pointer;">
-      Regresar al carrito
-    </a>
-  </div>
-
+    <button type="submit" style="background-color: #25D366; color: white; border: none; border-radius: 8px; padding: 15px; font-size: 16px; font-weight: bold; display: flex; justify-content: center; align-items: center; gap: 10px; cursor: pointer; margin-top: 15px; box-shadow: 0 4px 6px rgba(37, 211, 102, 0.3);">
+      <span style="font-size: 20px;">💬</span> Enviar Pedido y Pagar
+    </button>
+    
+    <button type="button" routerLink="/carrito" style="background: transparent; border: none; color: var(--texto-secundario); cursor: pointer; text-decoration: underline; margin-top: 5px;">Regresar al carrito</button>
+  </form>
 </div>
