@@ -54,4 +54,11 @@ export class CatalogoCliente implements OnInit {
     });
     alert(`¡${producto.Nombre} lista para enviar!`);
   }
+
+  enviarDudaWhatsApp() {
+    const msg = `¡Hola! Estoy viendo el catálogo de *Las Machas* y tengo una duda... 🌶️`;
+    const numeroTel = "52461130968"; 
+    const url = `https://wa.me/${numeroTel}?text=${encodeURIComponent(msg)}`;
+    window.open(url, '_blank');
+  }
 }
