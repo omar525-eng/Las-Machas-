@@ -9,8 +9,8 @@ export class CatalogoService {
   
   private apiUrl = 'http://localhost:3000/api/catalogos'; 
   private productosUrl = 'http://localhost:3000/api/productos'; 
-  
   private inventariosUrl = 'http://localhost:3000/api/inventario';
+  private pedidosUrl = 'http://localhost:3000/api/pedidos';
 
   constructor(private http: HttpClient) { }
 
@@ -28,5 +28,18 @@ export class CatalogoService {
 
   actualizarProducto(id: number, producto: any): Observable<any> {
     return this.http.put<any>(`${this.productosUrl}/${id}`, producto);
+  }
+  
+  obtenerPedidos(): Observable<any> {
+    return this.http.get<any>(this.pedidosUrl);
+  }
+
+  // ---> ESTA ES LA FUNCIÓN QUE FALTABA <---
+  obtenerDetallePedido(id: string): Observable<any> {
+    return this.http.get<any>(`${this.pedidosUrl}/${id}`);
+  }
+
+  actualizarEstatusPedido(id: number, nuevoEstatus: string): Observable<any> {
+    return this.http.patch<any>(`${this.pedidosUrl}/${id}/estatus`, { Estatus: nuevoEstatus });
   }
 }

@@ -1,10 +1,66 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, OnInit, inject } from '@angular/core';
+import { RouterLink, ActivatedRoute } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { CatalogoService } from '../../core/services/catalogo.service';
 
 @Component({
   selector: 'app-detalle-pedido',
-  imports: [RouterLink],
+  standalone: true,
+  imports: [RouterLink, CommonModule],
   templateUrl: './detalle-pedido.html',
   styleUrl: './detalle-pedido.css'
 })
-export class DetallePedido { }
+export class DetallePedido implements OnInit {
+  private route = inject(ActivatedRoute);
+  private catalogoService = inject(CatalogoService);
+
+  pedidoId: string | null = null;
+  cabecera: any = null;
+  detalle: any[] = [];
+  cargando = true;
+
+  ngOnInit() {
+    this.pedidoId = this.route.snapshot.paramMap.get('id');
+
+    if (this.pedidoId) {
+      this.cargarDetalle(this.pedidoId);
+    } else {
+      console.warn('No se recibió ningún ID de pedido en la URL.');
+      this.cargando = false;
+    }
+  }
+
+  cargarDetalle(id: string) {
+    this.catalogoService.obtenerDetallePedido(id).subscribe({
+      next: (res: any) => {
+        if (res && res.data) {
+          this.cabecera = res.data.cabecera;
+          this.detalle = res.data.detalle;
+        }
+        this.cargando = false;
+      },
+      error: (err) => {
+        console.error('Error al cargar el detalle', err);
+        this.cargando = false;
+      }
+    });
+  }
+
+  cambiarEstatus(nuevoEstatus: string) {
+    if (!this.pedidoId) return;
+    
+    const confirmar = confirm(`¿Seguro que quieres marcar el pedido como ${nuevoEstatus}?`);
+    if (!confirmar) return;
+
+    this.catalogoService.actualizarEstatusPedido(Number(this.pedidoId), nuevoEstatus).subscribe({
+      next: () => {
+        this.cabecera.Estatus = nuevoEstatus;
+        alert(`¡Pedido marcado como ${nuevoEstatus}!`);
+      },
+      error: (err) => {
+        console.error('Error al actualizar', err);
+        alert('Hubo un error al actualizar el pedido.');
+      }
+    });
+  }
+}

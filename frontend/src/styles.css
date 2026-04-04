@@ -35,8 +35,10 @@
 body {
   background-color: var(--color-fondo);
   color: var(--color-tipografia);
-  font-family: 'Inter', sans-serif; /* Fuente base para todo el proyecto */
+  font-family: 'Inter', sans-serif;
+  padding-bottom: 90px; /* <--- ¡ESTE ES EL TRUCO! */
 }
+
 
 /* Tipografía específica para Encabezados (Salsa Macha Roja, etc.) */
 h1, h2, h3, .titulo-tarjeta {

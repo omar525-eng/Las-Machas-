@@ -33,8 +33,8 @@
 
   <div class="grid-catalogo">
 
-@for (producto of productos; track $index) {
-        <div style="background: var(--color-tarjeta); border-radius: 12px; padding: 16px; box-shadow: var(--sombra-tarjeta); display: flex; flex-direction: column;">
+    @for (producto of productos; track $index) {
+      <div style="background: var(--color-tarjeta); border-radius: 12px; padding: 16px; box-shadow: var(--sombra-tarjeta); display: flex; flex-direction: column;">
         
         <img [src]="producto.ImagenURL || 'https://via.placeholder.com/300x180?text=Sin+Imagen'" [alt]="producto.Nombre" routerLink="/admin/detalle-producto" style="width: 100%; height: 180px; object-fit: cover; border-radius: 8px; margin-bottom: 12px; cursor: pointer; background-color: #eee;">
         
@@ -46,8 +46,7 @@
         <div style="font-size: 14px; font-weight: bold; color: #2e7d32; margin-bottom: 16px;">Stock: {{ producto.Stock || 0 }} pzas</div>
         
         <div style="display: flex; gap: 8px; margin-top: auto;">
-          <button class="btn-machas" routerLink="/admin/actualizar-producto" style="background: var(--color-secundario); flex: 1; padding: 10px; font-size: 14px;">Editar</button>
-          <button class="btn-machas" (click)="abrirModal(producto)" style="background: #e53935; flex: 1; padding: 10px; font-size: 14px;">Desactivar</button>
+<button class="btn-machas" [routerLink]="['/admin/actualizar-producto', $any(producto).SkuID]" style="background: var(--color-secundario); flex: 1; padding: 10px; font-size: 14px;">Editar</button>          <button class="btn-machas" (click)="abrirModal(producto)" style="background: #e53935; flex: 1; padding: 10px; font-size: 14px;">Desactivar</button>
         </div>
       </div>
 

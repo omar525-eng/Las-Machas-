@@ -20,13 +20,14 @@ export const routes: Routes = [
   // --- RUTA POR DEFECTO ---
   { path: '', redirectTo: 'admin/catalogo', pathMatch: 'full' },
 
-  // --- TUS RUTAS (ADMIN) ---
+  // --- RUTAS NAOMI (ADMIN) ---
   { path: 'admin/mis-datos', component: MisDatosComponent },
   { path: 'admin/catalogo', component: Catalogo },
   { path: 'admin/agregar-producto', component: AgregarProducto },
   { path: 'admin/tablero-pedidos', component: TableroPedidos },
-  { path: 'admin/detalle-pedido', component: DetallePedido },
-  { path: 'admin/actualizar-producto', component: ActualizarProducto },
+  { path: 'admin/detalle-pedido/:id', component: DetallePedido }, 
+  { path: 'admin/detalle-pedido', component: DetallePedido }, 
+  { path: 'admin/actualizar-producto/:id', component: ActualizarProducto },
   { path: 'admin/detalle-producto', component: DetalleProductoAdmin },
 
   // --- LAS RUTAS DE MIKE (CLIENTE) ---
@@ -36,6 +37,5 @@ export const routes: Routes = [
   { path: 'carrito', component: Carrito },
   { path: 'checkout', component: Checkout },
 
-  // --- RUTA COMODÍN ---
   { path: '**', redirectTo: 'admin/catalogo' }
 ];

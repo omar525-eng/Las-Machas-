@@ -4,68 +4,76 @@
     <span style="font-size: 18px; margin-right: 5px;">←</span> Regresar al Tablero
   </button>
 
-  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
-    <div>
-      <h2 class="titulo-tarjeta" style="margin-bottom: 5px;">Pedido #PED-1042</h2>
-      <p style="color: var(--texto-secundario); font-size: 14px;">Fecha: 04 Mar 2026 - 10:30 AM</p>
-    </div>
-    <span style="background-color: #FFF9C4; color: #F57F17; padding: 6px 14px; border-radius: 20px; font-size: 14px; font-weight: bold;">Pendiente</span>
-  </div>
-
-  <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">
+  @if (cargando) {
+    <p style="text-align: center; color: var(--texto-secundario);">Cargando información del pedido...</p>
+  } @else if (!cabecera) {
+    <p style="text-align: center; color: red;">No se encontró la información del pedido.</p>
+  } @else {
     
-    <div style="background-color: var(--color-tarjeta); border-radius: var(--radio-borde); box-shadow: var(--sombra-tarjeta); padding: 24px;">
-      <h3 style="font-size: 16px; color: var(--color-primario); margin-bottom: 16px; border-bottom: 1px solid #eee; padding-bottom: 8px;"> Información del Cliente</h3>
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
+      <div>
+        <h2 class="titulo-tarjeta" style="margin-bottom: 5px;">Pedido #{{ cabecera.FolioCorto || cabecera.PedidoID }}</h2>
+        <p style="color: var(--texto-secundario); font-size: 14px;">Fecha: {{ cabecera.FechaCreacion | date:'medium' }}</p>
+      </div>
+      <span [ngStyle]="{'background-color': (cabecera.Estatus === 'Entregado' ? '#E8F5E9' : (cabecera.Estatus === 'Cancelado' ? '#ffebee' : '#FFF9C4')), 'color': (cabecera.Estatus === 'Entregado' ? '#2E7D32' : (cabecera.Estatus === 'Cancelado' ? '#c62828' : '#F57F17'))}"
+            style="padding: 6px 14px; border-radius: 20px; font-size: 14px; font-weight: bold;">
+        {{ cabecera.Estatus }}
+      </span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">
       
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-        <div>
-          <p style="font-size: 12px; color: var(--texto-secundario); margin-bottom: 4px;">Nombre Completo</p>
-          <p style="font-size: 14px; font-weight: bold;">Arturo Esparza</p>
+      <div style="background-color: var(--color-tarjeta); border-radius: var(--radio-borde); box-shadow: var(--sombra-tarjeta); padding: 24px;">
+        <h3 style="font-size: 16px; color: var(--color-primario); margin-bottom: 16px; border-bottom: 1px solid #eee; padding-bottom: 8px;"> Información del Cliente</h3>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <div>
+            <p style="font-size: 12px; color: var(--texto-secundario); margin-bottom: 4px;">Nombre Completo</p>
+            <p style="font-size: 14px; font-weight: bold;">{{ cabecera.ClienteNombre }}</p>
+          </div>
+          <div>
+            <p style="font-size: 12px; color: var(--texto-secundario); margin-bottom: 4px;">Teléfono de Contacto</p>
+            <p style="font-size: 14px; font-weight: bold;">{{ cabecera.ClienteTelefono }}</p>
+          </div>
         </div>
-        <div>
-          <p style="font-size: 12px; color: var(--texto-secundario); margin-bottom: 4px;">Teléfono de Contacto</p>
-          <p style="font-size: 14px; font-weight: bold;">449 123 4567</p>
+        <div style="margin-top: 16px;">
+          <p style="font-size: 12px; color: var(--texto-secundario); margin-bottom: 4px;">Dirección de Entrega</p>
+          <p style="font-size: 14px; font-weight: bold;">{{ cabecera.ClienteDireccion }}</p>
         </div>
       </div>
-      <div style="margin-top: 16px;">
-        <p style="font-size: 12px; color: var(--texto-secundario); margin-bottom: 4px;">Dirección de Entrega</p>
-        <p style="font-size: 14px; font-weight: bold;">Av. Universidad 123, Int 4, Col. Centro, Aguascalientes.</p>
+
+      <div style="background-color: var(--color-tarjeta); border-radius: var(--radio-borde); box-shadow: var(--sombra-tarjeta); padding: 24px;">
+        <h3 style="font-size: 16px; color: var(--color-primario); margin-bottom: 16px; border-bottom: 1px solid #eee; padding-bottom: 8px;">Artículos Solicitados</h3>
+        
+        @for (item of detalle; track item.DetalleID) {
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #eee; padding-bottom: 12px; margin-bottom: 12px;">
+            <div>
+              <p style="font-size: 14px; font-weight: bold;">{{ item.NombreProducto }} ({{ item.Presentacion }})</p>
+              <p style="font-size: 12px; color: var(--texto-secundario);">{{ item.Cantidad }} x ${{ item.PrecioUnitarioAplicado }}</p>
+            </div>
+            <p style="font-size: 14px; font-weight: bold;">${{ item.SubtotalLinea }}</p>
+          </div>
+        } @empty {
+          <p style="font-size: 14px; color: var(--texto-secundario);">No hay artículos en este pedido.</p>
+        }
+
+        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 8px;">
+          <p style="font-size: 16px; color: var(--texto-secundario);">Total estimado:</p>
+          <p style="font-size: 22px; font-weight: bold; color: var(--color-primario);">Por calcular</p>
+        </div>
       </div>
+
+      @if (cabecera.Estatus === 'Pendiente' || cabecera.Estatus === 'En Proceso') {
+        <div style="display: flex; gap: 16px; margin-top: 10px;">
+          <button (click)="cambiarEstatus('Entregado')" class="btn-machas" style="flex: 2; padding: 14px; background-color: #4CAF50; border: none; color: white; cursor: pointer; border-radius: 8px;">
+            Marcar como Entregado
+          </button>
+          <button (click)="cambiarEstatus('Cancelado')" style="flex: 1; padding: 14px; background-color: #ffebee; color: #c62828; font-weight: bold; border: 1px solid #ffcdd2; border-radius: 8px; cursor: pointer;">
+            Cancelar Pedido
+          </button>
+        </div>
+      }
+
     </div>
-
-    <div style="background-color: var(--color-tarjeta); border-radius: var(--radio-borde); box-shadow: var(--sombra-tarjeta); padding: 24px;">
-      <h3 style="font-size: 16px; color: var(--color-primario); margin-bottom: 16px; border-bottom: 1px solid #eee; padding-bottom: 8px;">Artículos Solicitados</h3>
-      
-      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #eee; padding-bottom: 12px; margin-bottom: 12px;">
-        <div>
-          <p style="font-size: 14px; font-weight: bold;">Salsa Macha Roja (250ml)</p>
-          <p style="font-size: 12px; color: var(--texto-secundario);">2 x $50.00</p>
-        </div>
-        <p style="font-size: 14px; font-weight: bold;">$100.00</p>
-      </div>
-
-      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #eee; padding-bottom: 12px; margin-bottom: 12px;">
-        <div>
-          <p style="font-size: 14px; font-weight: bold;">Cebollitas Machas (250ml)</p>
-          <p style="font-size: 12px; color: var(--texto-secundario);">1 x $45.00</p>
-        </div>
-        <p style="font-size: 14px; font-weight: bold;">$45.00</p>
-      </div>
-
-      <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 8px;">
-        <p style="font-size: 16px; color: var(--texto-secundario);">Total a cobrar:</p>
-        <p style="font-size: 22px; font-weight: bold; color: var(--color-primario);">$145.00</p>
-      </div>
-    </div>
-
-    <div style="display: flex; gap: 16px; margin-top: 10px;">
-      <button class="btn-machas" style="flex: 2; padding: 14px; background-color: #4CAF50;">
-        Marcar como Entregado
-      </button>
-      <button style="flex: 1; padding: 14px; background-color: #ffebee; color: #c62828; font-weight: bold; border: 1px solid #ffcdd2; border-radius: 8px; cursor: pointer;">
-        Cancelar Pedido
-      </button>
-    </div>
-
-  </div>
+  }
 </div>

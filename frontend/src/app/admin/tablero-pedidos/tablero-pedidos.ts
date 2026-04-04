@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { CatalogoService } from '../../core/services/catalogo.service'; 
 
 @Component({
   selector: 'app-tablero-pedidos',
@@ -12,20 +12,22 @@ import { CommonModule } from '@angular/common';
 })
 export class TableroPedidos implements OnInit {
   pedidos: any[] = [];
-  
   pedidosFiltrados: any[] = []; 
-  
   filtroActual: string = 'Todos'; 
 
-  private http = inject(HttpClient);
+  private catalogoService = inject(CatalogoService); 
   private cdr = inject(ChangeDetectorRef);
 
   ngOnInit() {
-    this.http.get('http://localhost:3000/api/pedidos').subscribe({
+    this.cargarPedidos();
+  }
+
+  cargarPedidos() {
+    this.catalogoService.obtenerPedidos().subscribe({
       next: (respuesta: any) => {
         if (respuesta && respuesta.data) {
           this.pedidos = respuesta.data;
-          this.pedidosFiltrados = this.pedidos; 
+          this.cambiarFiltro(this.filtroActual); 
         }
         this.cdr.detectChanges();
       },
@@ -41,26 +43,27 @@ export class TableroPedidos implements OnInit {
     if (filtro === 'Todos') {
       this.pedidosFiltrados = this.pedidos;
     } else if (filtro === 'Entregados') {
-      this.pedidosFiltrados = this.pedidos.filter(p => p.Estado === 'Entregado');
+      this.pedidosFiltrados = this.pedidos.filter(p => p.Estatus === 'Entregado');
     } else if (filtro === 'En Proceso') {
-      this.pedidosFiltrados = this.pedidos.filter(p => p.Estado !== 'Entregado'); 
+      this.pedidosFiltrados = this.pedidos.filter(p => p.Estatus !== 'Entregado'); 
     }
   }
+
   marcarComoEntregado(pedido: any) {
-    const confirmar = confirm(`¿Seguro que quieres marcar el folio #${pedido.PedidoID || pedido.id || ''} como Entregado?`);
+    const idPedido = pedido.PedidoID || pedido.id;
+    const confirmar = confirm(`¿Seguro que quieres marcar el folio #${idPedido} como Entregado?`);
     if (!confirmar) return;
 
-    pedido.Estado = 'Entregado';
-    
+    pedido.Estatus = 'Entregado';
     this.cambiarFiltro(this.filtroActual);
 
-    const idPedido = pedido.PedidoID || pedido.id;
-    this.http.put(`http://localhost:3000/api/pedidos/${idPedido}`, { Estado: 'Entregado' }).subscribe({
+    this.catalogoService.actualizarEstatusPedido(idPedido, 'Entregado').subscribe({
       next: (res) => {
-        console.log('¡El backend de Papu lo guardó con éxito!');
+        console.log('¡El backend de Papu actualizó el estatus con éxito!', res);
       },
       error: (err) => {
-        console.log('Aviso: Visualmente ya funciona, pero falta que Papu/Héctor habiliten el PUT en el back.');
+        console.error('Falló la conexión con el backend:', err);
+        alert('Hubo un error al guardar el estatus en la base de datos.');
       }
     });
   }
