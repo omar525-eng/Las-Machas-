@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Location } from '@angular/common'; 
 
 @Component({
   selector: 'app-mis-datos',
@@ -9,8 +10,8 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./mis-datos.css']
 })
 export class MisDatosComponent implements OnInit {
+  private location = inject(Location); // <-- Inyectamos el servicio
 
-  // Este objeto guardará la info del cliente
   usuario = {
     nombreCompleto: '',
     telefono: '',
@@ -20,8 +21,6 @@ export class MisDatosComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    // Aquí es donde Mike conectará el servicio HTTP para llamar al SP_ObtenerUsuario
-    // Por ahora, le ponemos datos falsos para que veas que funciona la UI
     this.usuario = {
       nombreCompleto: 'Omar Ornelas',
       telefono: '4491112233',
@@ -29,8 +28,11 @@ export class MisDatosComponent implements OnInit {
     };
   }
 
+  regresar(): void {
+    this.location.back();
+  }
+
   guardarDatos(): void {
-    // Aquí mandaremos a llamar a SP_ActualizarUsuario
     console.log('Enviando datos al backend...', this.usuario);
     alert('¡Datos guardados con éxito!');
   }

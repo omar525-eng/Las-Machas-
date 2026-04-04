@@ -20,7 +20,7 @@ export class AgregarProducto {
   productoForm = new FormGroup({
     Nombre: new FormControl('', Validators.required),
     Descripcion: new FormControl(''), 
-    Categoria: new FormControl('Salsas', Validators.required),
+    CategoriaID: new FormControl('1', Validators.required),
     Tamano: new FormControl('Frasco 250ml', Validators.required),
     PrecioRegular: new FormControl('', Validators.required),
     PrecioMayoreo: new FormControl(''),
@@ -32,7 +32,6 @@ export class AgregarProducto {
     const file: File = event.target.files[0];
     if (file) {
       this.imagenSeleccionada = file; 
-
       const reader = new FileReader();
       reader.onload = e => this.imagenPreview = reader.result;
       reader.readAsDataURL(file);
@@ -41,21 +40,31 @@ export class AgregarProducto {
 
   guardarProducto() {
     if (this.productoForm.valid) {
-      const formData = new FormData();
-      formData.append('datos', JSON.stringify(this.productoForm.value));
       
-      if (this.imagenSeleccionada) {
-        formData.append('imagen', this.imagenSeleccionada); 
-      }
+      const payloadBackend = {
+        Nombre: this.productoForm.value.Nombre,
+        CategoriaID: parseInt(this.productoForm.value.CategoriaID as string),
+        ImagenURL: 'https://via.placeholder.com/250', 
+        Descripcion: this.productoForm.value.Descripcion
+      };
 
-      console.log('Datos del producto:', this.productoForm.value);
-      console.log('Foto adjunta lista para el back:', this.imagenSeleccionada?.name);
-      
-      alert('¡Producto y foto capturados con éxito! (Esperando ruta del backend)');
-      
-      this.router.navigate(['/admin/catalogo']); 
+      console.log('Enviando esto al backend:', payloadBackend);
+
+      this.catalogoService.crearProducto(payloadBackend).subscribe({
+        next: (res) => {
+          console.log('Respuesta del servidor:', res);
+          alert('¡Producto guardado en la base de datos con éxito!');
+          this.router.navigate(['/admin/catalogo']);
+        },
+        error: (err) => {
+          console.error('Error al guardar en la BD:', err);
+          alert('Revisa la consola, algo falló en la conexión.');
+        }
+      });
+
     } else {
-      console.error('Faltan campos por llenar.');
+      alert('Llena los campos faltantes');
+      this.productoForm.markAllAsTouched();
     }
   }
 }

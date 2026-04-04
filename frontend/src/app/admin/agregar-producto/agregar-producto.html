@@ -10,18 +10,17 @@
       <div>
         <h3 style="font-size: 16px; color: var(--color-primario); margin-bottom: 12px; border-bottom: 1px solid #eee; padding-bottom: 8px;">1. Datos Generales</h3>
         
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-          <div>
-            <label style="font-size: 14px; font-weight: bold; color: var(--color-tipografia);">Nombre del Producto</label>
-            <input type="text" formControlName="Nombre" placeholder="Ej. Salsa Macha con Ajo" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-top: 6px; font-family: 'Inter', sans-serif; outline-color: var(--color-primario);">
-          </div>
-          <div>
-            <label style="font-size: 14px; font-weight: bold; color: var(--color-tipografia);">Categoría</label>
-            <select formControlName="Categoria" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-top: 6px; font-family: 'Inter', sans-serif; outline-color: var(--color-primario); background-color: white;">
-              <option value="Salsas">Salsas</option>
-              <option value="Encurtidos">Encurtidos</option>
-            </select>
-          </div>
+        <div>
+          <label style="font-size: 14px; font-weight: bold; color: var(--color-tipografia);">Nombre del Producto</label>
+          <input type="text" formControlName="Nombre" placeholder="Ej. Salsa Macha con Ajo" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-top: 6px; font-family: 'Inter', sans-serif; outline-color: var(--color-primario);">
+        </div>
+
+        <div style="margin-top: 16px;">
+          <label style="font-size: 14px; font-weight: bold; color: var(--color-tipografia);">Categoría</label>
+          <select formControlName="CategoriaID" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-top: 6px; font-family: 'Inter', sans-serif; outline-color: var(--color-primario); background-color: white;">
+            <option value="1">Salsas</option>
+            <option value="2">Encurtidos</option>
+          </select>
         </div>
 
         <div style="margin-top: 16px;">
@@ -31,7 +30,6 @@
 
         <div style="margin-top: 16px;">
           <label style="font-size: 14px; font-weight: bold; color: var(--color-tipografia);">Fotografía de la Salsa</label>
-          
           <input type="file" accept="image/*" (change)="onFileSelected($event)" style="width: 100%; padding: 12px; border: 2px dashed var(--color-primario); border-radius: 8px; margin-top: 6px; font-family: 'Inter', sans-serif; background-color: #fff0f5; color: var(--color-primario); cursor: pointer;">
           
           @if (imagenPreview) {

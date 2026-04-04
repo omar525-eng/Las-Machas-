@@ -33,8 +33,8 @@
 
   <div class="grid-catalogo">
 
-    @for (producto of productos; track producto.ProductoID) {
-      <div style="background: var(--color-tarjeta); border-radius: 12px; padding: 16px; box-shadow: var(--sombra-tarjeta); display: flex; flex-direction: column;">
+@for (producto of productos; track $index) {
+        <div style="background: var(--color-tarjeta); border-radius: 12px; padding: 16px; box-shadow: var(--sombra-tarjeta); display: flex; flex-direction: column;">
         
         <img [src]="producto.ImagenURL || 'https://via.placeholder.com/300x180?text=Sin+Imagen'" [alt]="producto.Nombre" routerLink="/admin/detalle-producto" style="width: 100%; height: 180px; object-fit: cover; border-radius: 8px; margin-bottom: 12px; cursor: pointer; background-color: #eee;">
         

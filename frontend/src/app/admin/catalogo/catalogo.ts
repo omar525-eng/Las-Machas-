@@ -15,7 +15,6 @@ export class Catalogo implements OnInit {
   productos: Producto[] = [];
   productosRespaldo: Producto[] = []; 
   productoADesactivar: Producto | null = null; 
-  
   mostrarInactivos: boolean = false; 
   
   private catalogoService = inject(CatalogoService);
@@ -23,24 +22,22 @@ export class Catalogo implements OnInit {
   private cdr = inject(ChangeDetectorRef);
 
   ngOnInit() {
-    this.catalogoService.obtenerProductos().subscribe({
-      next: (respuesta: any) => {
-        if (respuesta && respuesta.data) {
-          this.productos = respuesta.data;
-          this.productosRespaldo = respuesta.data; 
-        } else {
-          this.productos = respuesta;
-          this.productosRespaldo = respuesta; 
-        }
-        this.cdr.detectChanges();
-      },
-      error: (error) => {
-        console.error('Hubo un error de conexión:', error);
-      }
-    });
+    this.cargarActivos();
 
     this.busquedaService.terminoActual.subscribe(termino => {
       this.filtrarProductos(termino);
+    });
+  }
+
+  cargarActivos() {
+    this.catalogoService.obtenerProductos().subscribe({
+      next: (respuesta: any) => {
+        const datos = respuesta.data ? respuesta.data : respuesta;
+        this.productos = datos;
+        this.productosRespaldo = datos; 
+        this.cdr.detectChanges();
+      },
+      error: (error) => console.error('Hubo un error de conexión:', error)
     });
   }
 
@@ -62,6 +59,26 @@ export class Catalogo implements OnInit {
 
   toggleInactivos() {
     this.mostrarInactivos = !this.mostrarInactivos;
+    
+    if (this.mostrarInactivos) {
+      console.log("Pidiendo salsas inactivas");
+      
+      this.catalogoService.obtenerInactivos().subscribe({
+        next: (respuesta: any) => {
+          console.log('Llegaron los inactivos:) Esto mandó el back:', respuesta); 
+          
+          const datos = respuesta.data ? respuesta.data : respuesta;
+          this.productos = datos;
+          this.productosRespaldo = datos;
+          this.cdr.detectChanges();
+        },
+        error: (error) => {
+          console.error('Error fatal al conectar con la ruta de inactivos:', error);
+        }
+      });
+    } else {
+      this.cargarActivos();
+    }
   }
 
   abrirModal(producto: Producto) {
@@ -74,8 +91,22 @@ export class Catalogo implements OnInit {
 
   confirmarDesactivacion() {
     if (this.productoADesactivar) {
-      alert(`¡La salsa "${this.productoADesactivar.Nombre}" se ha desactivado!`);
-      this.cerrarModal();
+      const productoModificado = {
+        ...this.productoADesactivar,
+        Estado: 0 
+      };
+
+      this.catalogoService.actualizarProducto(this.productoADesactivar.ProductoID, productoModificado).subscribe({
+        next: () => {
+          alert(`¡La salsa "${this.productoADesactivar?.Nombre}" se ha desactivado!`);
+          this.cerrarModal();
+          this.cargarActivos();
+        },
+        error: (error) => {
+          console.error('Error al desactivar:', error);
+          alert('Hubo un error en el servidor al intentar desactivar la salsa.');
+        }
+      });
     }
   }
 }

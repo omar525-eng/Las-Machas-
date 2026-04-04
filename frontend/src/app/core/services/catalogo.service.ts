@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Producto } from '../models/producto.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +8,9 @@ import { Producto } from '../models/producto.interface';
 export class CatalogoService {
   
   private apiUrl = 'http://localhost:3000/api/catalogos'; 
+  private productosUrl = 'http://localhost:3000/api/productos'; 
+  
+  private inventariosUrl = 'http://localhost:3000/api/inventario';
 
   constructor(private http: HttpClient) { }
 
@@ -17,6 +19,14 @@ export class CatalogoService {
   }
 
   crearProducto(nuevoProducto: any): Observable<any> {
-    return this.http.post<any>(this.apiUrl, nuevoProducto);
+    return this.http.post<any>(this.productosUrl, nuevoProducto);
+  }
+
+  obtenerInactivos(): Observable<any> {
+    return this.http.get<any>(`${this.inventariosUrl}/inactivos`);
+  }
+
+  actualizarProducto(id: number, producto: any): Observable<any> {
+    return this.http.put<any>(`${this.productosUrl}/${id}`, producto);
   }
 }
