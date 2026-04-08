@@ -60,5 +60,5 @@ export const obtenerUsuario = async (usuarioID) => {
     .input("UsuarioID", usuarioID)
     .execute("sp_ObtenerUsuario")
 
-  return result.recordset[0] // solo un usuario
+  return result.recordset[0] 
 }

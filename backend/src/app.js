@@ -24,6 +24,7 @@ app.use("/api/productos", productoRoutes)
 app.use('/api/usuarios', usuariosRoutes);
 app.use("/api/inventario", inventarioRoutes)
 
+
 // Servidor
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {

@@ -1,74 +1,59 @@
-<div style="padding: 20px; max-width: 800px; margin: 40px auto; background: var(--color-tarjeta); border-radius: var(--radio-borde); box-shadow: var(--sombra-tarjeta);">
-  
-  <h2 style="color: var(--color-primario); margin-bottom: 20px; border-bottom: 2px solid var(--color-fondo); padding-bottom: 10px;">Tu Carrito 🛒</h2>
+<div style="padding: 20px; max-width: 800px; margin: 0 auto;">
+  <h2 style="color: var(--color-tipografia); margin-bottom: 20px;">Tu Carrito </h2>
 
-  <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;">
-    
-    <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 15px; border-bottom: 1px solid #eee; flex-wrap: wrap; gap: 10px;">
+  @if (cartService.getItems()().length > 0) {
+    <div style="display: flex; flex-direction: column; gap: 15px;">
       
-      <div style="display: flex; align-items: center; gap: 15px;">
-        <img src="https://images.unsplash.com/photo-1558160074-4d7d8bdf4256?auto=format&fit=crop&q=80&w=150" style="width: 60px; height: 60px; border-radius: 8px; object-fit: cover;">
-        <div>
-          <h4 style="margin: 0; font-size: 16px; color: var(--color-tipografia);">Salsa Macha Roja</h4>
-          <p style="margin: 0; font-size: 12px; color: var(--texto-secundario);">Frasco 250ml</p>
+      @for (item of cartService.getItems()(); track item.cartItemId) {
+        <div style="display: flex; align-items: center; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); gap: 15px;">
+          <img [src]="item.imagen" [alt]="item.nombre" style="width: 70px; height: 70px; object-fit: contain; border-radius: 8px;">
+          
+          <div style="flex: 1;">
+            <h4 style="margin: 0; font-size: 16px;">{{ item.nombre }}</h4>
+            <p style="margin: 5px 0; color: var(--color-primario); font-weight: bold;">
+              ${{ cartService.getPrecioUnitarioFinal(item) }} c/u
+              @if (cartService.getPrecioUnitarioFinal(item) < item.precio) {
+                <span style="color: green; font-size: 12px; display: block;">¡Recibiste un descuento!</span>
+              }
+            </p>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 10px; background: #f5f5f5; padding: 5px 12px; border-radius: 20px;">
+            <button (click)="decrementar(item.cartItemId!)" style="border: none; background: none; cursor: pointer; font-weight: bold; font-size: 18px;">-</button>
+            <span style="font-weight: bold;">{{ item.cantidad }}</span>
+            <button (click)="incrementar(item.cartItemId!)" style="border: none; background: none; cursor: pointer; font-weight: bold; font-size: 18px;">+</button>
+          </div>
+
+          <button (click)="eliminar(item.cartItemId!)" style="border: none; background: none; color: #ff5252; cursor: pointer; font-size: 18px;">🗑️</button>
         </div>
-      </div>
-      
-      <div style="display: flex; align-items: center; gap: 10px;">
-        <button style="width: 30px; height: 30px; border-radius: 50%; border: 1px solid #ccc; background: white; cursor: pointer; font-weight: bold; color: var(--texto-secundario);">-</button>
-        <span style="font-weight: bold; width: 20px; text-align: center; color: var(--color-tipografia);">2</span>
-        <button style="width: 30px; height: 30px; border-radius: 50%; border: 1px solid #ccc; background: white; cursor: pointer; font-weight: bold; color: var(--color-primario);">+</button>
-      </div>
+      }
 
-      <div style="display: flex; align-items: center; gap: 15px;">
-        <div style="font-weight: bold; color: var(--color-primario); width: 80px; text-align: right;">$100.00</div>
-        <button style="background: transparent; border: none; color: #e53935; cursor: pointer; font-size: 18px;" title="Eliminar del carrito">🗑️</button>
-      </div>
-
-    </div>
-
-    <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 15px; border-bottom: 1px solid #eee; flex-wrap: wrap; gap: 10px;">
-      
-      <div style="display: flex; align-items: center; gap: 15px;">
-        <img src="https://images.unsplash.com/photo-1558160074-4d7d8bdf4256?auto=format&fit=crop&q=80&w=150" style="width: 60px; height: 60px; border-radius: 8px; object-fit: cover; filter: hue-rotate(120deg);">
-        <div>
-          <h4 style="margin: 0; font-size: 16px; color: var(--color-tipografia);">Chimichurri Arg.</h4>
-          <p style="margin: 0; font-size: 12px; color: var(--texto-secundario);">Frasco 500ml</p>
+      <div style="margin-top: 20px; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+        <div style="display: flex; justify-content: space-between; font-size: 18px; margin-bottom: 10px;">
+          <span>Subtotal:</span>
+          <span>${{ cartService.total() }}</span>
         </div>
+        <div style="display: flex; justify-content: space-between; font-size: 22px; font-weight: bold; color: var(--color-tipografia); margin-top: 10px; border-top: 2px dashed #eee; padding-top: 15px;">
+          <span>Total:</span>
+          <span>${{ cartService.total() }}</span>
+        </div>
+
+        <button routerLink="/checkout" style="width: 100%; background: var(--color-primario); color: white; border: none; padding: 18px; border-radius: 12px; font-size: 18px; font-weight: bold; margin-top: 25px; cursor: pointer; box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);">
+          Confirmar Pedido 
+        </button>
+        
+        <button routerLink="/tienda" style="width: 100%; background: none; border: none; color: #888; margin-top: 15px; cursor: pointer; text-decoration: underline;">
+          Seguir comprando
+        </button>
       </div>
-      
-      <div style="display: flex; align-items: center; gap: 10px;">
-        <button style="width: 30px; height: 30px; border-radius: 50%; border: 1px solid #ccc; background: white; cursor: pointer; font-weight: bold; color: var(--texto-secundario);">-</button>
-        <span style="font-weight: bold; width: 20px; text-align: center; color: var(--color-tipografia);">1</span>
-        <button style="width: 30px; height: 30px; border-radius: 50%; border: 1px solid #ccc; background: white; cursor: pointer; font-weight: bold; color: var(--color-primario);">+</button>
-      </div>
-
-      <div style="display: flex; align-items: center; gap: 15px;">
-        <div style="font-weight: bold; color: var(--color-primario); width: 80px; text-align: right;">$95.00</div>
-        <button style="background: transparent; border: none; color: #e53935; cursor: pointer; font-size: 18px;" title="Eliminar del carrito">🗑️</button>
-      </div>
-
     </div>
-
-  </div>
-
-  <div style="background: var(--color-fondo); padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-    <div style="display: flex; justify-content: space-between; margin-bottom: 10px; color: var(--texto-secundario);">
-      <span>Subtotal de productos:</span>
-      <span>$195.00</span>
+  } @else {
+    <div style="text-align: center; padding: 60px 20px;">
+      <span style="font-size: 60px;">📭</span>
+      <h3 style="margin-top: 20px; color: #888;">Tu carrito está vacío</h3>
+      <button routerLink="/tienda" style="background: var(--color-primario); color: white; border: none; padding: 12px 25px; border-radius: 10px; margin-top: 20px; cursor: pointer; font-weight: bold;">
+        Ver Salsas
+      </button>
     </div>
-    <div style="display: flex; justify-content: space-between; margin-bottom: 10px; color: var(--texto-secundario);">
-      <span>Costo de envío:</span>
-      <span style="font-style: italic;">Se calcula en el siguiente paso</span>
-    </div>
-    <hr style="border: 0.5px solid #ccc; margin: 15px 0;">
-    <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 20px; color: var(--color-tipografia);">
-      <span>Total a Pagar:</span>
-      <span style="color: var(--color-primario);">$195.00</span>
-    </div>
-  </div>
-
-  <div style="display: flex; flex-direction: column; gap: 15px;">
-    <button class="btn-machas" routerLink="/checkout" style="font-size: 18px; padding: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-      Proceder al Pago!
-    </button>
+  }
+</div>

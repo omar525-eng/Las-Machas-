@@ -5,6 +5,7 @@ import { findUserByEmail } from '../models/userM.js';
 export async function login(req, res) {
   console.log('Entrando a login:');
   try {
+    console.log('Datos recibidos:', req.body);
     const { correo, password } = req.body;
     console.log('Datos recibidos:', { correo, password: password ? '****' : null });
     // Validación de entrada
@@ -18,7 +19,7 @@ export async function login(req, res) {
     if (!user) {
       return res.status(404).json({ error: 'Usuario no encontrado.' });
     }
-    console.log('Usuario encontrado:', { id: user.UsuarioID, correo: user.Correo, rol: user.RolID });
+    console.log('Usuario encontrado:', { id: user.UsuarioID, correo: user.Correo, rol: user.Rol });
     // Comparar contraseña con hash almacenado
     const isMatch = await bcrypt.compare(password, user.PasswordHash);
     if (!isMatch) {
@@ -28,7 +29,7 @@ export async function login(req, res) {
     console.log('JWT_SECRET:', process.env.JWT_SECRET ? '****' : 'No definido');
     // Generar token JWT con rol
     const token = jwt.sign(
-      { id: user.UsuarioID, role: user.RolID },
+      { id: user.UsuarioID, role: user.Rol },
       process.env.JWT_SECRET,
       { expiresIn: '2h' }
     );
@@ -36,7 +37,7 @@ export async function login(req, res) {
     // Respuesta al cliente
     res.json({
       token,
-      role: user.RolID,
+      role: user.Rol,
       id: user.UsuarioID,
       mensaje: 'Login exitoso'
     });

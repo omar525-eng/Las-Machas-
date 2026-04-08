@@ -1,0 +1,125 @@
+/* ==========================================================================
+   EL GRID (Copiado exactamente del código de Naomi)
+   ========================================================================== */
+.grid-catalogo {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); 
+  gap: 16px;
+  padding: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .grid-catalogo {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid-catalogo {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+  }
+}
+
+/* ==========================================================================
+   LA TARJETA
+   ========================================================================== */
+.tarjeta-macha {
+  background: white; 
+  border-radius: 12px; /* Naomi usa 12px, tú tenías 15px */
+  padding: 16px; 
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
+  display: flex;
+  flex-direction: column; 
+  transition: transform 0.2s ease;
+  /* Quité el border: 1px solid para que quede limpia como la de Naomi */
+}
+
+.tarjeta-macha:hover {
+  transform: translateY(-5px);
+}
+
+/* LA IMAGEN */
+.img-salsa {
+  width: 100%;
+  height: 180px; /* Naomi usa 180px, tú tenías 200px */
+  object-fit: cover; 
+  border-radius: 8px; /* Naomi usa 8px, tú tenías 10px */
+  margin-bottom: 12px; /* Naomi usa 12px, tú tenías 15px */
+  cursor: pointer;
+  background-color: #eee;
+}
+
+/* CONTENEDOR DE TEXTOS PARA EMPUJAR EL BOTÓN */
+.info-salsa {
+  display: flex;
+  flex-direction: column;
+  flex: 1; /* Esto es clave para que tome el espacio sobrante */
+}
+
+/* TEXTOS */
+.tarjeta-macha h3 {
+  font-size: 18px;
+  margin: 0 0 4px 0; /* Naomi usa 4px */
+  color: #333;
+  font-weight: bold;
+}
+
+.tamano {
+  margin: 0 0 8px 0; /* Naomi usa 8px */
+  color: #757575;
+  font-size: 14px;
+}
+
+.precio-tag {
+  font-size: 20px; /* Naomi usa 20px, tú tenías 22px */
+  font-weight: bold;
+  margin-bottom: 16px;
+  color: #000; /* Naomi usa negro aquí */
+}
+
+/* BOTÓN CLIENTE */
+.btn-agregar {
+  background-color: var(--color-primario);
+  color: white;
+  border: none;
+  border-radius: 8px; /* Reducido a 8px para hacer match con las imágenes */
+  padding: 10px; /* Naomi usa 10px */
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+  margin-top: auto; /* ESTO ES EL TRUCO: Empuja el botón al fondo siempre */
+  transition: background 0.3s;
+}
+
+.btn-agregar:hover {
+  filter: brightness(1.1);
+}
+
+
+.btn-flotante-whatsapp {
+  position: fixed;
+  bottom: 90px; /* Suficiente espacio para no chocar con la navbar de abajo */
+  right: 20px;
+  background-color: #25D366;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  cursor: pointer;
+  transition: transform 0.3s ease, background-color 0.3s;
+  z-index: 1000;
+}
+
+.btn-flotante-whatsapp:hover {
+  transform: scale(1.1);
+  background-color: #128C7E;
+}

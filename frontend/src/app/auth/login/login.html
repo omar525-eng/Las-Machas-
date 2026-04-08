@@ -1,23 +1,30 @@
 <div style="max-width: 400px; margin: 50px auto; background: var(--color-tarjeta); padding: 30px; border-radius: var(--radio-borde); box-shadow: var(--sombra-tarjeta); text-align: center;">
   
-  <h2 style="color: var(--color-primario); margin-bottom: 10px;">¡Hola, Macha! 🌶️</h2>
-  <p style="color: var(--texto-secundario); margin-bottom: 20px;">Acceso exclusivo para administradores</p>
+  <h2 style="color: var(--color-primario); margin-bottom: 10px;">¡Hola!, Bienvenido a las Machas</h2>
+  <p style="color: var(--texto-secundario); margin-bottom: 20px;">Listo para empezar tu compra?.</p>
 
-  <form style="display: flex; flex-direction: column; gap: 15px; text-align: left;">
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" style="display: flex; flex-direction: column; gap: 15px; text-align: left;">
     <div>
       <label style="font-size: 14px; font-weight: bold;">Correo Electrónico</label>
-      <input type="email" placeholder="admin@lasmachas.com" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; margin-top: 5px;">
+      <input type="email" formControlName="correo" placeholder="tu.correo@email.com" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; margin-top: 5px;">
     </div>
     
     <div>
       <label style="font-size: 14px; font-weight: bold;">Contraseña</label>
-      <input type="password" placeholder="********" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; margin-top: 5px;">
+      <input type="password" formControlName="password" placeholder="********" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; margin-top: 5px;">
     </div>
 
-    <button type="button" class="btn-machas" routerLink="/admin/catalogo" style="margin-top: 10px;">Entrar al Panel</button>
+    <button type="submit" class="btn-machas" [disabled]="!loginForm.valid" style="margin-top: 10px;">Iniciar Sesión</button>
   </form>
 
   <p style="margin-top: 20px; font-size: 14px;">
-    <a routerLink="/tienda" style="color: var(--texto-secundario); text-decoration: underline;">← Ir a la tienda como cliente</a>
+    <a (click)="entrarComoInvitado()" style="color: var(--texto-secundario); text-decoration: underline; cursor: pointer;">← Echar un vistazo como invitado</a>
   </p>
+
+  <div style="margin-top: 25px; border-top: 1px solid #eee; padding-top: 20px;">
+    <p style="color: var(--texto-secundario); margin-bottom: 15px;">¿No tienes cuenta?</p>
+    <button type="button" routerLink="/registro" class="btn-machas" style="background-color: var(--color-secundario); width: 100%;">
+        ¡Regístrate aquí!
+    </button>
+  </div>
 </div>
