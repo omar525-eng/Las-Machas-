@@ -1,97 +1,127 @@
 .detalle-container {
-  padding: 20px;
-  max-width: 900px;
+  max-width: 1000px;
   margin: 40px auto;
+  padding: 0 20px;
 }
 
 .btn-regresar {
-  background: transparent;
+  background: none;
   border: none;
-  color: var(--color-primario);
-  font-weight: bold;
+  color: #e91e63;
+  font-weight: 600;
   cursor: pointer;
   margin-bottom: 20px;
-  font-size: 14px;
   display: flex;
   align-items: center;
+  gap: 8px;
+  transition: transform 0.2s;
+}
+
+.btn-regresar:hover {
+  transform: translateX(-5px);
 }
 
 .tarjeta-detalle {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 30px;
-  background: var(--color-tarjeta);
-  border-radius: var(--radio-borde);
-  box-shadow: var(--sombra-tarjeta);
-  padding: 24px;
-  overflow: hidden;
-}
-
-@media (min-width: 768px) {
-  .tarjeta-detalle {
-    grid-template-columns: 1fr 1.2fr;
-  }
-}
-
-.imagen-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 50px;
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.08);
 }
 
 .img-producto {
   width: 100%;
-  max-width: 400px;
   height: auto;
-  aspect-ratio: 1 / 1;
+  border-radius: 15px;
   object-fit: cover;
-  border-radius: var(--radio-borde);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
 }
 
-.info-container {
-  display: flex;
-  flex-direction: column;
-}
-
-.titulo {
-  font-size: 28px;
-  margin-bottom: 5px;
-  color: var(--color-tipografia);
-}
-
-.categoria {
-  font-size: 14px;
-  color: var(--texto-secundario);
-  margin-bottom: 15px;
-}
-
-.precio-container {
-  margin-bottom: 20px;
-}
-
-.precio {
-  font-size: 24px;
-  color: var(--color-primario);
+.badge-categoria {
+  background: #fff0f5;
+  color: #e91e63;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 0.85rem;
   font-weight: bold;
-  margin: 0;
+  text-transform: uppercase;
 }
 
-.descripcion {
-  margin-bottom: 25px;
+.titulo-producto {
+  font-size: 2.8rem;
+  color: #2d2d2d;
+  margin: 15px 0 10px 0;
+  line-height: 1.1;
 }
 
-.descripcion h3 {
-  font-size: 16px;
-  margin-bottom: 8px;
-  color: var(--color-tipografia);
+.presentacion {
+  color: #666;
+  font-size: 1.1rem;
 }
 
-.descripcion p {
-  font-size: 15px;
+.precio-box {
+  margin: 25px 0;
+  color: #e91e63;
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+}
+
+.moneda { font-size: 1.5rem; font-weight: bold; }
+.monto { font-size: 3rem; font-weight: 800; }
+.divisa { font-size: 1.2rem; font-weight: 600; }
+
+.descripcion-box {
+  margin-bottom: 30px;
+  border-top: 1px solid #eee;
+  padding-top: 20px;
+}
+
+.descripcion-box h3 {
+  font-size: 1.2rem;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.descripcion-box p {
+  color: #555;
   line-height: 1.6;
-  color: var(--texto-secundario);
 }
 
 .btn-agregar {
-  margin-top: auto; /* Empuja el botón al final */
+  width: 100%;
+  background: #e91e63;
+  color: white;
+  border: none;
+  padding: 18px;
+  border-radius: 12px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 20px rgba(233, 30, 99, 0.2);
+}
+
+.btn-agregar:hover {
+  background: #c2185b;
+  transform: translateY(-3px);
+  box-shadow: 0 15px 25px rgba(233, 30, 99, 0.3);
+}
+
+/* Responsivo */
+@media (max-width: 850px) {
+  .tarjeta-detalle {
+    grid-template-columns: 1fr;
+    padding: 25px;
+  }
+  .titulo-producto { font-size: 2rem; }
+}
+
+/* Loader Simple */
+.loader-container {
+  text-align: center;
+  padding: 100px;
+  color: #e91e63;
 }

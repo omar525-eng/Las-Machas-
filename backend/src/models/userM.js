@@ -6,7 +6,8 @@ export async function findUserByEmail(correo) {
 
     const result = await pool.request()
       .input('Correo', correo) 
-      .query('SELECT UsuarioID, Correo, PasswordHash, RolID FROM Usuarios WHERE Correo = @Correo AND Activo = 1');
+      // 🔥 Usamos RolID AS Rol para no romper la base de datos y que el AuthController reciba lo que espera
+      .query('SELECT UsuarioID, Correo, PasswordHash, RolID AS Rol FROM Usuarios WHERE Correo = @Correo AND Activo = 1');
 
     return result.recordset[0]; 
   } catch (error) {

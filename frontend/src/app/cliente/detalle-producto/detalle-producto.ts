@@ -12,29 +12,40 @@ import { CartService } from '../../core/services/cart.service';
   templateUrl: './detalle-producto.html',
   styleUrl: './detalle-producto.css'
 })
-export class DetalleProductoComponent implements OnInit {
+export class DetalleProducto implements OnInit {
   private route = inject(ActivatedRoute);
   private http = inject(HttpClient);
   private cartService = inject(CartService);
   private location = inject(Location);
 
+  // El signal almacenará solo el objeto del producto
   producto = signal<Producto | null>(null);
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
       if (id) {
-        // Hacemos la petición a la API para obtener un solo producto
-        this.http.get<any>(`http://localhost:3000/api/productos/${id}`).subscribe({
-          next: (response) => {
-            // Asignamos el producto a nuestro signal para que la vista se actualice
-            this.producto.set(response.data || response);
-          },
-          error: (err) => {
-            console.error('Error al cargar los detalles del producto', err);
-            this.producto.set(null);
-          }
-        });
+      this.http.get<any>(`http://localhost:3000/api/productos/${id}`).subscribe({
+  next: (response) => {
+    console.log('--- EXTRACCIÓN DE DATOS ---', response);
+    
+    // Entramos a data -> producto
+    let p = response.data?.producto;
+
+    // Si 'p' es una lista (Array), tomamos el primer elemento [0]
+    if (Array.isArray(p)) {
+      p = p[0];
+    }
+
+    if (p) {
+      this.producto.set(p);
+    }
+  },
+  error: (err) => {
+    console.error('Error al conectar con la API', err);
+    this.producto.set(null);
+  }
+});
       }
     });
   }
@@ -42,7 +53,14 @@ export class DetalleProductoComponent implements OnInit {
   agregarAlCarrito(): void {
     const p = this.producto();
     if (p) {
-      this.cartService.addToCart({ id: p.ProductoID, nombre: p.Nombre, precio: p.PrecioRegular, cantidad: 1, imagen: p.ImagenURL, tamano: p.Tamano });
+      this.cartService.addToCart({ 
+        id: p.ProductoID, 
+        nombre: p.Nombre, 
+        precio: p.PrecioRegular, 
+        cantidad: 1, 
+        imagen: p.ImagenURL, 
+        tamano: p.Tamano 
+      });
       alert(`¡${p.Nombre} se agregó al carrito!`);
     }
   }

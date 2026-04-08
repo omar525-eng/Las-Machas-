@@ -5,21 +5,32 @@
   </button>
 
   <div class="tarjeta-detalle">
-    <div class="imagen-container">
-      <img [src]="prod.ImagenURL || 'assets/placeholder.jpg'" [alt]="prod.Nombre" class="img-producto">
+    <div class="imagen-seccion">
+      <img [src]="prod.ImagenURL || $any(prod).imagenUrl || $any(prod).imagen || 'https://via.placeholder.com/500x500.png?text=Sin+Imagen'" 
+           [alt]="prod.Nombre" 
+           class="img-producto">
     </div>
 
-    <div class="info-container">
-      <h2 class="titulo">{{ prod.Nombre }}</h2>
-      <p class="categoria">{{ prod.Categoria }} | {{ prod.Tamano }}</p>
+    <div class="info-seccion">
+      <span class="badge-categoria">{{ prod.Categoria || $any(prod).categoria || 'Salsas Machas' }}</span>
       
-      <div class="precio-container">
-        <p class="precio">${{ prod.PrecioRegular }} MXN</p>
+      <h2 class="titulo-producto">{{ prod.Nombre || $any(prod).nombre || $any(prod).NombreProducto || 'Salsa Especial' }}</h2>
+      
+      <p class="presentacion">
+        Presentación: <strong>{{ prod.Tamano || $any(prod).tamano || $any(prod).presentacion || '250' }} ml</strong>
+      </p>
+      
+      <div class="precio-box">
+        <span class="moneda">$</span>
+        <span class="monto">
+          {{ prod.PrecioRegular || $any(prod).precioRegular || $any(prod).precio_regular || $any(prod).Precio_Regular || $any(prod).Precio || $any(prod).precio || $any(prod).PrecioVenta || '0.00' }}
+        </span>
+        <span class="divisa">MXN</span>
       </div>
 
-      <div class="descripcion">
+      <div class="descripcion-box">
         <h3>Descripción</h3>
-        <p>{{ prod.Descripcion || 'Sin descripción disponible.' }}</p>
+        <p>{{ prod.Descripcion || $any(prod).descripcion || 'Esta deliciosa Macha no tiene descripción aún.' }}</p>
       </div>
 
       <button class="btn-agregar" (click)="agregarAlCarrito()">
@@ -29,7 +40,7 @@
   </div>
 </div>
 } @else {
-<div style="text-align: center; padding: 50px; color: var(--texto-secundario);">
-  <h2>Cargando información de tu Macha... 🌶️</h2>
+<div class="loader-container">
+  <h2>Cocinando tu Macha... </h2>
 </div>
 }

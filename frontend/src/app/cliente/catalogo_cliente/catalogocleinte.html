@@ -20,11 +20,15 @@
             {{ producto.Nombre }}
           </h3>
           <p class="tamano">{{ producto.Tamano || 'Presentación Única' }}</p>
-          <div class="precio-tag">${{ producto.PrecioRegular || '0.00' }}</div>
+          <div class="precio-tag">${{ producto.PrecioRegular || $any(producto).precioRegular || $any(producto).precio_regular || $any(producto).Precio || $any(producto).precio || '0.00' }}</div>
           
           <button class="btn-agregar" (click)="agregarAlCarrito(producto)">
              Añadir al Carrito
           </button>
+          
+          <!-- 🐛 MODO DEPURACIÓN: Esto imprimirá los datos reales en pantalla -->
+          <pre style="font-size: 11px; background: #eee; padding: 10px; margin-top: 10px; overflow: auto; border-radius: 8px; color: #333;">{{ producto | json }}</pre>
+          
         </div>
       </div>
     } @empty { 

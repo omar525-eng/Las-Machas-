@@ -7,11 +7,16 @@ import { Router } from '@angular/router';
 export class AuthService {
   private router = inject(Router);
   
-  // Iniciamos siempre en nulo para poder probar el login cada vez que recargamos
+  // Iniciamos en nulo para que siempre pida login al recargar la página
   currentRole = signal<string | null>(null);
   
-  // Forzamos a que la sesión inicie en falso
   isLoggedIn = signal<boolean>(false);
+
+  constructor() {
+    // Borramos el token y rol guardados al iniciar la app para forzar el login
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+  }
 
   login(token: string, role: string | number) {
     const roleStr = String(role);
@@ -30,13 +35,19 @@ export class AuthService {
     this.router.navigate(['/login']);
   }
 
- isAdmin() {
-  const role = this.currentRole();
-  return role === 'Administrador';
-}
+  isAdmin() {
+    const role = this.currentRole();
+    if (!role) return false;
+    // Lo convertimos a texto, minúsculas, quitamos espacios y comprobamos también el número 1
+    const r = String(role).toLowerCase().trim();
+    return r === 'admin' || r === 'administrador' || r === '1';
+  }
 
   isUser() {
-    return this.currentRole() === 'Cliente';
+    const role = this.currentRole();
+    if (!role) return false;
+    const r = role.toLowerCase();
+    return r === 'cliente' || r === 'user' || r === 'usuario';
   }
 
   isAuthenticated(): boolean {
