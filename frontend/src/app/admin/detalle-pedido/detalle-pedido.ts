@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CatalogoService } from '../../core/services/catalogo.service';
@@ -13,6 +13,7 @@ import { CatalogoService } from '../../core/services/catalogo.service';
 export class DetallePedido implements OnInit {
   private route = inject(ActivatedRoute);
   private catalogoService = inject(CatalogoService);
+  private cdr = inject(ChangeDetectorRef); // <--- El codazo para Angular
 
   pedidoId: string | null = null;
   cabecera: any = null;
@@ -27,21 +28,27 @@ export class DetallePedido implements OnInit {
     } else {
       console.warn('No se recibió ningún ID de pedido en la URL.');
       this.cargando = false;
+      this.cdr.detectChanges(); // Actualizamos la vista
     }
   }
 
   cargarDetalle(id: string) {
     this.catalogoService.obtenerDetallePedido(id).subscribe({
       next: (res: any) => {
+        console.log('¡Llegó el pedido desde el backend!', res); // Chismoso F12
+        
         if (res && res.data) {
           this.cabecera = res.data.cabecera;
           this.detalle = res.data.detalle;
         }
+        
         this.cargando = false;
+        this.cdr.detectChanges(); // <--- ¡AQUÍ ESTÁ LA MAGIA PARA QUITAR LA CARGA!
       },
       error: (err) => {
         console.error('Error al cargar el detalle', err);
         this.cargando = false;
+        this.cdr.detectChanges(); // Actualizamos la vista aunque haya error
       }
     });
   }
@@ -55,6 +62,7 @@ export class DetallePedido implements OnInit {
     this.catalogoService.actualizarEstatusPedido(Number(this.pedidoId), nuevoEstatus).subscribe({
       next: () => {
         this.cabecera.Estatus = nuevoEstatus;
+        this.cdr.detectChanges(); // Actualizamos la etiqueta de estatus visualmente
         alert(`¡Pedido marcado como ${nuevoEstatus}!`);
       },
       error: (err) => {

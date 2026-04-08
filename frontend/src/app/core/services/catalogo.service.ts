@@ -11,6 +11,7 @@ export class CatalogoService {
   private productosUrl = 'http://localhost:3000/api/productos'; 
   private inventariosUrl = 'http://localhost:3000/api/inventario';
   private pedidosUrl = 'http://localhost:3000/api/pedidos';
+  private skusUrl = 'http://localhost:3000/api/skus'; // Añadí la ruta base de SKUs
 
   constructor(private http: HttpClient) { }
 
@@ -30,16 +31,23 @@ export class CatalogoService {
     return this.http.put<any>(`${this.productosUrl}/${id}`, producto);
   }
   
+  // ---> NUEVA FUNCIÓN PARA DESACTIVAR EL SKU <---
+  actualizarEstadoSKU(skuId: number, estado: number): Observable<any> {
+    return this.http.patch<any>(`${this.skusUrl}/${skuId}/estado`, { Estado: estado });
+  }
+
   obtenerPedidos(): Observable<any> {
     return this.http.get<any>(this.pedidosUrl);
   }
 
-  // ---> ESTA ES LA FUNCIÓN QUE FALTABA <---
   obtenerDetallePedido(id: string): Observable<any> {
     return this.http.get<any>(`${this.pedidosUrl}/${id}`);
   }
 
   actualizarEstatusPedido(id: number, nuevoEstatus: string): Observable<any> {
     return this.http.patch<any>(`${this.pedidosUrl}/${id}/estatus`, { Estatus: nuevoEstatus });
+  }
+  crearSKU(nuevoSKU: any): Observable<any> {
+    return this.http.post<any>(this.skusUrl, nuevoSKU);
   }
 }

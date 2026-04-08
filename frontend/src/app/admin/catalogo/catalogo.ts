@@ -89,22 +89,33 @@ export class Catalogo implements OnInit {
     this.productoADesactivar = null;
   }
 
+  // ---> FUNCIÓN MULTIUSOS: ACTIVA O DESACTIVA <---
   confirmarDesactivacion() {
     if (this.productoADesactivar) {
-      const productoModificado = {
-        ...this.productoADesactivar,
-        Estado: 0 
-      };
+      
+      // Si estamos viendo inactivos, el nuevo estado será 1 (Activar). Si no, será 0 (Desactivar).
+      const nuevoEstado = this.mostrarInactivos ? 1 : 0;
+      const accionPalabra = this.mostrarInactivos ? 'activado' : 'desactivado';
 
-      this.catalogoService.actualizarProducto(this.productoADesactivar.ProductoID, productoModificado).subscribe({
+      this.catalogoService.actualizarEstadoSKU((this.productoADesactivar as any).SkuID, nuevoEstado).subscribe({
         next: () => {
-          alert(`¡La salsa "${this.productoADesactivar?.Nombre}" se ha desactivado!`);
+          alert(`¡La salsa "${this.productoADesactivar?.Nombre}" se ha ${accionPalabra}!`);
           this.cerrarModal();
-          this.cargarActivos();
+          
+          // Recargamos la lista en la que estamos actualmente para que el producto desaparezca visualmente
+          if (this.mostrarInactivos) {
+             // Si estaba en inactivos, al activarlo debe desaparecer de esta lista.
+             // Truco: apagamos la bandera y volvemos a llamar a toggleInactivos para forzar la recarga
+             this.mostrarInactivos = false;
+             this.toggleInactivos();
+          } else {
+             // Si estaba en activos, al desactivarlo recargamos activos
+             this.cargarActivos();
+          }
         },
         error: (error) => {
-          console.error('Error al desactivar:', error);
-          alert('Hubo un error en el servidor al intentar desactivar la salsa.');
+          console.error('Error al cambiar el estado del SKU:', error);
+          alert('Hubo un error en el servidor al intentar cambiar el estado de la salsa.');
         }
       });
     }

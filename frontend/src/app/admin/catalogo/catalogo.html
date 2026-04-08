@@ -46,13 +46,19 @@
         <div style="font-size: 14px; font-weight: bold; color: #2e7d32; margin-bottom: 16px;">Stock: {{ producto.Stock || 0 }} pzas</div>
         
         <div style="display: flex; gap: 8px; margin-top: auto;">
-<button class="btn-machas" [routerLink]="['/admin/actualizar-producto', $any(producto).SkuID]" style="background: var(--color-secundario); flex: 1; padding: 10px; font-size: 14px;">Editar</button>          <button class="btn-machas" (click)="abrirModal(producto)" style="background: #e53935; flex: 1; padding: 10px; font-size: 14px;">Desactivar</button>
+          <button class="btn-machas" [routerLink]="['/admin/actualizar-producto', $any(producto).SkuID]" style="background: var(--color-secundario); flex: 1; padding: 10px; font-size: 14px;">Editar</button>
+          
+          <button class="btn-machas" (click)="abrirModal(producto)" 
+                  [style.background]="mostrarInactivos ? '#4CAF50' : '#e53935'" 
+                  style="flex: 1; padding: 10px; font-size: 14px;">
+            {{ mostrarInactivos ? 'Activar' : 'Desactivar' }}
+          </button>
         </div>
       </div>
 
     } @empty {
       <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--texto-secundario); background: #f9f9f9; border-radius: 8px; border: 1px dashed #ccc;">
-        <p style="font-weight: bold;">No hay productos registrados en el inventario.</p>
+        <p style="font-weight: bold;">No hay productos registrados en esta categoría.</p>
       </div>
     }
 
@@ -64,27 +70,33 @@
     
     <div style="background-color: white; width: 90%; max-width: 400px; border-radius: 16px; padding: 30px; text-align: center; box-shadow: 0 10px 25px rgba(226, 27, 112, 0.2); border-top: 6px solid var(--color-primario, #e21b70);">
       
-      <div style="background-color: #fce4ec; width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 15px auto;">
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--color-primario, #e21b70)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"></circle>
-          <line x1="12" y1="8" x2="12" y2="12"></line>
-          <line x1="12" y1="16" x2="12.01" y2="16"></line>
-        </svg>
+      <div [style.background-color]="mostrarInactivos ? '#E8F5E9' : '#fce4ec'" style="width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 15px auto;">
+        @if (mostrarInactivos) {
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        } @else {
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--color-primario, #e21b70)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+        }
       </div>
 
       <h3 style="margin-bottom: 10px; color: #333; font-size: 20px;">¿Estás segura?</h3>
       
       <p style="color: #666; margin-bottom: 25px; font-size: 15px; line-height: 1.5;">
-        Estás a punto de desactivar la <b>{{ productoADesactivar.Nombre }}</b>.<br>
-        Dejará de ser visible para los clientes en la tienda.
+        Estás a punto de <b>{{ mostrarInactivos ? 'activar' : 'desactivar' }}</b> la <b>{{ productoADesactivar.Nombre }}</b>.<br>
+        {{ mostrarInactivos ? 'Volverá a ser visible para los clientes.' : 'Dejará de ser visible en la tienda.' }}
       </p>
 
       <div style="display: flex; gap: 12px; justify-content: center;">
         <button (click)="cerrarModal()" style="padding: 12px 20px; border: none; background-color: #f5f5f5; color: #555; border-radius: 8px; font-weight: bold; cursor: pointer; flex: 1; transition: 0.2s;">
           Cancelar
         </button>
-        <button (click)="confirmarDesactivacion()" style="padding: 12px 20px; border: none; background-color: var(--color-primario, #e21b70); color: white; border-radius: 8px; font-weight: bold; cursor: pointer; flex: 1; transition: 0.2s; box-shadow: 0 4px 10px rgba(226, 27, 112, 0.3);">
-          Sí, Desactivar
+        <button (click)="confirmarDesactivacion()" [style.background-color]="mostrarInactivos ? '#4CAF50' : 'var(--color-primario, #e21b70)'" style="padding: 12px 20px; border: none; color: white; border-radius: 8px; font-weight: bold; cursor: pointer; flex: 1; transition: 0.2s; box-shadow: 0 4px 10px rgba(0,0,0, 0.1);">
+          Sí, {{ mostrarInactivos ? 'Activar' : 'Desactivar' }}
         </button>
       </div>
 

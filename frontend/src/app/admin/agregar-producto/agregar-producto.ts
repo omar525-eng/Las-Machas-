@@ -41,29 +41,59 @@ export class AgregarProducto {
   guardarProducto() {
     if (this.productoForm.valid) {
       
-      const payloadBackend = {
+      // 1. Armamos el paquete SOLO para el Producto
+      const payloadProducto = {
         Nombre: this.productoForm.value.Nombre,
+        Descripcion: this.productoForm.value.Descripcion,
         CategoriaID: parseInt(this.productoForm.value.CategoriaID as string),
-        ImagenURL: 'https://via.placeholder.com/250', 
-        Descripcion: this.productoForm.value.Descripcion
+        ImagenURL: 'https://placehold.co/300x180/e53935/ffffff?text=Nueva+Salsa', // Imagen de relleno roja
+        Estado: 1
       };
 
-      console.log('Enviando esto al backend:', payloadBackend);
+      console.log('1. Enviando Producto al backend...');
 
-      this.catalogoService.crearProducto(payloadBackend).subscribe({
+      // Disparamos la primera petición
+      this.catalogoService.crearProducto(payloadProducto).subscribe({
         next: (res) => {
-          console.log('Respuesta del servidor:', res);
-          alert('¡Producto guardado en la base de datos con éxito!');
-          this.router.navigate(['/admin/catalogo']);
+          console.log('¡Producto creado!', res);
+          
+          // Sacamos el ID que nos regresó Hector del backend
+          const nuevoID = res.productoID; 
+
+          // 2. Armamos el paquete para el SKU usando el ID nuevecito
+          const payloadSKU = {
+            ProductoID: nuevoID,
+            Tamano: this.productoForm.value.Tamano,
+            PrecioRegular: Number(this.productoForm.value.PrecioRegular),
+            PrecioMayoreo: Number(this.productoForm.value.PrecioMayoreo) || Number(this.productoForm.value.PrecioRegular),
+            Stock: Number(this.productoForm.value.Stock),
+            StockMinimo: Number(this.productoForm.value.StockMinimo) || 5,
+          };
+
+          console.log('2. Enviando SKU al backend...', payloadSKU);
+
+          // Disparamos la segunda petición (El Combo)
+          this.catalogoService.crearSKU(payloadSKU).subscribe({
+            next: (resSku) => {
+              console.log('¡SKU creado con éxito!', resSku);
+              alert('¡Producto y presentación guardados al 100%!');
+              this.router.navigate(['/admin/catalogo']);
+            },
+            error: (errSku) => {
+              console.error('Error al guardar el SKU:', errSku);
+              alert('Se creó el producto pero falló al guardar el precio/inventario. Revisa la consola.');
+            }
+          });
+
         },
         error: (err) => {
-          console.error('Error al guardar en la BD:', err);
-          alert('Revisa la consola, algo falló en la conexión.');
+          console.error('Error al guardar el Producto:', err);
+          alert('Hubo un error al guardar los datos generales.');
         }
       });
 
     } else {
-      alert('Llena los campos faltantes');
+      alert('Por favor, llena los campos obligatorios.');
       this.productoForm.markAllAsTouched();
     }
   }
