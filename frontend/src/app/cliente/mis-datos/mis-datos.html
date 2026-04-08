@@ -1,26 +1,55 @@
-<div class="contenedor-mis-datos">
-  <h2>Mis Datos</h2>
-  <p class="subtitulo">Actualiza tu información de contacto y envío.</p>
+<div style="padding: 20px; max-width: 600px; margin: 40px auto; background: var(--color-tarjeta, #fff); border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+  <h2 style="text-align: center; color: var(--color-primario, #d32f2f); margin-bottom: 5px;">Mi Perfil</h2>
+  <p style="text-align: center; color: var(--texto-secundario, #666); margin-bottom: 25px;">Gestiona tu información de envío</p>
 
-  <div class="tarjeta-datos">
-    <form (ngSubmit)="guardarDatos()">
-      
-      <div class="form-group">
-        <label>Nombre Completo</label>
-        <input type="text" [(ngModel)]="usuario.nombre" name="nombre" placeholder="Ej. Omar Ornelas" required>
+  @if (!isLoggedIn) {
+    <div style="text-align: center; padding: 20px;">
+      <h3 style="color: var(--color-tipografia, #333);">Aún no estás registrado</h3>
+      <p style="margin-bottom: 20px; color: var(--texto-secundario, #666);">Inicia sesión o regístrate para poder guardar tu información predeterminada y agilizar tus compras.</p>
+      <a routerLink="/login" class="btn-machas" style="text-decoration: none; display: inline-block;">Ir a Iniciar Sesión</a>
+    </div>
+  } @else {
+    
+    <!-- MODO LECTURA: Solo muestra la información -->
+    @if (!modoEdicion) {
+      <div style="display: flex; flex-direction: column; gap: 15px; padding: 10px;">
+        <div>
+          <span style="font-weight: bold; color: var(--color-tipografia, #333); font-size: 14px;">Nombre Completo:</span>
+          <p style="margin: 5px 0; padding: 12px; background: #f9f9f9; border-radius: 8px; border: 1px dashed #ccc; color: #555;">{{ usuario.nombreCompleto || 'No especificado' }}</p>
+        </div>
+        <div>
+          <span style="font-weight: bold; color: var(--color-tipografia, #333); font-size: 14px;">Teléfono (WhatsApp):</span>
+          <p style="margin: 5px 0; padding: 12px; background: #f9f9f9; border-radius: 8px; border: 1px dashed #ccc; color: #555;">{{ usuario.telefono || 'No especificado' }}</p>
+        </div>
+        <div>
+          <span style="font-weight: bold; color: var(--color-tipografia, #333); font-size: 14px;">Dirección de Entrega:</span>
+          <p style="margin: 5px 0; padding: 12px; background: #f9f9f9; border-radius: 8px; border: 1px dashed #ccc; color: #555;">{{ usuario.direccionDefecto || 'No especificada' }}</p>
+        </div>
+        
+        <button (click)="modoEdicion = true" class="btn-machas" style="margin-top: 15px; width: 100%; padding: 12px; cursor: pointer;">Editar mis datos</button>
       </div>
+    } 
+    <!-- MODO EDICIÓN: Muestra las cajas de texto para modificar -->
+    @else {
+      <div style="display: flex; flex-direction: column; gap: 15px;">
+        <div>
+          <label style="font-weight: bold; font-size: 14px;">Nombre Completo:</label>
+          <input type="text" [(ngModel)]="usuario.nombreCompleto" placeholder="Ej. Juan Pérez" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; margin-top: 5px; outline-color: var(--color-primario);">
+        </div>
+        <div>
+          <label style="font-weight: bold; font-size: 14px;">Teléfono:</label>
+          <input type="tel" [(ngModel)]="usuario.telefono" placeholder="Ej. 4491234567" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; margin-top: 5px; outline-color: var(--color-primario);">
+        </div>
+        <div>
+          <label style="font-weight: bold; font-size: 14px;">Dirección Predeterminada:</label>
+          <input type="text" [(ngModel)]="usuario.direccionDefecto" placeholder="Calle, Número, Colonia..." style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; margin-top: 5px; outline-color: var(--color-primario);">
+        </div>
 
-      <div class="form-group">
-        <label>Teléfono (WhatsApp)</label>
-        <input type="tel" [(ngModel)]="usuario.telefono" name="telefono" placeholder="Ej. 4491234567" required>
+        <div style="display: flex; gap: 10px; margin-top: 15px;">
+          <button (click)="modoEdicion = false" style="flex: 1; padding: 12px; background: #f5f5f5; color: var(--texto-secundario); border: 1px solid #ddd; font-weight: bold; border-radius: 8px; cursor: pointer;">Cancelar</button>
+          <button (click)="guardarDatos()" class="btn-machas" style="flex: 2; padding: 12px; cursor: pointer;">Guardar Cambios</button>
+        </div>
       </div>
-
-      <div class="form-group">
-        <label>Dirección de Envío (Por defecto)</label>
-        <textarea [(ngModel)]="usuario.direccion" name="direccion" placeholder="Calle, Número, Colonia..." rows="3" required></textarea>
-      </div>
-
-      <button type="submit" class="btn-guardar">Guardar Cambios</button>
-    </form>
-  </div>
+    }
+  }
 </div>

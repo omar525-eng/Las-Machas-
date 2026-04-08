@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -15,40 +15,81 @@ export class Checkout implements OnInit {
   public cartService = inject(CartService);
   private http = inject(HttpClient);
   private router = inject(Router);
+  private cdr = inject(ChangeDetectorRef);
+
+  isLoggedIn = false;
 
   usuario = {
-    nombre: '',
-    direccion: '',
+    nombreCompleto: '',
+    direccionDefecto: '',
     telefono: ''
   };
+
+  // Función para leer el ID que viene oculto en el Token
+  private obtenerUsuarioId(token: string) {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.UsuarioID || payload.id || payload.userId || payload.usuarioId || payload.idUsuario;
+    } catch (e) {
+      return null;
+    }
+  }
 
   ngOnInit() {
     // Si el usuario ya está registrado/logueado, obtenemos sus datos
     const token = localStorage.getItem('token');
     if (token) {
-      this.http.get<any>('http://localhost:3000/api/usuarios/perfil', {
-        headers: { Authorization: `Bearer ${token}` }
-      }).subscribe({
-        next: (res) => {
-          const data = res.data || res;
-          this.usuario.nombre = data.nombre || data.Nombre || '';
-          this.usuario.direccion = data.direccion || data.Direccion || '';
-          this.usuario.telefono = data.telefono || data.Telefono || '';
-        },
-        error: (err) => console.error('Error cargando datos del perfil:', err)
-      });
+      const usuarioId = this.obtenerUsuarioId(token);
+      if (usuarioId) {
+        this.isLoggedIn = true;
+        this.http.get<any>(`http://localhost:3000/api/usuarios/${usuarioId}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        }).subscribe({
+          next: (res) => {
+            let nombre = '';
+            let telefono = '';
+            let direccion = '';
+            
+            // Buscador invencible para asegurar que agarramos los datos
+            const buscarDatos = (obj: any) => {
+              if (!obj || typeof obj !== 'object') return;
+              for (const key of Object.keys(obj)) {
+                const k = key.toLowerCase();
+                if (k === 'nombre' || k === 'nombrecompleto' || k === 'nombre_completo') { if (!nombre) nombre = obj[key]; }
+                if (k === 'telefono' || k === 'tel') { if (!telefono) telefono = obj[key]; }
+                if (k === 'direccion' || k === 'direcciondefecto' || k === 'direccion_defecto') { if (!direccion) direccion = obj[key]; }
+                if (typeof obj[key] === 'object') buscarDatos(obj[key]);
+              }
+            };
+            buscarDatos(res);
+
+            this.usuario.nombreCompleto = nombre || '';
+            this.usuario.telefono = telefono || '';
+            this.usuario.direccionDefecto = direccion || '';
+
+            // Obligar a la pantalla a refrescarse
+            this.cdr.detectChanges();
+          },
+          error: (err) => {
+            console.error('Error cargando datos del perfil:', err);
+            if (err.status === 401 || err.status === 403) {
+              this.isLoggedIn = false;
+            }
+          }
+        });
+      }
     }
   }
 
   enviarPedido() {
-    if (!this.usuario.nombre || !this.usuario.direccion || !this.usuario.telefono) {
+    if (!this.usuario.nombreCompleto || !this.usuario.direccionDefecto || !this.usuario.telefono) {
       alert('Por favor, llena todos los campos para el envío.');
       return;
     }
 
     const pedido = {
-      cliente: this.usuario.nombre,
-      direccion: this.usuario.direccion,
+      cliente: this.usuario.nombreCompleto,
+      direccion: this.usuario.direccionDefecto,
       telefono: this.usuario.telefono,
       total: this.cartService.total(),
       items: this.cartService.getItems()().map(item => ({
@@ -77,9 +118,9 @@ export class Checkout implements OnInit {
 
   abrirWhatsApp() {
     let msg = `*🌶️ NUEVO PEDIDO - LAS MACHAS 🌶️*\n\n`;
-    msg += `*Cliente:* ${this.usuario.nombre}\n`;
+    msg += `*Cliente:* ${this.usuario.nombreCompleto}\n`;
     msg += `*Teléfono:* ${this.usuario.telefono}\n`;
-    msg += `*Dirección:* ${this.usuario.direccion}\n\n`;
+    msg += `*Dirección:* ${this.usuario.direccionDefecto}\n\n`;
     msg += `*📦 Productos:*\n`;
     
     this.cartService.getItems()().forEach(item => {

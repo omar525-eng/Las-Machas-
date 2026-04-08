@@ -17,7 +17,7 @@ export async function findUserByEmail(correo) {
 
 export async function registrarUsuario(rol, nombreCompleto, correo, passwordHash, telefono, direccionDefecto) {
   try {
-    const pool = await getConnection(); 
+    const pool = await getConnection();
 
     const result = await pool.request()
       .input("Rol",              rol)
@@ -60,5 +60,5 @@ export const obtenerUsuario = async (usuarioID) => {
     .input("UsuarioID", usuarioID)
     .execute("sp_ObtenerUsuario")
 
-  return result.recordset[0] // solo un usuario
+  return result.recordset[0] 
 }

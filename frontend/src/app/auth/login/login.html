@@ -1,6 +1,6 @@
 <div style="max-width: 400px; margin: 50px auto; background: var(--color-tarjeta); padding: 30px; border-radius: var(--radio-borde); box-shadow: var(--sombra-tarjeta); text-align: center;">
   
-  <h2 style="color: var(--color-primario); margin-bottom: 10px;">¡Hola!, Bienvenido a las Machas🌶️</h2>
+  <h2 style="color: var(--color-primario); margin-bottom: 10px;">¡Hola!, Bienvenido a las Machas</h2>
   <p style="color: var(--texto-secundario); margin-bottom: 20px;">Listo para empezar tu compra?.</p>
 
   <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" style="display: flex; flex-direction: column; gap: 15px; text-align: left;">
@@ -18,7 +18,7 @@
   </form>
 
   <p style="margin-top: 20px; font-size: 14px;">
-    <a routerLink="/tienda" style="color: var(--texto-secundario); text-decoration: underline;">← Echar un vistazo como invitado</a>
+    <a (click)="entrarComoInvitado()" style="color: var(--texto-secundario); text-decoration: underline; cursor: pointer;">← Echar un vistazo como invitado</a>
   </p>
 
   <div style="margin-top: 25px; border-top: 1px solid #eee; padding-top: 20px;">

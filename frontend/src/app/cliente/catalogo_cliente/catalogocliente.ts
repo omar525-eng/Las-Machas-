@@ -10,7 +10,7 @@ import { AuthService } from '../../core/services/auth.service';
 @Component({
   selector: 'app-catalogo-cliente',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterOutlet],
+  imports: [CommonModule, RouterLink],
   templateUrl: './catalogocleinte.html',
   styleUrl: './catalogocliente.css'
 })
@@ -56,7 +56,7 @@ export class CatalogoCliente implements OnInit {
   }
 
   enviarDudaWhatsApp() {
-    const msg = `¡Hola! Estoy viendo el catálogo de *Las Machas* y tengo una duda... 🌶️`;
+    const msg = `¡Hola! Estoy viendo el catálogo de *Las Machas* y tengo una duda...`;
     const numeroTel = "52461130968"; 
     const url = `https://wa.me/${numeroTel}?text=${encodeURIComponent(msg)}`;
     window.open(url, '_blank');

@@ -32,11 +32,11 @@ export class AuthService {
 
  isAdmin() {
   const role = this.currentRole();
-  return role === '1';
+  return role === 'Administrador';
 }
 
   isUser() {
-    return this.currentRole() === '2';
+    return this.currentRole() === 'Cliente';
   }
 
   isAuthenticated(): boolean {

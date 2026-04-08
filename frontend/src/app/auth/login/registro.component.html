@@ -6,12 +6,12 @@
     
     <div class="form-group">
       <label>Nombre Completo</label>
-      <input type="text" formControlName="nombre" placeholder="Tu nombre y apellido">
+      <input type="text" formControlName="nombreCompleto" placeholder="Tu nombre y apellido">
     </div>
 
     <div class="form-group">
       <label>Correo Electrónico</label>
-      <input type="email" formControlName="email" placeholder="tu.correo@ejemplo.com">
+      <input type="email" formControlName="correo" placeholder="tu_correo@ejemplo.com">
     </div>
 
     <div class="form-group">
@@ -26,7 +26,7 @@
 
     <div class="form-group">
       <label>Dirección de Envío</label>
-      <textarea formControlName="direccion" placeholder="Tu calle, número, colonia, etc." rows="3"></textarea>
+      <textarea formControlName="direccionDefecto" placeholder="Tu calle, número, colonia, etc." rows="3"></textarea>
     </div>
 
     <button type="submit" class="btn-registrar" [disabled]="!registroForm.valid">

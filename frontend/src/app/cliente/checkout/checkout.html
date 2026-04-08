@@ -3,9 +3,20 @@
   <p style="text-align: center; color: var(--texto-secundario); margin-bottom: 25px;">Llena tus datos para coordinar la entrega</p>
   
   <form (ngSubmit)="enviarPedido()" style="display: flex; flex-direction: column; gap: 15px;">
+    
+    @if (isLoggedIn) {
+      <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px dashed #ccc; margin-bottom: 10px;">
+        <h3 style="margin-top: 0; font-size: 16px; color: var(--color-tipografia); margin-bottom: 10px;"> Enviando pedido a:</h3>
+        <p style="margin: 5px 0; color: #555; font-size: 14px;"><strong>Nombre:</strong> {{ usuario.nombreCompleto }}</p>
+        <p style="margin: 5px 0; color: #555; font-size: 14px;"><strong>Teléfono:</strong> {{ usuario.telefono }}</p>
+        <p style="margin: 5px 0; color: #555; font-size: 14px;"><strong>Dirección:</strong> {{ usuario.direccionDefecto }}</p>
+        <small style="color: var(--texto-secundario); display: block; margin-top: 10px;">* Puedes modificar esta información desde 'Mis Datos'.</small>
+      </div>
+    } @else {
+      <!-- Formulario normal para invitados -->
     <div>
       <label style="font-weight: bold; font-size: 14px;">Nombre Completo:</label>
-      <input type="text" [(ngModel)]="usuario.nombre" name="nombre" placeholder="Ej. Juan Pérez" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; margin-top: 5px;" required>
+      <input type="text" [(ngModel)]="usuario.nombreCompleto" name="nombreCompleto" placeholder="Ej. Juan Pérez" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; margin-top: 5px;" required>
     </div>
     <div>
       <label style="font-weight: bold; font-size: 14px;">Teléfono (WhatsApp):</label>
@@ -13,8 +24,9 @@
     </div>
     <div>
       <label style="font-weight: bold; font-size: 14px;">Dirección de Entrega:</label>
-      <input type="text" [(ngModel)]="usuario.direccion" name="direccion" placeholder="Calle, Número, Colonia..." style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; margin-top: 5px;" required>
+      <input type="text" [(ngModel)]="usuario.direccionDefecto" name="direccionDefecto" placeholder="Calle, Número, Colonia..." style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; margin-top: 5px;" required>
     </div>
+    }
 
     <div style="background: var(--color-fondo); padding: 15px; border-radius: 8px; margin-top: 10px;">
       <h4 style="margin-bottom: 10px;">Resumen de tu pedido:</h4>

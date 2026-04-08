@@ -27,7 +27,7 @@ export class Login {
   onSubmit() {
     if (this.loginForm.valid) {
       const credentials = this.loginForm.getRawValue();
-      this.http.post<any>('http://localhost:3000/usuarios/login', credentials).subscribe({
+      this.http.post<any>('http://localhost:3000/api/usuarios/login', credentials).subscribe({
         next: (response) => {
           this.authService.login(response.token, response.role);
           this.router.navigate([this.authService.isAdmin() ? '/admin/catalogo' : '/tienda']);
@@ -37,5 +37,12 @@ export class Login {
     } else {
       alert('Por favor, completa el formulario correctamente.');
     }
+  }
+
+  entrarComoInvitado() {
+    // Borramos cualquier rastro de sesión anterior
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    this.router.navigate(['/tienda']);
   }
 }
