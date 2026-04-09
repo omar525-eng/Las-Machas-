@@ -16,7 +16,8 @@ export class Catalogo implements OnInit {
   productosRespaldo: Producto[] = []; 
   productoADesactivar: Producto | null = null; 
   mostrarInactivos: boolean = false; 
-  
+  cargando: boolean = false; // <--- Nuestra bandera para evitar el lag
+
   private catalogoService = inject(CatalogoService);
   private busquedaService = inject(BusquedaService);
   private cdr = inject(ChangeDetectorRef);
@@ -30,14 +31,19 @@ export class Catalogo implements OnInit {
   }
 
   cargarActivos() {
+    this.cargando = true; // Prendemos el cargando
     this.catalogoService.obtenerProductos().subscribe({
       next: (respuesta: any) => {
         const datos = respuesta.data ? respuesta.data : respuesta;
         this.productos = datos;
         this.productosRespaldo = datos; 
+        this.cargando = false; // Apagamos el cargando
         this.cdr.detectChanges();
       },
-      error: (error) => console.error('Hubo un error de conexión:', error)
+      error: (error) => {
+        console.error('Hubo un error de conexión:', error);
+        this.cargando = false; // Apagamos por si falla
+      }
     });
   }
 
@@ -59,6 +65,7 @@ export class Catalogo implements OnInit {
 
   toggleInactivos() {
     this.mostrarInactivos = !this.mostrarInactivos;
+    this.cargando = true; // Prendemos el cargando al cambiar de vista
     
     if (this.mostrarInactivos) {
       console.log("Pidiendo salsas inactivas");
@@ -70,10 +77,12 @@ export class Catalogo implements OnInit {
           const datos = respuesta.data ? respuesta.data : respuesta;
           this.productos = datos;
           this.productosRespaldo = datos;
+          this.cargando = false; // Apagamos el cargando
           this.cdr.detectChanges();
         },
         error: (error) => {
           console.error('Error fatal al conectar con la ruta de inactivos:', error);
+          this.cargando = false; // Apagamos por si falla
         }
       });
     } else {
@@ -89,11 +98,8 @@ export class Catalogo implements OnInit {
     this.productoADesactivar = null;
   }
 
-  // ---> FUNCIÓN MULTIUSOS: ACTIVA O DESACTIVA <---
   confirmarDesactivacion() {
     if (this.productoADesactivar) {
-      
-      // Si estamos viendo inactivos, el nuevo estado será 1 (Activar). Si no, será 0 (Desactivar).
       const nuevoEstado = this.mostrarInactivos ? 1 : 0;
       const accionPalabra = this.mostrarInactivos ? 'activado' : 'desactivado';
 
@@ -102,14 +108,10 @@ export class Catalogo implements OnInit {
           alert(`¡La salsa "${this.productoADesactivar?.Nombre}" se ha ${accionPalabra}!`);
           this.cerrarModal();
           
-          // Recargamos la lista en la que estamos actualmente para que el producto desaparezca visualmente
           if (this.mostrarInactivos) {
-             // Si estaba en inactivos, al activarlo debe desaparecer de esta lista.
-             // Truco: apagamos la bandera y volvemos a llamar a toggleInactivos para forzar la recarga
              this.mostrarInactivos = false;
              this.toggleInactivos();
           } else {
-             // Si estaba en activos, al desactivarlo recargamos activos
              this.cargarActivos();
           }
         },

@@ -10,7 +10,6 @@ export const updateProducto = async (req, res) => {
       Nombre: data.Nombre,
       CategoriaID: data.CategoriaID,
       ImagenURL: data.ImagenURL,
-      Estado: data.Estado ?? 1, // 🔥 ahora coincide con el SP
       Descripcion: data.Descripcion
     }
 

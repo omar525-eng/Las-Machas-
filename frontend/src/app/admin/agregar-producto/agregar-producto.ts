@@ -41,26 +41,22 @@ export class AgregarProducto {
   guardarProducto() {
     if (this.productoForm.valid) {
       
-      // 1. Armamos el paquete SOLO para el Producto
       const payloadProducto = {
         Nombre: this.productoForm.value.Nombre,
         Descripcion: this.productoForm.value.Descripcion,
         CategoriaID: parseInt(this.productoForm.value.CategoriaID as string),
-        ImagenURL: 'https://placehold.co/300x180/e53935/ffffff?text=Nueva+Salsa', // Imagen de relleno roja
+        ImagenURL: 'https://placehold.co/300x180/e53935/ffffff?text=Nueva+Salsa', 
         Estado: 1
       };
 
       console.log('1. Enviando Producto al backend...');
 
-      // Disparamos la primera petición
       this.catalogoService.crearProducto(payloadProducto).subscribe({
         next: (res) => {
           console.log('¡Producto creado!', res);
           
-          // Sacamos el ID que nos regresó Hector del backend
           const nuevoID = res.productoID; 
 
-          // 2. Armamos el paquete para el SKU usando el ID nuevecito
           const payloadSKU = {
             ProductoID: nuevoID,
             Tamano: this.productoForm.value.Tamano,
@@ -68,20 +64,26 @@ export class AgregarProducto {
             PrecioMayoreo: Number(this.productoForm.value.PrecioMayoreo) || Number(this.productoForm.value.PrecioRegular),
             Stock: Number(this.productoForm.value.Stock),
             StockMinimo: Number(this.productoForm.value.StockMinimo) || 5,
+            Estado: 1 
           };
 
           console.log('2. Enviando SKU al backend...', payloadSKU);
 
-          // Disparamos la segunda petición (El Combo)
           this.catalogoService.crearSKU(payloadSKU).subscribe({
             next: (resSku) => {
               console.log('¡SKU creado con éxito!', resSku);
               alert('¡Producto y presentación guardados al 100%!');
-              this.router.navigate(['/admin/catalogo']);
+              
+              setTimeout(() => {
+                this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+                  this.router.navigate(['/admin/catalogo']);
+                });
+              }, 600); 
+
             },
             error: (errSku) => {
               console.error('Error al guardar el SKU:', errSku);
-              alert('Se creó el producto pero falló al guardar el precio/inventario. Revisa la consola.');
+              alert('Se creó el producto pero falló al guardar el precio/inventario.');
             }
           });
 

@@ -33,33 +33,40 @@
 
   <div class="grid-catalogo">
 
-    @for (producto of productos; track $index) {
-      <div style="background: var(--color-tarjeta); border-radius: 12px; padding: 16px; box-shadow: var(--sombra-tarjeta); display: flex; flex-direction: column;">
-        
-        <img [src]="producto.ImagenURL || 'https://via.placeholder.com/300x180?text=Sin+Imagen'" [alt]="producto.Nombre" routerLink="/admin/detalle-producto" style="width: 100%; height: 180px; object-fit: cover; border-radius: 8px; margin-bottom: 12px; cursor: pointer; background-color: #eee;">
-        
-        <div style="color: var(--color-secundario); font-size: 12px; font-weight: bold; text-transform: uppercase; margin-bottom: 4px;">Inventario</div>
-        <h3 routerLink="/admin/detalle-producto" style="font-size: 18px; margin-bottom: 4px; color: var(--color-tipografia); cursor: pointer;">{{ producto.Nombre }}</h3>
-        
-        <div style="color: var(--texto-secundario); font-size: 14px; margin-bottom: 8px;">{{ producto.Tamano || 'Presentación Única' }}</div>
-        <div style="font-size: 20px; font-weight: bold; margin-bottom: 8px;">${{ producto.PrecioRegular || '0.00' }}</div>
-        <div style="font-size: 14px; font-weight: bold; color: #2e7d32; margin-bottom: 16px;">Stock: {{ producto.Stock || 0 }} pzas</div>
-        
-        <div style="display: flex; gap: 8px; margin-top: auto;">
-          <button class="btn-machas" [routerLink]="['/admin/actualizar-producto', $any(producto).SkuID]" style="background: var(--color-secundario); flex: 1; padding: 10px; font-size: 14px;">Editar</button>
+    @if (cargando) {
+      <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--color-primario);">
+        <h3 style="font-weight: bold; margin: 0;">Cargando salsas...</h3>
+      </div>
+    } @else {
+      
+      @for (producto of productos; track $index) {
+        <div style="background: var(--color-tarjeta); border-radius: 12px; padding: 16px; box-shadow: var(--sombra-tarjeta); display: flex; flex-direction: column;">
           
-          <button class="btn-machas" (click)="abrirModal(producto)" 
-                  [style.background]="mostrarInactivos ? '#4CAF50' : '#e53935'" 
-                  style="flex: 1; padding: 10px; font-size: 14px;">
-            {{ mostrarInactivos ? 'Activar' : 'Desactivar' }}
-          </button>
+          <img [src]="producto.ImagenURL || 'https://via.placeholder.com/300x180?text=Sin+Imagen'" [alt]="producto.Nombre" routerLink="/admin/detalle-producto" style="width: 100%; height: 180px; object-fit: cover; border-radius: 8px; margin-bottom: 12px; cursor: pointer; background-color: #eee;">
+          
+          <div style="color: var(--color-secundario); font-size: 12px; font-weight: bold; text-transform: uppercase; margin-bottom: 4px;">Inventario</div>
+          <h3 routerLink="/admin/detalle-producto" style="font-size: 18px; margin-bottom: 4px; color: var(--color-tipografia); cursor: pointer;">{{ producto.Nombre }}</h3>
+          
+          <div style="color: var(--texto-secundario); font-size: 14px; margin-bottom: 8px;">{{ producto.Tamano || 'Presentación Única' }}</div>
+          <div style="font-size: 20px; font-weight: bold; margin-bottom: 8px;">${{ producto.PrecioRegular || '0.00' }}</div>
+          <div style="font-size: 14px; font-weight: bold; color: #2e7d32; margin-bottom: 16px;">Stock: {{ producto.Stock || 0 }} pzas</div>
+          
+          <div style="display: flex; gap: 8px; margin-top: auto;">
+            <button class="btn-machas" [routerLink]="['/admin/actualizar-producto', $any(producto).SkuID]" style="background: var(--color-secundario); flex: 1; padding: 10px; font-size: 14px;">Editar</button>
+            
+            <button class="btn-machas" (click)="abrirModal(producto)" 
+                    [style.background]="mostrarInactivos ? '#4CAF50' : '#e53935'" 
+                    style="flex: 1; padding: 10px; font-size: 14px;">
+              {{ mostrarInactivos ? 'Activar' : 'Desactivar' }}
+            </button>
+          </div>
         </div>
-      </div>
 
-    } @empty {
-      <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--texto-secundario); background: #f9f9f9; border-radius: 8px; border: 1px dashed #ccc;">
-        <p style="font-weight: bold;">No hay productos registrados en esta categoría.</p>
-      </div>
+      } @empty {
+        <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--texto-secundario); background: #f9f9f9; border-radius: 8px; border: 1px dashed #ccc;">
+          <p style="font-weight: bold;">No hay productos registrados en esta categoría.</p>
+        </div>
+      }
     }
 
   </div>

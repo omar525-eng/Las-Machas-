@@ -50,4 +50,7 @@ export class CatalogoService {
   crearSKU(nuevoSKU: any): Observable<any> {
     return this.http.post<any>(this.skusUrl, nuevoSKU);
   }
+  actualizarSKU(id: number, datosSKU: any): Observable<any> {
+    return this.http.put<any>(`${this.skusUrl}/${id}`, datosSKU);
+  }
 }
