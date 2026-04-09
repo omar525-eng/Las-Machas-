@@ -1,4 +1,21 @@
 import { getConnection } from "../config/db.js"
+import axios from 'axios';
+import FormData from 'form-data';
+import fs from 'fs';
+// Función para subir imagen a Easy File URL
+async function uploadImage(filePath) {
+  const formData = new FormData();
+  formData.append('file', fs.createReadStream(filePath));
+
+  const response = await axios.post('https://www.easyfileurl.com/api/v1/files', formData, {
+    headers: {
+      'Authorization': 'Bearer eiu_61fa79b2197349feb87164faf1310c40', // tu API key del dashboard
+      ...formData.getHeaders()
+    }
+  });
+
+  return response.data.url; // URL que luego guardas en la BD
+}
 
 // Actualizar producto
 export const actualizarProducto = async (producto) => {
