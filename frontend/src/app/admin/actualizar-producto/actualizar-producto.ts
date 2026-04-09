@@ -46,12 +46,9 @@ export class ActualizarProducto implements OnInit {
     this.catalogoService.obtenerProductos().subscribe({
       next: (res: any) => {
         const productos = res.data || res; 
-        
-        // AHORA BUSCAMOS ESPECÍFICAMENTE POR SkuID
         const productoEncontrado = productos.find((p: any) => p.SkuID == id);
 
         if (productoEncontrado) {
-          console.log('Producto encontrado:', productoEncontrado);
           this.productoForm.patchValue({
             Nombre: productoEncontrado.Nombre || productoEncontrado.NombreProducto || 'Nombre no disponible',
             Descripcion: productoEncontrado.Descripcion || '',
@@ -64,12 +61,11 @@ export class ActualizarProducto implements OnInit {
         } else {
           alert('No se encontraron los datos de este producto.');
         }
-        
         this.cargando = false;
         this.cdr.detectChanges();
       },
       error: (err) => {
-        console.error('ERROR al cargar los datos del backend', err);
+        console.error('ERROR al cargar los datos', err);
         this.cargando = false;
         this.cdr.detectChanges();
       }
@@ -78,19 +74,43 @@ export class ActualizarProducto implements OnInit {
 
   guardarCambios() {
     if (this.productoForm.valid && this.productoId) {
-      const datosAEnviar = this.productoForm.getRawValue();
-      this.catalogoService.actualizarProducto(Number(this.productoId), datosAEnviar).subscribe({
-        next: (res) => {
-          alert('¡Producto actualizado con éxito en la base de datos!');
-          this.router.navigate(['/admin/catalogo']); 
+      const datosRaw = this.productoForm.getRawValue();
+      
+      const payloadSKU = {
+        Tamano: datosRaw.Tamano,
+        PrecioRegular: Number(datosRaw.PrecioRegular),
+        PrecioMayoreo: Number(datosRaw.PrecioRegular), 
+        Stock: Number(datosRaw.StockActual),
+        StockMinimo: Number(datosRaw.StockMinimo) || 5
+      };
+
+      console.log('Enviando cambios...');
+
+      this.catalogoService.actualizarProducto(Number(this.productoId), datosRaw).subscribe({
+        next: () => {
+          this.catalogoService.actualizarSKU(Number(this.productoId), payloadSKU).subscribe({
+            next: () => {
+              alert('¡Salsa actualizada con éxito!');
+              
+              setTimeout(() => {
+                this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+                  this.router.navigate(['/admin/catalogo']);
+                });
+              }, 600);
+            },
+            error: (err) => {
+              console.error('Error en SKU:', err);
+              alert('Se guardó la descripción pero falló el precio.');
+            }
+          });
         },
         error: (err) => {
-          console.error('Error al actualizar en el back:', err);
-          alert('Hubo un error al guardar los cambios en el servidor.');
+          console.error('Error en Producto:', err);
+          alert('Error al conectar con el servidor.');
         }
       });
     } else {
-      alert('Por favor completa todos los campos obligatorios antes de guardar.');
+      alert('Completa los campos obligatorios.');
     }
   }
 }

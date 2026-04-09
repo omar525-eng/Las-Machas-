@@ -11,6 +11,7 @@ export const crearSKU = async (sku) => {
     .input("PrecioMayoreo",  sku.PrecioMayoreo)
     .input("Stock",          sku.Stock)
     .input("StockMinimo",    sku.StockMinimo)
+    .input("Estado",         sku.Estado)
     .execute("sp_CrearSKU")
 }
 

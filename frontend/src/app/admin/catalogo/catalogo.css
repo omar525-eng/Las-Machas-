@@ -2,32 +2,42 @@
    SISTEMA DE GRID (RESPONSIVE DESIGN PARA EL CATÁLOGO)
    ========================================================================== */
 
-/* Contenedor principal del Catálogo (Mobile First - 2 columnas por defecto) */
+/* 📱 MOBILE FIRST (NAOMI - SE RESPETA) */
 .grid-catalogo {
   display: grid;
-  /* En celular, forzamos 2 columnas exactamente como en el diseño de Figma */
-  grid-template-columns: repeat(2, 1fr); 
-  gap: 16px; /* Separación entre tarjetas */
-  padding: 16px; /* Aire a los lados de la pantalla */
-  max-width: 1200px; /* Para que en monitores gigantes no se estire al infinito */
-  margin: 0 auto; /* Centra el catálogo en la pantalla */
+
+  /* 🔥 Se mantiene EXACTO (2 columnas como Figma) */
+  grid-template-columns: repeat(2, 1fr);
+
+  /* 🔥 Ajuste leve de Mike (más consistente) */
+  gap: 20px;
+  padding: 20px;
+
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-/* 📱 TABLETS (Pantallas medianas, de 768px en adelante) */
+/* 📱 TABLETS */
 @media (min-width: 768px) {
   .grid-catalogo {
-    grid-template-columns: repeat(3, 1fr); /* Cambia a 3 columnas */
-    gap: 24px; /* Un poco más de aire porque hay más espacio */
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
   }
 }
 
-/* 💻 LAPTOPS Y ESCRITORIO (Pantallas grandes, de 1024px en adelante) */
+/* 💻 DESKTOP */
 @media (min-width: 1024px) {
   .grid-catalogo {
-    grid-template-columns: repeat(4, 1fr); /* Cambia a 4 columnas */
+    grid-template-columns: repeat(4, 1fr);
     gap: 32px;
   }
 }
+
+
+/* ==========================================================================
+   LOADER (NAOMI COMPLETO)
+   ========================================================================== */
+
 .loader-container {
   display: flex;
   flex-direction: column;

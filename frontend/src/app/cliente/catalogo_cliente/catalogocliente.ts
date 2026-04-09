@@ -1,0 +1,64 @@
+import { Component, OnInit, inject, computed, signal } from '@angular/core';
+import { CatalogoService } from '../../core/services/catalogo.service';
+import { SearchService } from '../../core/services/search.service'; // <--- Importante
+import { CartService } from '../../core/services/cart.service';
+import { Producto } from '../../core/models/producto.interface';
+import { CommonModule } from '@angular/common'; 
+import { RouterLink, RouterOutlet } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
+
+@Component({
+  selector: 'app-catalogo-cliente',
+  standalone: true,
+  imports: [CommonModule, RouterLink],
+  templateUrl: './catalogocleinte.html',
+  styleUrl: './catalogocliente.css'
+})
+export class CatalogoCliente implements OnInit {
+  private catalogoService = inject(CatalogoService);
+  private searchService = inject(SearchService);
+  private cartService = inject(CartService);
+  public authService = inject(AuthService);
+
+  productosBD = signal<Producto[]>([]); // Guardamos los datos de Azure aquí
+
+  // FILTRO MÁGICO: Esta lista se actualiza sola cuando alguien escribe en el buscador
+  productosFiltrados = computed(() => {
+    const term = this.searchService.searchTerm().toLowerCase();
+    if (!term) return this.productosBD();
+    
+    return this.productosBD().filter((p: Producto) => 
+      p.Nombre.toLowerCase().includes(term) || 
+      (p.Categoria && p.Categoria.toLowerCase().includes(term))
+    );
+  });
+
+  ngOnInit() {
+    this.catalogoService.obtenerProductos().subscribe({
+      next: (respuesta: any) => {
+        // Ajuste para la respuesta de Azure
+        this.productosBD.set(respuesta.data || respuesta);
+      },
+      error: (error) => console.error('Error al conectar con Azure:', error)
+    });
+  }
+
+  agregarAlCarrito(producto: Producto) {
+    this.cartService.addToCart({
+      id: producto.ProductoID,
+      nombre: producto.Nombre,
+      precio: producto.PrecioRegular,
+      cantidad: 1,
+      imagen: producto.ImagenURL,
+      tamano: producto.Tamano
+    });
+    alert(`¡${producto.Nombre} lista para enviar!`);
+  }
+
+  enviarDudaWhatsApp() {
+    const msg = `¡Hola! Estoy viendo el catálogo de *Las Machas* y tengo una duda...`;
+    const numeroTel = "52461130968"; 
+    const url = `https://wa.me/${numeroTel}?text=${encodeURIComponent(msg)}`;
+    window.open(url, '_blank');
+  }
+}
