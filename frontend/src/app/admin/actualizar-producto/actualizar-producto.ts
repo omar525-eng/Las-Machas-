@@ -43,33 +43,63 @@ export class ActualizarProducto implements OnInit {
   }
 
   cargarDatosDelProducto(id: string) {
+    // 1. Primero buscamos como siempre en los ACTIVOS
     this.catalogoService.obtenerProductos().subscribe({
       next: (res: any) => {
-        const productos = res.data || res; 
-        const productoEncontrado = productos.find((p: any) => p.SkuID == id);
+        const activos = res.data || res; 
+        const productoActivo = activos.find((p: any) => p.SkuID == id);
 
-        if (productoEncontrado) {
-          this.productoForm.patchValue({
-            Nombre: productoEncontrado.Nombre || productoEncontrado.NombreProducto || 'Nombre no disponible',
-            Descripcion: productoEncontrado.Descripcion || '',
-            Categoria: productoEncontrado.Categoria || 'General',
-            Tamano: productoEncontrado.Tamano || productoEncontrado.Presentacion || 'N/A',
-            PrecioRegular: productoEncontrado.Precio || productoEncontrado.PrecioRegular || '0',
-            StockActual: productoEncontrado.Stock || productoEncontrado.StockActual || '0',
-            StockMinimo: '5'
-          });
+        if (productoActivo) {
+          // ¡Lo encontró en los activos! Llenamos los datos
+          this.llenarFormulario(productoActivo);
         } else {
-          alert('No se encontraron los datos de este producto.');
+          // 2. ¡EL PLAN B! No está activo, así que pedimos los INACTIVOS
+          console.log('No está en los activos, buscando en inactivos...');
+          
+          this.catalogoService.obtenerInactivos().subscribe({
+            next: (resInactivos: any) => {
+              const inactivos = resInactivos.data || resInactivos;
+              const productoInactivo = inactivos.find((p: any) => p.SkuID == id);
+
+              if (productoInactivo) {
+                // ¡Lo encontró en los inactivos!
+                this.llenarFormulario(productoInactivo);
+              } else {
+                alert('No se encontraron los datos de este producto en ninguna lista.');
+                this.cargando = false;
+                this.cdr.detectChanges();
+              }
+            },
+            error: (err) => {
+              console.error('Error al buscar en inactivos', err);
+              this.cargando = false;
+              this.cdr.detectChanges();
+            }
+          });
         }
-        this.cargando = false;
-        this.cdr.detectChanges();
       },
       error: (err) => {
-        console.error('ERROR al cargar los datos', err);
+        console.error('ERROR al cargar los datos del backend', err);
         this.cargando = false;
         this.cdr.detectChanges();
       }
     });
+  }
+
+  // Función extra para no repetir el código de llenado
+  llenarFormulario(productoEncontrado: any) {
+    console.log('Producto encontrado para editar:', productoEncontrado);
+    this.productoForm.patchValue({
+      Nombre: productoEncontrado.Nombre || productoEncontrado.NombreProducto || 'Nombre no disponible',
+      Descripcion: productoEncontrado.Descripcion || '',
+      Categoria: productoEncontrado.Categoria || 'General',
+      Tamano: productoEncontrado.Tamano || productoEncontrado.Presentacion || 'N/A',
+      PrecioRegular: productoEncontrado.Precio || productoEncontrado.PrecioRegular || '0',
+      StockActual: productoEncontrado.Stock || productoEncontrado.StockActual || '0',
+      StockMinimo: '5'
+    });
+    this.cargando = false;
+    this.cdr.detectChanges();
   }
 
   guardarCambios() {

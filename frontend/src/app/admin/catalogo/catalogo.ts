@@ -12,11 +12,11 @@ import { Producto } from '../../core/models/producto.interface';
   styleUrl: './catalogo.css'
 })
 export class Catalogo implements OnInit {
-  productos: Producto[] = [];
-  productosRespaldo: Producto[] = []; 
-  productoADesactivar: Producto | null = null; 
+  productos: any[] = []; 
+  productosRespaldo: any[] = []; 
+  productoADesactivar: any = null; 
   mostrarInactivos: boolean = false; 
-  cargando: boolean = false; // <--- Nuestra bandera para evitar el lag
+  cargando: boolean = false;
 
   private catalogoService = inject(CatalogoService);
   private busquedaService = inject(BusquedaService);
@@ -31,18 +31,18 @@ export class Catalogo implements OnInit {
   }
 
   cargarActivos() {
-    this.cargando = true; // Prendemos el cargando
+    this.cargando = true;
     this.catalogoService.obtenerProductos().subscribe({
       next: (respuesta: any) => {
         const datos = respuesta.data ? respuesta.data : respuesta;
         this.productos = datos;
         this.productosRespaldo = datos; 
-        this.cargando = false; // Apagamos el cargando
+        this.cargando = false;
         this.cdr.detectChanges();
       },
       error: (error) => {
         console.error('Hubo un error de conexión:', error);
-        this.cargando = false; // Apagamos por si falla
+        this.cargando = false;
       }
     });
   }
@@ -56,8 +56,8 @@ export class Catalogo implements OnInit {
     }
 
     this.productos = this.productosRespaldo.filter((producto: any) => {
-      const nombre = producto.Nombre?.toLowerCase() || '';
-      const tamano = producto.Tamano?.toLowerCase() || '';
+      const nombre = (producto.Nombre || producto.NombreProducto || '').toLowerCase();
+      const tamano = (producto.Tamano || producto.Presentacion || '').toLowerCase();
       
       return nombre.includes(textoBusqueda) || tamano.includes(textoBusqueda);
     });
@@ -65,24 +65,20 @@ export class Catalogo implements OnInit {
 
   toggleInactivos() {
     this.mostrarInactivos = !this.mostrarInactivos;
-    this.cargando = true; // Prendemos el cargando al cambiar de vista
+    this.cargando = true; 
     
     if (this.mostrarInactivos) {
-      console.log("Pidiendo salsas inactivas");
-      
       this.catalogoService.obtenerInactivos().subscribe({
         next: (respuesta: any) => {
-          console.log('Llegaron los inactivos:) Esto mandó el back:', respuesta); 
-          
           const datos = respuesta.data ? respuesta.data : respuesta;
           this.productos = datos;
           this.productosRespaldo = datos;
-          this.cargando = false; // Apagamos el cargando
+          this.cargando = false; 
           this.cdr.detectChanges();
         },
         error: (error) => {
           console.error('Error fatal al conectar con la ruta de inactivos:', error);
-          this.cargando = false; // Apagamos por si falla
+          this.cargando = false;
         }
       });
     } else {
@@ -90,34 +86,50 @@ export class Catalogo implements OnInit {
     }
   }
 
-  abrirModal(producto: Producto) {
+  abrirModal(producto: any) {
+    console.log("Salsa seleccionada:", producto); 
     this.productoADesactivar = producto;
+    
+    this.cdr.detectChanges(); 
   }
 
   cerrarModal() {
     this.productoADesactivar = null;
+    this.cdr.detectChanges();
   }
 
   confirmarDesactivacion() {
     if (this.productoADesactivar) {
+      const skuId = this.productoADesactivar.SkuID;
+      const nombreSalsa = this.productoADesactivar.Nombre || this.productoADesactivar.NombreProducto || 'Esta salsa';
+      
+      if (!skuId) {
+        alert('Error: No se detectó el SkuID. Asegúrate de que el backend lo esté enviando.');
+        return;
+      }
+
       const nuevoEstado = this.mostrarInactivos ? 1 : 0;
       const accionPalabra = this.mostrarInactivos ? 'activado' : 'desactivado';
 
-      this.catalogoService.actualizarEstadoSKU((this.productoADesactivar as any).SkuID, nuevoEstado).subscribe({
+      this.catalogoService.actualizarEstadoSKU(skuId, nuevoEstado).subscribe({
         next: () => {
-          alert(`¡La salsa "${this.productoADesactivar?.Nombre}" se ha ${accionPalabra}!`);
+          alert(`¡${nombreSalsa} se ha ${accionPalabra}!`);
           this.cerrarModal();
           
-          if (this.mostrarInactivos) {
-             this.mostrarInactivos = false;
-             this.toggleInactivos();
-          } else {
-             this.cargarActivos();
-          }
+          setTimeout(() => {
+            if (this.mostrarInactivos) {
+               this.mostrarInactivos = false;
+               this.toggleInactivos();
+            } else {
+               this.cargarActivos();
+            }
+          }, 500);
+
         },
         error: (error) => {
           console.error('Error al cambiar el estado del SKU:', error);
           alert('Hubo un error en el servidor al intentar cambiar el estado de la salsa.');
+          this.cerrarModal(); 
         }
       });
     }
