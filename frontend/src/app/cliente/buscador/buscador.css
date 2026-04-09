@@ -1,0 +1,79 @@
+.grid-catalogo {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.tarjeta-macha {
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column; /* Alinea los hijos en vertical */
+  justify-content: space-between; /* Empuja el botón siempre al fondo */
+  transition: transform 0.2s;
+  height: 100%; /* Para que todas las cajas midan lo mismo */
+}
+
+/* Contenedor de la imagen para que no deforme la tarjeta */
+.img-salsa {
+  width: 100%;
+  height: 180px;
+  object-fit: contain;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  cursor: pointer;
+}
+
+/* Forzar que el nombre siempre ocupe el mismo espacio (2 renglones) */
+.tarjeta-macha h3 {
+  font-size: 18px;
+  margin: 10px 0 5px 0;
+  height: 45px; /* Altura fija para que el precio no suba o baje */
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  color: #333;
+  text-align: left; /* Como en tu ejemplo */
+}
+
+.tarjeta-macha p {
+  margin: 0;
+  color: #888;
+  font-size: 14px;
+  text-align: left;
+}
+
+/* Estilo extra para el botón flotante */
+button[style*="fixed"]:hover {
+  transform: scale(1.1);
+  background-color: #128C7E; /* Un verde un poco más oscuro al pasar el mouse */
+}
+
+/* Asegúrate de que el grid tenga espacio al final para que el botón no tape la última salsa */
+.grid-catalogo {
+  padding-bottom: 100px;
+}
+
+.precio-tag {
+  font-size: 22px;
+  font-weight: bold;
+  margin: 15px 0;
+  color: #000;
+  text-align: left;
+}
+
+.btn-agregar {
+  background-color: #e91e63;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: auto; /* Empuja el botón al final de la tarjeta */
+}

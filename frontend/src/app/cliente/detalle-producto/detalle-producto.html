@@ -1,26 +1,46 @@
-<div style="padding: 20px; max-width: 800px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 30px; background: var(--color-tarjeta); border-radius: var(--radio-borde); box-shadow: var(--sombra-tarjeta); margin-top: 40px;">
-  
-  <div style="flex: 1; min-width: 300px;">
-    <img src="https://images.unsplash.com/photo-1558160074-4d7d8bdf4256?auto=format&fit=crop&q=80&w=600" style="width: 100%; border-radius: 12px; object-fit: cover;">
-  </div>
+@if (producto(); as prod) {
+<div class="detalle-container">
+  <button class="btn-regresar" (click)="regresar()">
+    &larr; Regresar a la Tienda
+  </button>
 
-  <div style="flex: 1; min-width: 300px; display: flex; flex-direction: column; justify-content: center;">
-    <h2 style="font-size: 28px; margin-bottom: 10px; color: var(--color-tipografia);">Salsa Macha Roja</h2>
-    <p style="font-size: 24px; color: var(--color-primario); font-weight: bold; margin-bottom: 15px;">$50.00 MXN</p>
-    
-    <p style="color: var(--texto-secundario); line-height: 1.5; margin-bottom: 20px;">
-      Nuestra receta original. Hecha con una mezcla de chiles secos, aceite de oliva y cacahuates tostados. Perfecta para cualquier platillo.
-    </p>
-
-    <div style="margin-bottom: 20px;">
-      <label style="font-weight: bold; display: block; margin-bottom: 5px;">Presentación:</label>
-      <select style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc;">
-        <option>Frasco 250ml</option>
-        <option>Frasco 500ml (+$45.00)</option>
-      </select>
+  <div class="tarjeta-detalle">
+    <div class="imagen-seccion">
+      <img [src]="prod.ImagenURL || $any(prod).imagenUrl || $any(prod).imagen || 'https://via.placeholder.com/500x500.png?text=Sin+Imagen'" 
+           [alt]="prod.Nombre" 
+           class="img-producto">
     </div>
 
-    <button class="btn-machas" routerLink="/carrito">🛒 Agregar al Carrito</button>
-    <button routerLink="/tienda" style="margin-top: 15px; background: transparent; border: none; color: var(--texto-secundario); cursor: pointer; text-decoration: underline;">Volver a la tienda</button>
+    <div class="info-seccion">
+      <span class="badge-categoria">{{ prod.Categoria || $any(prod).categoria || 'Salsas Machas' }}</span>
+      
+      <h2 class="titulo-producto">{{ prod.Nombre || $any(prod).nombre || $any(prod).NombreProducto || 'Salsa Especial' }}</h2>
+      
+      <p class="presentacion">
+        Presentación: <strong>{{ prod.Tamano || $any(prod).tamano || $any(prod).presentacion || '250' }} ml</strong>
+      </p>
+      
+      <div class="precio-box">
+        <span class="moneda">$</span>
+        <span class="monto">
+          {{ prod.PrecioRegular || $any(prod).precioRegular || $any(prod).precio_regular || $any(prod).Precio_Regular || $any(prod).Precio || $any(prod).precio || $any(prod).PrecioVenta || '0.00' }}
+        </span>
+        <span class="divisa">MXN</span>
+      </div>
+
+      <div class="descripcion-box">
+        <h3>Descripción</h3>
+        <p>{{ prod.Descripcion || $any(prod).descripcion || 'Esta deliciosa Macha no tiene descripción aún.' }}</p>
+      </div>
+
+      <button class="btn-agregar" (click)="agregarAlCarrito()">
+        Agregar al Carrito
+      </button>
+    </div>
   </div>
 </div>
+} @else {
+<div class="loader-container">
+  <h2>Cocinando tu Macha... </h2>
+</div>
+}

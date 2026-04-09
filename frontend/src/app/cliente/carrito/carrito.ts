@@ -1,11 +1,28 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { CartService } from '../../core/services/cart.service';
 
 @Component({
   selector: 'app-carrito',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule, RouterLink],
   templateUrl: './carrito.html',
-  styleUrl: './carrito.css',
+  styleUrl: './carrito.css'
 })
 export class Carrito {
+  public cartService = inject(CartService);
 
+  // Funciones para controlar cantidades
+  incrementar(id: string) {
+    this.cartService.updateQuantity(id, 1);
+  }
+
+  decrementar(id: string) {
+    this.cartService.updateQuantity(id, -1);
+  }
+
+  eliminar(id: string) {
+    this.cartService.removeFromCart(id);
+  }
 }
