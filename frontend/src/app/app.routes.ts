@@ -33,7 +33,7 @@ export const routes: Routes = [
   { path: 'admin/detalle-pedido/:id', component: DetallePedido, canActivate: [authGuard] }, 
   { path: 'admin/detalle-pedido', component: DetallePedido, canActivate: [authGuard] }, 
   { path: 'admin/actualizar-producto/:id', component: ActualizarProducto, canActivate: [authGuard] },
-  { path: 'admin/detalle-producto', component: DetalleProductoAdmin, canActivate: [authGuard] },
+{ path: 'admin/detalle-producto/:id', component: DetalleProductoAdmin, canActivate: [authGuard] },
 
   // --- RUTAS CLIENTE Y AUTH ---
   { path: 'login', component: Login, canActivate: [loginGuard] },

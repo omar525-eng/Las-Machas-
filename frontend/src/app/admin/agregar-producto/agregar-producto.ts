@@ -1,12 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common'; // Importamos CommonModule para *ngIf
 import { CatalogoService } from '../../core/services/catalogo.service';
 
 @Component({
   selector: 'app-agregar-producto',
   standalone: true,
-  imports: [RouterLink, ReactiveFormsModule],
+  imports: [RouterLink, ReactiveFormsModule, CommonModule],
   templateUrl: './agregar-producto.html',
   styleUrl: './agregar-producto.css'
 })
@@ -45,7 +46,7 @@ export class AgregarProducto {
         Nombre: this.productoForm.value.Nombre,
         Descripcion: this.productoForm.value.Descripcion,
         CategoriaID: parseInt(this.productoForm.value.CategoriaID as string),
-        ImagenURL: 'https://placehold.co/300x180/e53935/ffffff?text=Nueva+Salsa', 
+        ImagenURL: 'https://placehold.co/300x180/e53935/ffffff?text=Nueva+Salsa', // Se enviará la URL final cuando el back lo permita
         Estado: 1
       };
 
@@ -72,7 +73,8 @@ export class AgregarProducto {
           this.catalogoService.crearSKU(payloadSKU).subscribe({
             next: (resSku) => {
               console.log('¡SKU creado con éxito!', resSku);
-              alert('¡Producto y presentación guardados al 100%!');
+              // Aviso ajustado para que Papu sepa que la imagen "real" viene después
+              alert('¡Producto y presentación guardados! (La foto se subirá cuando el servidor esté listo)');
               
               setTimeout(() => {
                 this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {

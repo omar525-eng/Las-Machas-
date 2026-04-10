@@ -7,7 +7,6 @@
     </div>
     
     <div style="display: flex; gap: 12px; align-items: center;">
-      
       <button (click)="toggleInactivos()" 
               [style.background-color]="mostrarInactivos ? '#fce4ec' : 'transparent'"
               [style.color]="mostrarInactivos ? 'var(--color-primario)' : '#666'"
@@ -21,13 +20,11 @@
             <line x1="3" y1="3" x2="21" y2="21"></line>
           }
         </svg>
-        
         {{ mostrarInactivos ? 'Ocultar Desactivados' : 'Ver Desactivados' }}
       </button>
-
-      <button class="btn-machas" routerLink="/admin/agregar-producto" style="width: auto;">
-        + Añadir Nueva
-      </button>
+<button class="btn-machas" routerLink="/admin/agregar-producto" style="width: auto;">
+  + Agregar Nuevo Producto
+</button>
     </div>
   </div>
 
@@ -42,11 +39,15 @@
       @for (producto of productos; track $index) {
         <div style="background: var(--color-tarjeta); border-radius: 12px; padding: 16px; box-shadow: var(--sombra-tarjeta); display: flex; flex-direction: column;">
           
-          <img [src]="producto.ImagenURL || 'https://via.placeholder.com/300x180?text=Sin+Imagen'" [alt]="producto.Nombre" routerLink="/admin/detalle-producto" style="width: 100%; height: 180px; object-fit: cover; border-radius: 8px; margin-bottom: 12px; cursor: pointer; background-color: #eee;">
+          <img [src]="producto.ImagenURL || 'https://via.placeholder.com/300x180?text=Sin+Imagen'" 
+               [alt]="producto.Nombre" 
+               [routerLink]="['/admin/detalle-producto', $any(producto).ProductoID]" 
+               style="width: 100%; height: 180px; object-fit: cover; border-radius: 8px; margin-bottom: 12px; cursor: pointer; background-color: #eee;">
           
           <div style="color: var(--color-secundario); font-size: 12px; font-weight: bold; text-transform: uppercase; margin-bottom: 4px;">Inventario</div>
           
-          <h3 routerLink="/admin/detalle-producto" style="font-size: 18px; margin-bottom: 4px; color: var(--color-tipografia); cursor: pointer;">
+          <h3 [routerLink]="['/admin/detalle-producto', $any(producto).ProductoID]" 
+              style="font-size: 18px; margin-bottom: 4px; color: var(--color-tipografia); cursor: pointer;">
             {{ producto.Nombre || producto.NombreProducto }}
           </h3>
           
@@ -113,7 +114,6 @@
           Sí, {{ mostrarInactivos ? 'Activar' : 'Desactivar' }}
         </button>
       </div>
-
     </div>
   </div>
 }

@@ -19,6 +19,10 @@ export class ActualizarProducto implements OnInit {
 
   productoId: string | null = null;
   cargando = true;
+  
+  // Variables para la nueva imagen
+  archivoSeleccionado: File | null = null;
+  imagenPreview: string | ArrayBuffer | null = null;
 
   productoForm = new FormGroup({
     Nombre: new FormControl({value: '', disabled: true}),
@@ -43,26 +47,22 @@ export class ActualizarProducto implements OnInit {
   }
 
   cargarDatosDelProducto(id: string) {
-    // 1. Primero buscamos como siempre en los ACTIVOS
+    // 1. Buscamos en activos
     this.catalogoService.obtenerProductos().subscribe({
       next: (res: any) => {
         const activos = res.data || res; 
         const productoActivo = activos.find((p: any) => p.SkuID == id);
 
         if (productoActivo) {
-          // ¡Lo encontró en los activos! Llenamos los datos
           this.llenarFormulario(productoActivo);
         } else {
-          // 2. ¡EL PLAN B! No está activo, así que pedimos los INACTIVOS
-          console.log('No está en los activos, buscando en inactivos...');
-          
+          // 2. Buscamos en inactivos
           this.catalogoService.obtenerInactivos().subscribe({
             next: (resInactivos: any) => {
               const inactivos = resInactivos.data || resInactivos;
               const productoInactivo = inactivos.find((p: any) => p.SkuID == id);
 
               if (productoInactivo) {
-                // ¡Lo encontró en los inactivos!
                 this.llenarFormulario(productoInactivo);
               } else {
                 alert('No se encontraron los datos de este producto en ninguna lista.');
@@ -86,9 +86,7 @@ export class ActualizarProducto implements OnInit {
     });
   }
 
-  // Función extra para no repetir el código de llenado
   llenarFormulario(productoEncontrado: any) {
-    console.log('Producto encontrado para editar:', productoEncontrado);
     this.productoForm.patchValue({
       Nombre: productoEncontrado.Nombre || productoEncontrado.NombreProducto || 'Nombre no disponible',
       Descripcion: productoEncontrado.Descripcion || '',
@@ -98,8 +96,29 @@ export class ActualizarProducto implements OnInit {
       StockActual: productoEncontrado.Stock || productoEncontrado.StockActual || '0',
       StockMinimo: '5'
     });
+    
+    // Cargamos la imagen actual si es que tiene una
+    this.imagenPreview = productoEncontrado.ImagenURL || null;
+
     this.cargando = false;
     this.cdr.detectChanges();
+  }
+
+  // 🔥 MAGIA PARA LEER EL ARCHIVO DE LA COMPU
+  onFileSelected(event: any) {
+    const file: File = event.target.files[0];
+
+    if (file) {
+      this.archivoSeleccionado = file;
+
+      // Leemos el archivo para mostrar la vista previa al instante
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagenPreview = reader.result;
+        this.cdr.detectChanges();
+      };
+      reader.readAsDataURL(file);
+    }
   }
 
   guardarCambios() {
@@ -120,7 +139,8 @@ export class ActualizarProducto implements OnInit {
         next: () => {
           this.catalogoService.actualizarSKU(Number(this.productoId), payloadSKU).subscribe({
             next: () => {
-              alert('¡Salsa actualizada con éxito!');
+              // Mensaje avisando que la foto se subirá después
+              alert('¡Salsa actualizada con éxito! (La nueva foto se guardará cuando el backend esté listo)');
               
               setTimeout(() => {
                 this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {

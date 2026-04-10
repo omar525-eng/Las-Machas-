@@ -25,19 +25,33 @@
       Entregados
     </button>
 
+    <button (click)="cambiarFiltro('Cancelados')"
+            [ngStyle]="{'background': filtroActual === 'Cancelados' ? '#ef5350' : 'white', 'color': filtroActual === 'Cancelados' ? 'white' : 'var(--texto-secundario)', 'border': filtroActual === 'Cancelados' ? 'none' : '1px solid #ddd'}" 
+            style="padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.3s;">
+      Cancelados
+    </button>
+
   </div>
 
   <div style="display: flex; flex-direction: column; gap: 16px; width: 100%;">
 
     @for (pedido of pedidosFiltrados; track pedido.PedidoID || pedido.id) {
 
-      <div [ngStyle]="{'border-left-color': (pedido.Estatus === 'Entregado' ? '#4CAF50' : '#F57F17')}"
+      <div [ngStyle]="{
+            'border-left-color': pedido.Estatus === 'Entregado' ? '#4CAF50' : 
+                                 pedido.Estatus === 'Cancelado' ? '#d32f2f' : '#F57F17'
+           }"
            style="background-color: var(--color-tarjeta); border-radius: var(--radio-borde); box-shadow: var(--sombra-tarjeta); padding: 16px; border-left-width: 5px; border-left-style: solid; width: 100%;">
         
         <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
-          <span style="font-weight: bold; font-size: 16px; color: var(--color-tipografia);">Folio: #{{ pedido.PedidoID || pedido.FolioCorto || 'N/A' }}</span>
+          <span style="font-weight: bold; font-size: 16px; color: var(--color-tipografia);">Folio: #{{ pedido.PedidoID || pedido.id }}</span>
 
-          <span [ngStyle]="{'background-color': (pedido.Estatus === 'Entregado' ? '#E8F5E9' : '#FFF9C4'), 'color': (pedido.Estatus === 'Entregado' ? '#2E7D32' : '#F57F17')}"
+          <span [ngStyle]="{
+                  'background-color': pedido.Estatus === 'Entregado' ? '#E8F5E9' : 
+                                      pedido.Estatus === 'Cancelado' ? '#FFEBEE' : '#FFF9C4',
+                  'color': pedido.Estatus === 'Entregado' ? '#2E7D32' : 
+                           pedido.Estatus === 'Cancelado' ? '#C62828' : '#F57F17'
+                }"
                 style="padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: bold;">
             {{ pedido.Estatus || 'Pendiente' }}
           </span>
@@ -49,7 +63,7 @@
         
         <div style="margin-bottom: 16px; color: var(--texto-secundario); font-size: 14px;"><strong>Total:</strong> ${{ pedido.Total || pedido.Monto || '0.00' }}</div>
 
-        @if (pedido.Estatus !== 'Entregado') {
+        @if (pedido.Estatus !== 'Entregado' && pedido.Estatus !== 'Cancelado') {
           <div style="display: flex; gap: 10px; width: 100%;">
             <button class="btn-machas" [routerLink]="['/admin/detalle-pedido', pedido.PedidoID || pedido.id]" style="flex: 1; padding: 10px 0; font-size: 14px;">
               Ver Detalles
