@@ -1,11 +1,8 @@
 import { Routes } from '@angular/router';
 
-// --- GUARDS ---
 import { authGuard } from './core/guards/auth.guard';
 import { loginGuard } from './core/guards/login.guard';
 
-// --- IMPORTACIONES NAOMI (ADMIN) ---
-// 🗑️ Se eliminó la importación de './admin/mis datos/mis-datos'
 import { Catalogo } from './admin/catalogo/catalogo';
 import { AgregarProducto } from './admin/agregar-producto/agregar-producto';
 import { TableroPedidos } from './admin/tablero-pedidos/tablero-pedidos';
@@ -13,7 +10,6 @@ import { DetallePedido } from './admin/detalle-pedido/detalle-pedido';
 import { ActualizarProducto } from './admin/actualizar-producto/actualizar-producto';
 import { DetalleProductoAdmin } from './admin/detalle-producto/detalle-producto';
 
-// --- IMPORTACIONES MIKE (CLIENTE Y AUTH) ---
 import { Login } from './auth/login/login';
 import { RegistroComponent } from './auth/login/registro.component';
 import { Buscador } from './cliente/buscador/buscador'; 
@@ -21,7 +17,6 @@ import { DetalleProducto } from './cliente/detalle-producto/detalle-producto';
 import { Carrito } from './cliente/carrito/carrito';
 import { Checkout } from './cliente/checkout/checkout';
 
-// Componente compartido de Mis Datos
 import { MisDatosComponent as MisDatosCliente } from './cliente/mis-datos/mis-datos';
 
 export const routes: Routes = [
@@ -38,7 +33,7 @@ export const routes: Routes = [
   { path: 'admin/detalle-pedido/:id', component: DetallePedido, canActivate: [authGuard] }, 
   { path: 'admin/detalle-pedido', component: DetallePedido, canActivate: [authGuard] }, 
   { path: 'admin/actualizar-producto/:id', component: ActualizarProducto, canActivate: [authGuard] },
-  { path: 'admin/detalle-producto', component: DetalleProductoAdmin, canActivate: [authGuard] },
+{ path: 'admin/detalle-producto/:id', component: DetalleProductoAdmin, canActivate: [authGuard] },
 
   // --- RUTAS CLIENTE Y AUTH ---
   { path: 'login', component: Login, canActivate: [loginGuard] },

@@ -44,8 +44,10 @@ export class TableroPedidos implements OnInit {
       this.pedidosFiltrados = this.pedidos;
     } else if (filtro === 'Entregados') {
       this.pedidosFiltrados = this.pedidos.filter(p => p.Estatus === 'Entregado');
+    } else if (filtro === 'Cancelados') {
+      this.pedidosFiltrados = this.pedidos.filter(p => p.Estatus === 'Cancelado');
     } else if (filtro === 'En Proceso') {
-      this.pedidosFiltrados = this.pedidos.filter(p => p.Estatus !== 'Entregado'); 
+      this.pedidosFiltrados = this.pedidos.filter(p => p.Estatus !== 'Entregado' && p.Estatus !== 'Cancelado'); 
     }
   }
 
@@ -59,11 +61,11 @@ export class TableroPedidos implements OnInit {
 
     this.catalogoService.actualizarEstatusPedido(idPedido, 'Entregado').subscribe({
       next: (res) => {
-        console.log('¡El backend de Papu actualizó el estatus con éxito!', res);
+        console.log('Estatus actualizado:', res);
       },
       error: (err) => {
-        console.error('Falló la conexión con el backend:', err);
-        alert('Hubo un error al guardar el estatus en la base de datos.');
+        console.error('Error:', err);
+        alert('Hubo un error al guardar el estatus.');
       }
     });
   }

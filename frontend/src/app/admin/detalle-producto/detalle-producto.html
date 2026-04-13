@@ -1,1 +1,64 @@
-<p>detalle-producto works!</p>
+<div style="padding: 20px; max-width: 800px; margin: 0 auto;">
+  
+  <button (click)="regresar()" style="background: none; border: none; color: var(--color-primario); font-weight: bold; cursor: pointer; margin-bottom: 20px; font-size: 16px;">
+    ← Regresar al Catálogo
+  </button>
+
+  @if (cargando) {
+    <div style="text-align: center; padding: 50px; color: var(--color-primario); font-size: 18px;">
+      Cargando información de la salsa...
+    </div>
+  } @else if (!producto) {
+    <div style="text-align: center; padding: 50px; color: #666;">
+      <h3>No se encontró la información de esta salsa.</h3>
+    </div>
+  } @else {
+    
+    <div style="background: white; border-radius: 16px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; gap: 30px; flex-wrap: wrap;">
+      
+      <div style="flex: 1; min-width: 250px;">
+        <img [src]="producto.ImagenURL || 'https://via.placeholder.com/400x400?text=Sin+Imagen'" 
+             [alt]="producto.Nombre" 
+             style="width: 100%; border-radius: 12px; object-fit: cover; border: 1px solid #eee;">
+      </div>
+
+      <div style="flex: 2; min-width: 300px;">
+        <div style="color: var(--color-primario); font-weight: bold; text-transform: uppercase; font-size: 12px; letter-spacing: 1px; margin-bottom: 5px;">
+          Ficha Técnica del Producto
+        </div>
+        
+        <h2 style="margin-top: 0; font-size: 28px; color: #333;">{{ producto.Nombre || producto.NombreProducto }}</h2>
+        
+        <p style="color: #666; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
+          {{ producto.Descripcion || producto.descripcion || producto.Detalle || 'Sin descripción detallada.' }}
+        </p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; background: #f9f9f9; padding: 15px; border-radius: 8px;">
+          <div>
+            <span style="display: block; color: #888; font-size: 12px;">Presentación</span>
+            <span style="font-weight: bold; color: #333;">{{ producto.Tamano || producto.Presentacion || 'Única' }}</span>
+          </div>
+          <div>
+            <span style="display: block; color: #888; font-size: 12px;">Categoría</span>
+            <span style="font-weight: bold; color: #333;">{{ producto.Categoria || 'Salsas Machas' }}</span>
+          </div>
+          <div>
+            <span style="display: block; color: #888; font-size: 12px;">Precio Público</span>
+            <span style="font-weight: bold; color: #2e7d32; font-size: 18px;">${{ producto.PrecioRegular || producto.Precio || '0.00' }}</span>
+          </div>
+          <div>
+            <span style="display: block; color: #888; font-size: 12px;">Inventario Actual</span>
+            <span style="font-weight: bold; color: #d32f2f;">{{ producto.Stock || producto.StockActual || 0 }} pzas</span>
+          </div>
+        </div>
+
+        <button [routerLink]="['/admin/actualizar-producto', producto.SkuID]" 
+                class="btn-machas" 
+                style="width: 100%; padding: 12px; font-size: 16px;">
+          Editar Producto
+        </button>
+
+      </div>
+    </div>
+  }
+</div>

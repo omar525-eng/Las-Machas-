@@ -1,7 +1,7 @@
 <div style="padding: 20px; max-width: 800px; margin: 0 auto;">
   
-  <h2 class="titulo-tarjeta" style="margin-bottom: 5px;">Añadir Nuevo Producto</h2>
-  <p style="color: var(--texto-secundario); margin-bottom: 24px;">Registra una nueva presentación y sube su fotografía.</p>
+  <h2 class="titulo-tarjeta" style="margin-bottom: 5px;">Agregar Nuevo Producto</h2>
+  <p style="color: var(--texto-secundario); margin-bottom: 24px;">Registra un nuevo producto.</p>
 
   <div style="background-color: var(--color-tarjeta); border-radius: var(--radio-borde); box-shadow: var(--sombra-tarjeta); padding: 24px;">
     
@@ -29,13 +29,34 @@
         </div>
 
         <div style="margin-top: 16px;">
-          <label style="font-size: 14px; font-weight: bold; color: var(--color-tipografia);">Fotografía de la Salsa</label>
-          <input type="file" accept="image/*" (change)="onFileSelected($event)" style="width: 100%; padding: 12px; border: 2px dashed var(--color-primario); border-radius: 8px; margin-top: 6px; font-family: 'Inter', sans-serif; background-color: #fff0f5; color: var(--color-primario); cursor: pointer;">
+          <label style="font-size: 14px; font-weight: bold; color: var(--color-tipografia); display: block; margin-bottom: 8px;">Fotografía de la Salsa</label>
+          
+          <input type="file" #fileInput accept="image/*" (change)="onFileSelected($event)" style="display: none;">
+          
+          <button type="button" (click)="fileInput.click()" 
+                  style="width: 100%; padding: 12px; background-color: white; border: 1px solid var(--color-primario); color: var(--color-primario); border-radius: 8px; font-size: 14px; cursor: pointer; transition: 0.3s; text-align: center;">
+            Seleccionar imagen desde la computadora
+          </button>
+
+          <div style="text-align: center; margin-top: 8px;" *ngIf="imagenSeleccionada">
+            <span style="font-size: 12px; color: #4CAF50; font-weight: bold;">
+            Archivo listo: {{ imagenSeleccionada.name }}
+            </span>
+          </div>
           
           @if (imagenPreview) {
-            <div style="margin-top: 16px; text-align: center;">
-              <p style="font-size: 12px; color: var(--texto-secundario); margin-bottom: 8px;">Vista Previa:</p>
-              <img [src]="imagenPreview" alt="Vista previa de salsa" style="max-height: 180px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.15);">
+            <div style="margin-top: 15px; display: flex; align-items: center; gap: 20px; background: #fdfdfd; padding: 20px; border-radius: 12px; border: 1px dashed #e0e0e0;">
+              <div style="position: relative; width: 120px; height: 120px;">
+                <img [src]="imagenPreview" alt="Vista previa de salsa" 
+                     style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px; border: 1px solid #eee; box-shadow: 0 4px 8px rgba(0,0,0,0.05);">
+                <span style="position: absolute; top: -5px; right: -5px; background: #4CAF50; color: white; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: bold;">
+                  Nueva
+                </span>
+              </div>
+              <div>
+                <p style="font-size: 13px; font-weight: bold; color: var(--color-primario); margin: 0;">Vista previa de la imagen</p>
+                <p style="font-size: 12px; color: #888; margin: 4px 0 0 0;">Así se verá la salsa en el catálogo cuando la subas.</p>
+              </div>
             </div>
           }
         </div>

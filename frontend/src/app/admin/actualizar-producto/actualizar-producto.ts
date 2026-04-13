@@ -19,6 +19,10 @@ export class ActualizarProducto implements OnInit {
 
   productoId: string | null = null;
   cargando = true;
+  
+  // Variables para la nueva imagen
+  archivoSeleccionado: File | null = null;
+  imagenPreview: string | ArrayBuffer | null = null;
 
   productoForm = new FormGroup({
     Nombre: new FormControl({value: '', disabled: true}),
@@ -43,33 +47,78 @@ export class ActualizarProducto implements OnInit {
   }
 
   cargarDatosDelProducto(id: string) {
+    // 1. Buscamos en activos
     this.catalogoService.obtenerProductos().subscribe({
       next: (res: any) => {
-        const productos = res.data || res; 
-        const productoEncontrado = productos.find((p: any) => p.SkuID == id);
+        const activos = res.data || res; 
+        const productoActivo = activos.find((p: any) => p.SkuID == id);
 
-        if (productoEncontrado) {
-          this.productoForm.patchValue({
-            Nombre: productoEncontrado.Nombre || productoEncontrado.NombreProducto || 'Nombre no disponible',
-            Descripcion: productoEncontrado.Descripcion || '',
-            Categoria: productoEncontrado.Categoria || 'General',
-            Tamano: productoEncontrado.Tamano || productoEncontrado.Presentacion || 'N/A',
-            PrecioRegular: productoEncontrado.Precio || productoEncontrado.PrecioRegular || '0',
-            StockActual: productoEncontrado.Stock || productoEncontrado.StockActual || '0',
-            StockMinimo: '5'
-          });
+        if (productoActivo) {
+          this.llenarFormulario(productoActivo);
         } else {
-          alert('No se encontraron los datos de este producto.');
+          // 2. Buscamos en inactivos
+          this.catalogoService.obtenerInactivos().subscribe({
+            next: (resInactivos: any) => {
+              const inactivos = resInactivos.data || resInactivos;
+              const productoInactivo = inactivos.find((p: any) => p.SkuID == id);
+
+              if (productoInactivo) {
+                this.llenarFormulario(productoInactivo);
+              } else {
+                alert('No se encontraron los datos de este producto en ninguna lista.');
+                this.cargando = false;
+                this.cdr.detectChanges();
+              }
+            },
+            error: (err) => {
+              console.error('Error al buscar en inactivos', err);
+              this.cargando = false;
+              this.cdr.detectChanges();
+            }
+          });
         }
-        this.cargando = false;
-        this.cdr.detectChanges();
       },
       error: (err) => {
-        console.error('ERROR al cargar los datos', err);
+        console.error('ERROR al cargar los datos del backend', err);
         this.cargando = false;
         this.cdr.detectChanges();
       }
     });
+  }
+
+  llenarFormulario(productoEncontrado: any) {
+    this.productoForm.patchValue({
+      Nombre: productoEncontrado.Nombre || productoEncontrado.NombreProducto || 'Nombre no disponible',
+      Descripcion: productoEncontrado.Descripcion || '',
+      Categoria: productoEncontrado.Categoria || 'General',
+      Tamano: productoEncontrado.Tamano || productoEncontrado.Presentacion || 'N/A',
+      PrecioRegular: productoEncontrado.Precio || productoEncontrado.PrecioRegular || '0',
+      StockActual: productoEncontrado.Stock || productoEncontrado.StockActual || '0',
+      StockMinimo: '5'
+    });
+    
+    // Cargamos la imagen actual si es que tiene una
+    this.imagenPreview = productoEncontrado.ImagenURL || null;
+
+    this.cargando = false;
+    this.cdr.detectChanges();
+  }
+
+  // 🔥 MAGIA PARA LEER EL ARCHIVO DE LA COMPU
+  onFileSelected(event: any) {
+    const file: File = event.target.files[0];
+
+    if (file) {
+      this.archivoSeleccionado = file;
+
+      // Leemos el archivo para mostrar la vista previa al instante
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagenPreview = reader.result;
+        this.cdr.detectChanges();
+      };
+      reader.readAsDataURL(file);
+    }
   }
 
   guardarCambios() {
@@ -90,7 +139,8 @@ export class ActualizarProducto implements OnInit {
         next: () => {
           this.catalogoService.actualizarSKU(Number(this.productoId), payloadSKU).subscribe({
             next: () => {
-              alert('¡Salsa actualizada con éxito!');
+              // Mensaje avisando que la foto se subirá después
+              alert('¡Salsa actualizada con éxito! (La nueva foto se guardará cuando el backend esté listo)');
               
               setTimeout(() => {
                 this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
