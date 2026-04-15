@@ -1,5 +1,24 @@
 import { getConnection } from "../config/db.js"
+import { v2 as cloudinary } from 'cloudinary';
 
+cloudinary.config({
+  cloud_name: 'dwezi5gw3',
+  api_key: '785657462677559',
+  api_secret: 'gwYMXWGBdYAVyTm-oudtvBbycSI'
+});
+
+// Sube el buffer directo a Cloudinary
+export async function uploadImage(fileBuffer) {
+  return new Promise((resolve, reject) => {
+    cloudinary.uploader.upload_stream(
+      { folder: 'productos' },
+      (error, result) => {
+        if (error) reject(error);
+        else resolve(result.secure_url);
+      }
+    ).end(fileBuffer);
+  });
+}
 // Actualizar producto
 export const actualizarProducto = async (producto) => {
   const pool = await getConnection()
