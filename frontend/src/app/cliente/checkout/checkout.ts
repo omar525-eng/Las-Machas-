@@ -117,11 +117,11 @@ export class Checkout implements OnInit {
   }
 
   abrirWhatsApp() {
-    let msg = `*🌶️ NUEVO PEDIDO - LAS MACHAS 🌶️*\n\n`;
+    let msg = `* NUEVO PEDIDO - LAS MACHAS *\n\n`;
     msg += `*Cliente:* ${this.usuario.nombreCompleto}\n`;
     msg += `*Teléfono:* ${this.usuario.telefono}\n`;
     msg += `*Dirección:* ${this.usuario.direccionDefecto}\n\n`;
-    msg += `*📦 Productos:*\n`;
+    msg += `* Productos:*\n`;
     
     this.cartService.getItems()().forEach(item => {
       const precioUnitario = this.cartService.getPrecioUnitarioFinal(item);
@@ -131,7 +131,7 @@ export class Checkout implements OnInit {
     msg += `\n*Total a pagar:* $${this.cartService.total()}\n\n`;
     msg += `¡Gracias por tu compra!`;
 
-    const numeroTel = "52461130968"; 
+    const numeroTel = "523461130968"; 
     const url = `https://wa.me/${numeroTel}?text=${encodeURIComponent(msg)}`;
     window.open(url, '_blank');
   }

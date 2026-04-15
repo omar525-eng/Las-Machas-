@@ -20,7 +20,6 @@ export class ActualizarProducto implements OnInit {
   productoId: string | null = null;
   cargando = true;
   
-  // Variables para la nueva imagen
   archivoSeleccionado: File | null = null;
   imagenPreview: string | ArrayBuffer | null = null;
 
@@ -97,7 +96,6 @@ export class ActualizarProducto implements OnInit {
       StockMinimo: '5'
     });
     
-    // Cargamos la imagen actual si es que tiene una
     this.imagenPreview = productoEncontrado.ImagenURL || null;
 
     this.cargando = false;
