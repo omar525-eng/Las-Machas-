@@ -18,9 +18,15 @@ export class ActualizarProducto implements OnInit {
   private catalogoService = inject(CatalogoService);
   private cdr = inject(ChangeDetectorRef);
 
-  productoId: string | null = null;
+  skuIdUrl: string | null = null;
+  
+  // Variables para no perder los datos originales al guardar
+  productoIdDb: number | null = null;
+  categoriaOriginal: number = 1;
+  imagenOriginal: string | null = null;
+  estadoOriginal: number = 1;
+
   cargando = true;
-  imagenActual: string | null = null;
 
   productoForm = new FormGroup({
     Nombre: new FormControl({ value: '', disabled: true }),
@@ -33,10 +39,10 @@ export class ActualizarProducto implements OnInit {
   });
 
   ngOnInit() {
-    this.productoId = this.route.snapshot.paramMap.get('id');
+    this.skuIdUrl = this.route.snapshot.paramMap.get('id');
 
-    if (this.productoId) {
-      this.cargarDatosDelProducto(this.productoId);
+    if (this.skuIdUrl) {
+      this.cargarDatosDelProducto(this.skuIdUrl);
     } else {
       this.cargando = false;
     }
@@ -49,7 +55,7 @@ export class ActualizarProducto implements OnInit {
         const productoActivo = activos.find((p: any) => p.SkuID == id);
 
         if (productoActivo) {
-          this.llenarFormulario(productoActivo);
+          this.obtenerDescripcion(productoActivo);
         } else {
           this.catalogoService.obtenerInactivos().subscribe({
             next: (resInactivos: any) => {
@@ -57,7 +63,7 @@ export class ActualizarProducto implements OnInit {
               const productoInactivo = inactivos.find((p: any) => p.SkuID == id);
 
               if (productoInactivo) {
-                this.llenarFormulario(productoInactivo);
+                this.obtenerDescripcion(productoInactivo);
               } else {
                 alert('No se encontró el producto');
                 this.cargando = false;
@@ -65,6 +71,27 @@ export class ActualizarProducto implements OnInit {
             }
           });
         }
+      }
+    });
+  }
+
+  obtenerDescripcion(p: any) {
+    // 1. Guardamos los datos originales tal como vienen de la base de datos
+    this.productoIdDb = p.ProductoID;
+    this.categoriaOriginal = p.CategoriaID || 1;
+    this.imagenOriginal = p.ImagenURL || null;
+    this.estadoOriginal = p.Estado !== undefined ? p.Estado : 1;
+
+    // 2. Llamamos al detalle para traernos la descripción
+    this.catalogoService.obtenerDetalleProducto(this.productoIdDb!.toString()).subscribe({
+      next: (resDetalle: any) => {
+        const infoCompleta = resDetalle.data.producto;
+        // Llenamos el formulario inyectando la descripción que acabamos de traer
+        this.llenarFormulario({ ...p, Descripcion: infoCompleta.Descripcion });
+      },
+      error: (err) => {
+        console.error('No se pudo obtener la descripción', err);
+        this.llenarFormulario(p); // Llenamos con lo que hay si falla la descripción
       }
     });
   }
@@ -80,23 +107,22 @@ export class ActualizarProducto implements OnInit {
       StockMinimo: p.StockMinimo || 5
     });
     
-    this.imagenActual = p.ImagenURL || null;
-
     this.cargando = false;
     this.cdr.detectChanges();
   }
 
   guardarCambios() {
-    if (this.productoForm.valid && this.productoId) {
+    if (this.productoForm.valid && this.productoIdDb && this.skuIdUrl) {
 
       const datosRaw = this.productoForm.getRawValue();
 
+      // Aquí mandamos los datos originales para que no desaparezca de la BD
       const payloadProducto = {
         Nombre: datosRaw.Nombre,
         Descripcion: datosRaw.Descripcion,
-        CategoriaID: 1,
-        ImagenURL: this.imagenActual, 
-        Estado: 1
+        CategoriaID: this.categoriaOriginal, // Se mantiene la original
+        ImagenURL: this.imagenOriginal,      // Se mantiene la foto original
+        Estado: this.estadoOriginal          // Se mantiene activo/inactivo
       };
 
       const payloadSKU = {
@@ -107,12 +133,13 @@ export class ActualizarProducto implements OnInit {
         StockMinimo: Number(datosRaw.StockMinimo) || 5
       };
 
-      this.catalogoService.actualizarProducto(Number(this.productoId), payloadProducto).subscribe({
+      // Actualizamos el Producto usando su ID real
+      this.catalogoService.actualizarProducto(this.productoIdDb, payloadProducto).subscribe({
         next: () => {
-          this.catalogoService.actualizarSKU(Number(this.productoId), payloadSKU).subscribe({
+          // Actualizamos el SKU usando el ID de la URL
+          this.catalogoService.actualizarSKU(Number(this.skuIdUrl), payloadSKU).subscribe({
             next: () => {
               alert('Producto actualizado con éxito');
-              
               this.router.navigate(['/admin/catalogo']);
             },
             error: (err) => {
