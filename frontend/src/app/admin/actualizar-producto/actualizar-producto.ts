@@ -12,23 +12,27 @@ import { CatalogoService } from '../../core/services/catalogo.service';
   styleUrl: './actualizar-producto.css'
 })
 export class ActualizarProducto implements OnInit {
+
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private catalogoService = inject(CatalogoService);
-  private cdr = inject(ChangeDetectorRef); 
+  private cdr = inject(ChangeDetectorRef);
 
   productoId: string | null = null;
   cargando = true;
-  
-  // Variables para la nueva imagen
+
   archivoSeleccionado: File | null = null;
+
+  // 🔥 IMPORTANTE
   imagenPreview: string | ArrayBuffer | null = null;
+  imagenActual: string | null = null;
+  fechaActual: number = new Date().getTime();
 
   productoForm = new FormGroup({
-    Nombre: new FormControl({value: '', disabled: true}),
+    Nombre: new FormControl({ value: '', disabled: true }),
     Descripcion: new FormControl(''),
-    Categoria: new FormControl({value: '', disabled: true}),
-    Tamano: new FormControl({value: '', disabled: true}),
+    Categoria: new FormControl({ value: '', disabled: true }),
+    Tamano: new FormControl({ value: '', disabled: true }),
     PrecioRegular: new FormControl('', Validators.required),
     StockActual: new FormControl('', Validators.required),
     StockMinimo: new FormControl('')
@@ -40,23 +44,19 @@ export class ActualizarProducto implements OnInit {
     if (this.productoId) {
       this.cargarDatosDelProducto(this.productoId);
     } else {
-      console.warn('Fallo: No se recibió ID.');
       this.cargando = false;
-      this.cdr.detectChanges(); 
     }
   }
 
   cargarDatosDelProducto(id: string) {
-    // 1. Buscamos en activos
     this.catalogoService.obtenerProductos().subscribe({
       next: (res: any) => {
-        const activos = res.data || res; 
+        const activos = res.data || res;
         const productoActivo = activos.find((p: any) => p.SkuID == id);
 
         if (productoActivo) {
           this.llenarFormulario(productoActivo);
         } else {
-          // 2. Buscamos en inactivos
           this.catalogoService.obtenerInactivos().subscribe({
             next: (resInactivos: any) => {
               const inactivos = resInactivos.data || resInactivos;
@@ -65,53 +65,45 @@ export class ActualizarProducto implements OnInit {
               if (productoInactivo) {
                 this.llenarFormulario(productoInactivo);
               } else {
-                alert('No se encontraron los datos de este producto en ninguna lista.');
+                alert('No se encontró el producto');
                 this.cargando = false;
-                this.cdr.detectChanges();
               }
-            },
-            error: (err) => {
-              console.error('Error al buscar en inactivos', err);
-              this.cargando = false;
-              this.cdr.detectChanges();
             }
           });
         }
-      },
-      error: (err) => {
-        console.error('ERROR al cargar los datos del backend', err);
-        this.cargando = false;
-        this.cdr.detectChanges();
       }
     });
   }
 
-  llenarFormulario(productoEncontrado: any) {
+  llenarFormulario(p: any) {
     this.productoForm.patchValue({
-      Nombre: productoEncontrado.Nombre || productoEncontrado.NombreProducto || 'Nombre no disponible',
-      Descripcion: productoEncontrado.Descripcion || '',
-      Categoria: productoEncontrado.Categoria || 'General',
-      Tamano: productoEncontrado.Tamano || productoEncontrado.Presentacion || 'N/A',
-      PrecioRegular: productoEncontrado.Precio || productoEncontrado.PrecioRegular || '0',
-      StockActual: productoEncontrado.Stock || productoEncontrado.StockActual || '0',
-      StockMinimo: '5'
+      Nombre: p.Nombre || p.NombreProducto,
+      Descripcion: p.Descripcion || '',
+      Categoria: p.Categoria || '',
+      Tamano: p.Tamano || '',
+      PrecioRegular: p.Precio || p.PrecioRegular || 0,
+      StockActual: p.Stock || 0,
+      StockMinimo: p.StockMinimo || 5
     });
-    
-    // Cargamos la imagen actual si es que tiene una
-    this.imagenPreview = productoEncontrado.ImagenURL || null;
+
+    // 🔥 GUARDAMOS IMAGEN REAL (con cache killer)
+    this.imagenActual = p.ImagenURL
+      ? p.ImagenURL + '?t=' + new Date().getTime()
+      : null;
+
+    this.imagenPreview = null;
 
     this.cargando = false;
     this.cdr.detectChanges();
   }
 
-  // 🔥 MAGIA PARA LEER EL ARCHIVO DE LA COMPU
+  // 📸 seleccionar nueva imagen
   onFileSelected(event: any) {
     const file: File = event.target.files[0];
 
     if (file) {
       this.archivoSeleccionado = file;
 
-      // Leemos el archivo para mostrar la vista previa al instante
       const reader = new FileReader();
       reader.onload = () => {
         this.imagenPreview = reader.result;
@@ -121,46 +113,90 @@ export class ActualizarProducto implements OnInit {
     }
   }
 
-  guardarCambios() {
-    if (this.productoForm.valid && this.productoId) {
+  // 🚀 GUARDAR CAMBIOS
+async guardarCambios() {
+  if (this.productoForm.valid && this.productoId) {
+
+    let imagenURL = this.imagenActual;
+
+    try {
+      // 🔥 SUBIR IMAGEN SI HAY NUEVA
+      if (this.archivoSeleccionado) {
+        const formData = new FormData();
+        formData.append('file', this.archivoSeleccionado);
+        formData.append('upload_preset', 'unsigned_preset'); // 👈 usa tu preset
+
+        const res = await fetch(
+          'https://api.cloudinary.com/v1_1/dwezi5gw3/image/upload',
+          {
+            method: 'POST',
+            body: formData
+          }
+        );
+
+        const data = await res.json();
+
+        if (data.secure_url) {
+          imagenURL = data.secure_url;
+        } else {
+          throw new Error('No se subió la imagen');
+        }
+      }
+   console.log('Imagen FINAL que se enviará:', imagenURL);
+
       const datosRaw = this.productoForm.getRawValue();
-      
+
+      const payloadProducto = {
+        Nombre: datosRaw.Nombre,
+        Descripcion: datosRaw.Descripcion,
+        CategoriaID: 1,
+        ImagenURL: imagenURL,
+        Estado: 1
+      };
+
       const payloadSKU = {
         Tamano: datosRaw.Tamano,
         PrecioRegular: Number(datosRaw.PrecioRegular),
-        PrecioMayoreo: Number(datosRaw.PrecioRegular), 
+        PrecioMayoreo: Number(datosRaw.PrecioRegular),
         Stock: Number(datosRaw.StockActual),
         StockMinimo: Number(datosRaw.StockMinimo) || 5
       };
 
-      console.log('Enviando cambios...');
-
-      this.catalogoService.actualizarProducto(Number(this.productoId), datosRaw).subscribe({
+      // 🔥 ACTUALIZAR PRODUCTO
+      this.catalogoService.actualizarProducto(Number(this.productoId), payloadProducto).subscribe({
         next: () => {
+          // 🔥 ACTUALIZAR SKU
           this.catalogoService.actualizarSKU(Number(this.productoId), payloadSKU).subscribe({
             next: () => {
-              // Mensaje avisando que la foto se subirá después
-              alert('¡Salsa actualizada con éxito! (La nueva foto se guardará cuando el backend esté listo)');
-              
-              setTimeout(() => {
-                this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-                  this.router.navigate(['/admin/catalogo']);
-                });
-              }, 600);
+              alert('✅ Producto actualizado con imagen');
+
+              // 🔥 limpiar
+              this.imagenPreview = null;
+              this.archivoSeleccionado = null;
+              this.imagenActual = imagenURL + '?t=' + new Date().getTime();
+              this.cdr.detectChanges();
+
+              // 🚀 navegar al catálogo
+              this.router.navigate(['/admin/catalogo']);
             },
             error: (err) => {
-              console.error('Error en SKU:', err);
-              alert('Se guardó la descripción pero falló el precio.');
+              console.error(err);
+              alert('Error en SKU');
             }
           });
         },
         error: (err) => {
-          console.error('Error en Producto:', err);
-          alert('Error al conectar con el servidor.');
+          console.error(err);
+          alert('Error al actualizar producto');
         }
       });
-    } else {
-      alert('Completa los campos obligatorios.');
+
+    } catch (error) {
+      console.error(error);
+      alert('Error al subir imagen');
     }
+
+  } else {
+    alert('Completa los campos');
   }
-}
+}}

@@ -49,11 +49,10 @@
 
             <div style="margin-top: 15px; display: flex; align-items: center; gap: 20px; background: #fdfdfd; padding: 20px; border-radius: 12px; border: 1px dashed #e0e0e0;">
               <div style="position: relative; width: 120px; height: 120px;">
-                <img [src]="imagenPreview || 'https://via.placeholder.com/120x120?text=Sin+Foto'" 
-                     style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px; border: 1px solid #eee; box-shadow: 0 4px 8px rgba(0,0,0,0.05);">
-                
-                <span *ngIf="archivoSeleccionado" 
-                      style="position: absolute; top: -5px; right: -5px; background: #4CAF50; color: white; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: bold;">
+                <img [src]="imagenPreview || (imagenActual ? imagenActual + '?t=' + fechaActual : 'https://via.placeholder.com/120x120?text=Sin+Foto')"  
+                 style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px; border: 1px solid #eee; box-shadow: 0 4px 8px rgba(0,0,0,0.05);">
+                 <span *ngIf="archivoSeleccionado" 
+                   style="position: absolute; top: -5px; right: -5px; background: #4CAF50; color: white; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: bold;">
                   Nueva
                 </span>
               </div>
