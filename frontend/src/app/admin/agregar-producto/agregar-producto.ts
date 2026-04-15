@@ -30,7 +30,6 @@ export class AgregarProducto {
     StockMinimo: new FormControl('')
   });
 
-  // 📸 Seleccionar imagen
   onFileSelected(event: any) {
     const file = event.target.files[0];
 
@@ -43,14 +42,12 @@ export class AgregarProducto {
     }
   }
 
-  // 🚀 Guardar producto
   async guardarProducto() {
     if (this.productoForm.valid) {
 
       let imagenURL = null;
 
       try {
-        // 🔥 SUBIR A CLOUDINARY
         if (this.imagenSeleccionada) {
           const formData = new FormData();
           formData.append('file', this.imagenSeleccionada);
@@ -68,7 +65,6 @@ export class AgregarProducto {
           imagenURL = data.secure_url;
         }
 
-        // 📦 Enviar al backend
         const payload = {
           Nombre: this.productoForm.value.Nombre,
           CategoriaID: this.productoForm.value.CategoriaID,
@@ -83,7 +79,6 @@ export class AgregarProducto {
           next: (res: any) => {
             const nuevoID = res.productoID;
 
-            // 🔥 Crear SKU
             const payloadSKU = {
               ProductoID: nuevoID,
               Tamano: this.productoForm.value.Tamano,
@@ -96,7 +91,7 @@ export class AgregarProducto {
 
             this.catalogoService.crearSKU(payloadSKU).subscribe({
               next: () => {
-                alert('✅ Producto creado con imagen');
+                alert('Producto creado con imagen');
                 this.router.navigate(['/admin/catalogo']);
               },
               error: () => {
