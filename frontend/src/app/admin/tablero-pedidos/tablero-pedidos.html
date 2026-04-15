@@ -40,8 +40,8 @@
       <div [ngStyle]="{
             'border-left-color': pedido.Estatus === 'Entregado' ? '#4CAF50' : 
                                  pedido.Estatus === 'Cancelado' ? '#d32f2f' : '#F57F17'
-           }"
-           style="background-color: var(--color-tarjeta); border-radius: var(--radio-borde); box-shadow: var(--sombra-tarjeta); padding: 16px; border-left-width: 5px; border-left-style: solid; width: 100%;">
+            }"
+            style="background-color: var(--color-tarjeta); border-radius: var(--radio-borde); box-shadow: var(--sombra-tarjeta); padding: 16px; border-left-width: 5px; border-left-style: solid; width: 100%;">
         
         <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
           <span style="font-weight: bold; font-size: 16px; color: var(--color-tipografia);">Folio: #{{ pedido.PedidoID || pedido.id }}</span>
@@ -59,10 +59,8 @@
         
         <div style="margin-bottom: 4px; font-size: 14px;"><strong>Cliente:</strong> {{ pedido.ClienteNombre || pedido.Cliente || 'Usuario' }}</div>
         
-        <div style="margin-bottom: 4px; color: var(--texto-secundario); font-size: 14px;"><strong>Fecha:</strong> {{ (pedido.FechaCreacion || pedido.Fecha) ? ((pedido.FechaCreacion || pedido.Fecha) | date:'mediumDate') : 'Reciente' }}</div>
+        <div style="margin-bottom: 16px; color: var(--texto-secundario); font-size: 14px;"><strong>Fecha:</strong> {{ (pedido.FechaCreacion || pedido.Fecha) ? ((pedido.FechaCreacion || pedido.Fecha) | date:'mediumDate') : 'Reciente' }}</div>
         
-        <div style="margin-bottom: 16px; color: var(--texto-secundario); font-size: 14px;"><strong>Total:</strong> ${{ pedido.Total || pedido.Monto || '0.00' }}</div>
-
         @if (pedido.Estatus !== 'Entregado' && pedido.Estatus !== 'Cancelado') {
           <div style="display: flex; gap: 10px; width: 100%;">
             <button class="btn-machas" [routerLink]="['/admin/detalle-pedido', pedido.PedidoID || pedido.id]" style="flex: 1; padding: 10px 0; font-size: 14px;">
