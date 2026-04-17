@@ -13,7 +13,6 @@ import { DetalleProductoAdmin } from './admin/detalle-producto/detalle-producto'
 import { Login } from './auth/login/login';
 import { RegistroComponent } from './auth/login/registro.component';
 import { Buscador } from './cliente/buscador/buscador'; 
-import { DetalleProducto } from './cliente/detalle-producto/detalle-producto';
 import { Carrito } from './cliente/carrito/carrito';
 import { Checkout } from './cliente/checkout/checkout';
 
@@ -39,7 +38,7 @@ export const routes: Routes = [
   { path: 'login', component: Login, canActivate: [loginGuard] },
   { path: 'registro', component: RegistroComponent },
   { path: 'tienda', component: Buscador },
-  { path: 'producto/:id', component: DetalleProducto },
+  { path: 'producto/:id', component: DetalleProductoAdmin },
   { path: 'carrito', component: Carrito },
   { path: 'checkout', component: Checkout },
   { path: 'perfil', component: MisDatosCliente },

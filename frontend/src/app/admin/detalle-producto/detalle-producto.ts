@@ -2,6 +2,8 @@ import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CatalogoService } from '../../core/services/catalogo.service';
+import { AuthService } from '../../core/services/auth.service';
+import { CartService } from '../../core/services/cart.service';
 
 @Component({
   selector: 'app-detalle-producto',
@@ -13,13 +15,17 @@ import { CatalogoService } from '../../core/services/catalogo.service';
 export class DetalleProductoAdmin implements OnInit {
   producto: any = null;
   cargando = true;
+  esAdmin = false;
 
   private route = inject(ActivatedRoute);
   private catalogoService = inject(CatalogoService);
   private location = inject(Location);
   private cdr = inject(ChangeDetectorRef); 
+  private authService = inject(AuthService);
+  private cartService = inject(CartService);
 
   ngOnInit() {
+    this.esAdmin = this.authService.isAdmin();
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.cargarDetalle(id);
@@ -63,5 +69,20 @@ export class DetalleProductoAdmin implements OnInit {
 
   regresar() {
     this.location.back(); 
+  }
+
+  agregarAlCarrito() {
+    if (!this.producto) return;
+    // 🔑 El SkuID es lo que SQL Server necesita para descontar inventario
+    const skuId = this.producto.SkuID || this.producto.ProductoID;
+    this.cartService.addToCart({
+      id: skuId,                  // ← SkuID (primero intento, sino ProductoID)
+      nombre: this.producto.Nombre,
+      precio: this.producto.PrecioRegular || this.producto.Precio,
+      cantidad: 1,
+      imagen: this.producto.ImagenURL,
+      tamano: this.producto.Tamano
+    });
+    alert('¡Producto agregado al carrito!');
   }
 }

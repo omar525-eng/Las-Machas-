@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CatalogoService } from '../../core/services/catalogo.service'; 
@@ -10,16 +10,28 @@ import { CatalogoService } from '../../core/services/catalogo.service';
   templateUrl: './tablero-pedidos.html',
   styleUrl: './tablero-pedidos.css'
 })
-export class TableroPedidos implements OnInit {
+export class TableroPedidos implements OnInit, OnDestroy {
   pedidos: any[] = [];
   pedidosFiltrados: any[] = []; 
   filtroActual: string = 'Todos'; 
+  private intervaloId: any; // Para guardar el ID del intervalo
 
   private catalogoService = inject(CatalogoService); 
   private cdr = inject(ChangeDetectorRef);
 
   ngOnInit() {
     this.cargarPedidos();
+    // 🔄 RELOAD cada 3 segundos para ver pedidos nuevos en TIEMPO REAL
+    this.intervaloId = setInterval(() => {
+      this.cargarPedidos();
+    }, 3000);
+  }
+
+  ngOnDestroy() {
+    // ⚠️ IMPORTANTE: Limpiar el intervalo cuando el componente se destruye
+    if (this.intervaloId) {
+      clearInterval(this.intervaloId);
+    }
   }
 
   cargarPedidos() {

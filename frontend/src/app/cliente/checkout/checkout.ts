@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { CartService } from '../../core/services/cart.service';
-import { HttpClient } from '@angular/common/http';
-
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+ 
 @Component({
   selector: 'app-checkout',
   standalone: true,
@@ -16,16 +16,15 @@ export class Checkout implements OnInit {
   private http = inject(HttpClient);
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
-
+ 
   isLoggedIn = false;
-
+ 
   usuario = {
     nombreCompleto: '',
     direccionDefecto: '',
     telefono: ''
   };
-
-  // Función para leer el ID que viene oculto en el Token
+ 
   private obtenerUsuarioId(token: string) {
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
@@ -34,9 +33,8 @@ export class Checkout implements OnInit {
       return null;
     }
   }
-
+ 
   ngOnInit() {
-    // Si el usuario ya está registrado/logueado, obtenemos sus datos
     const token = localStorage.getItem('token');
     if (token) {
       const usuarioId = this.obtenerUsuarioId(token);
@@ -49,8 +47,6 @@ export class Checkout implements OnInit {
             let nombre = '';
             let telefono = '';
             let direccion = '';
-            
-            // Buscador invencible para asegurar que agarramos los datos
             const buscarDatos = (obj: any) => {
               if (!obj || typeof obj !== 'object') return;
               for (const key of Object.keys(obj)) {
@@ -62,12 +58,10 @@ export class Checkout implements OnInit {
               }
             };
             buscarDatos(res);
-
+ 
             this.usuario.nombreCompleto = nombre || '';
             this.usuario.telefono = telefono || '';
             this.usuario.direccionDefecto = direccion || '';
-
-            // Obligar a la pantalla a refrescarse
             this.cdr.detectChanges();
           },
           error: (err) => {
@@ -80,57 +74,67 @@ export class Checkout implements OnInit {
       }
     }
   }
-
+ 
   enviarPedido() {
     if (!this.usuario.nombreCompleto || !this.usuario.direccionDefecto || !this.usuario.telefono) {
       alert('Por favor, llena todos los campos para el envío.');
       return;
     }
-
+ 
+    const token = localStorage.getItem('token');
+    const usuarioId = token ? this.obtenerUsuarioId(token) : null;
+ 
     const pedido = {
-      cliente: this.usuario.nombreCompleto,
-      direccion: this.usuario.direccionDefecto,
-      telefono: this.usuario.telefono,
-      total: this.cartService.total(),
-      items: this.cartService.getItems()().map(item => ({
-        productoId: item.id,
-        cantidad: item.cantidad,
-        // Usamos la función del servicio para que respete el descuento
-        precio: this.cartService.getPrecioUnitarioFinal(item) 
+      UsuarioID: usuarioId,
+      ClienteNombre: this.usuario.nombreCompleto,
+      ClienteDireccion: this.usuario.direccionDefecto,
+      ClienteTelefono: this.usuario.telefono,
+      detalles: this.cartService.getItems()().map(item => ({
+        SkuID: item.id,
+        Cantidad: item.cantidad,
+        Precio: this.cartService.getPrecioUnitarioFinal(item)
       }))
     };
-
-    // 1. Mandar al backend para guardar la venta y restar el stock
-    this.http.post('http://localhost:3000/api/pedidos', pedido).subscribe({
-      next: () => {
-        // 2. Si fue exitoso, abrimos WhatsApp
+ 
+    let headers = new HttpHeaders();
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+ 
+    this.http.post('http://localhost:3000/api/pedidos', pedido, { headers }).subscribe({
+      next: (res: any) => {
+        //  CONFIRMACIÓN CLARA del pedido creado
+        const folio = res.data?.Folio || 'Tu pedido';
+        alert(` ¡${folio} registrado exitosamente!\n\n📱 Se abrirá WhatsApp para confirmar...`);
+        
         this.abrirWhatsApp();
-        // 3. Limpiamos carrito y regresamos a la tienda
         this.cartService.clearCart();
-        this.router.navigate(['/tienda']);
+        
+        // Esperar 1 segundo antes de navegar
+        setTimeout(() => {
+          this.router.navigate(['/tienda']);
+        }, 1000);
       },
       error: (err) => {
         console.error('Error al procesar el pedido:', err);
-        alert('Hubo un problema al procesar tu pedido. Intenta nuevamente.');
+        alert(' Hubo un problema al procesar tu pedido. Intenta nuevamente.');
       }
     });
   }
-
+ 
   abrirWhatsApp() {
     let msg = `* NUEVO PEDIDO - LAS MACHAS *\n\n`;
     msg += `*Cliente:* ${this.usuario.nombreCompleto}\n`;
     msg += `*Teléfono:* ${this.usuario.telefono}\n`;
     msg += `*Dirección:* ${this.usuario.direccionDefecto}\n\n`;
-    msg += `* Productos:*\n`;
-    
+    msg += `*📦 Productos:*\n`;
     this.cartService.getItems()().forEach(item => {
       const precioUnitario = this.cartService.getPrecioUnitarioFinal(item);
       msg += `- ${item.cantidad}x ${item.nombre} ($${precioUnitario * item.cantidad})\n`;
     });
-    
     msg += `\n*Total a pagar:* $${this.cartService.total()}\n\n`;
     msg += `¡Gracias por tu compra!`;
-
+ 
     const numeroTel = "523461130968"; 
     const url = `https://wa.me/${numeroTel}?text=${encodeURIComponent(msg)}`;
     window.open(url, '_blank');

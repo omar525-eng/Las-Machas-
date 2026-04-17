@@ -56,8 +56,10 @@ export class Buscador implements OnInit {
   }
 
   agregar(producto: Producto) {
+    // 🔑 Usar SkuID porque es lo que SQL Server necesita para descontar inventario
+    const skuId = producto.SkuID || producto.ProductoID;
     this.cartService.addToCart({
-      id: producto.ProductoID,
+      id: skuId,               // ← SkuID (o ProductoID si no existe)
       nombre: producto.Nombre,
       precio: producto.PrecioRegular,
       cantidad: 1,

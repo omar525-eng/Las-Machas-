@@ -17,12 +17,36 @@ export const obtenerPedidos = async (req, res) => {
 export const crearPedido = async (req, res) => {
   try {
     const pedido = req.body
-    await insertarPedido(pedido)
-    res.json({
-      message: "Pedido creado correctamente",
-      data: pedido
-    })
+    
+    console.log("📦 Pedido recibido:", JSON.stringify(pedido, null, 2))
+    
+    const resultado = await insertarPedido(pedido)
+    
+    console.log("📊 Resultado del SP:", JSON.stringify(resultado, null, 2))
+    
+    // Validar respuesta del SP
+    if (resultado && resultado[0] && resultado[0].length > 0) {
+      const respuestaExito = resultado[0][0]
+      
+      if (respuestaExito.Exito === 0) {
+        return res.status(400).json({
+          error: respuestaExito.MensajeError || "Error al crear el pedido"
+        })
+      }
+      
+      res.status(201).json({
+        message: "Pedido creado correctamente",
+        data: {
+          PedidoID: respuestaExito.PedidoID,
+          Folio: respuestaExito.Folio,
+          mensaje: respuestaExito.Mensaje
+        }
+      })
+    } else {
+      res.status(400).json({ error: "Respuesta inesperada del servidor" })
+    }
   } catch (error) {
+    console.error("❌ Error en crearPedido:", error)
     res.status(500).json({ error: error.message })
   }
 }

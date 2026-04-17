@@ -13,7 +13,7 @@
       <h3>No se encontró la información de esta salsa.</h3>
     </div>
   } @else {
-    
+
     <div style="background: white; border-radius: 16px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; gap: 30px; flex-wrap: wrap;">
       
       <div style="flex: 1; min-width: 250px;">
@@ -52,11 +52,21 @@
           </div>
         </div>
 
-        <button [routerLink]="['/admin/actualizar-producto', producto.SkuID]" 
-                class="btn-machas" 
-                style="width: 100%; padding: 12px; font-size: 16px;">
-          Editar Producto
-        </button>
+        <!-- Si es administrador, mostramos el botón de Editar -->
+        @if (esAdmin) {
+          <button [routerLink]="['/admin/actualizar-producto', producto.SkuID]" 
+                  class="btn-machas" 
+                  style="width: 100%; padding: 12px; font-size: 16px; cursor: pointer;">
+            ✏️ Editar Producto
+          </button>
+        } 
+        <!-- Si NO es administrador (es cliente), mostramos el botón del Carrito -->
+        @else {
+          <button class="btn-agregar" (click)="agregarAlCarrito()"
+                  style="width: 100%; padding: 12px; font-size: 16px; cursor: pointer; background-color: var(--color-primario); color: white; border: none; border-radius: 8px; font-weight: bold;">
+            🛒 Agregar al carrito
+          </button>
+        }
 
       </div>
     </div>

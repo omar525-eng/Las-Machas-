@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Producto } from '../../core/models/producto.interface';
 import { CartService } from '../../core/services/cart.service';
@@ -17,6 +17,7 @@ export class DetalleProducto implements OnInit {
   private http = inject(HttpClient);
   private cartService = inject(CartService);
   private location = inject(Location);
+  private router = inject(Router);
 
   // El signal almacenará solo el objeto del producto
   producto = signal<Producto | null>(null);
@@ -25,6 +26,12 @@ export class DetalleProducto implements OnInit {
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
       if (id) {
+
+        // 🔥 REDIRECCIÓN FORZADA: Si Angular entra por error al archivo viejo, 
+        // lo expulsamos inmediatamente a la ruta del diseño del administrador.
+        this.router.navigate(['/producto', id]);
+        return;
+        
       this.http.get<any>(`http://localhost:3000/api/productos/${id}`).subscribe({
   next: (response) => {
     console.log('--- EXTRACCIÓN DE DATOS ---', response);
@@ -53,8 +60,10 @@ export class DetalleProducto implements OnInit {
   agregarAlCarrito(): void {
     const p = this.producto();
     if (p) {
+      // 🔑 Usar SkuID porque es lo que SQL Server necesita para descontar inventario
+      const skuId = p.SkuID || p.ProductoID;
       this.cartService.addToCart({ 
-        id: p.ProductoID, 
+        id: skuId,                // ← SkuID (o ProductoID si no existe)
         nombre: p.Nombre, 
         precio: p.PrecioRegular, 
         cantidad: 1, 
