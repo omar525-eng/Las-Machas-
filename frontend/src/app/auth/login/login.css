@@ -1,0 +1,175 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Montserrat:wght@700&display=swap');
+
+:root {
+  --color-primario: #E75A88;
+  --color-secundario: #F57F17;
+  --color-fondo: #FAFAFA;
+  --color-tipografia: #212121;
+  
+  --font-encabezado: 'Montserrat', sans-serif;
+  --font-texto: 'Inter', sans-serif;
+}
+
+.login-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  min-height: 100vh;
+  box-sizing: border-box;
+  margin: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  background: linear-gradient(135deg, rgba(231, 90, 136, 0.08) 0%, var(--color-fondo) 100%);
+  
+  padding: 20px;
+  font-family: var(--font-texto);
+  color: var(--color-tipografia);
+}
+
+/* La tarjeta central */
+.login-card {
+  background: white;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+}
+
+/* Encabezados - Montserrat 24 Bold */
+.brand-title {
+  font-family: var(--font-encabezado);
+  color: var(--color-primario);
+  font-weight: 700;
+  font-size: 24px;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.welcome-text {
+  font-family: var(--font-encabezado);
+  font-weight: 700;
+  font-size: 24px;
+  margin-bottom: 5px;
+}
+
+/* Párrafos - Inter 14 Regular */
+.subtitle {
+  font-family: var(--font-texto);
+  font-weight: 400;
+  font-size: 14px;
+  margin-bottom: 30px;
+}
+
+/* Inputs limpios y modernos */
+.input-group {
+  text-align: left;
+  margin-bottom: 18px;
+}
+
+.input-group label {
+  display: block;
+  font-family: var(--font-texto);
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1.5px solid #eaeaea;
+  border-radius: 8px;
+  background-color: var(--color-fondo);
+  color: var(--color-tipografia);
+  font-family: var(--font-texto);
+  font-size: 14px;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.input-group input:focus {
+  border-color: var(--color-primario);
+  outline: none;
+  background-color: white;
+  box-shadow: 0 0 0 3px rgba(231, 90, 136, 0.15); /* Resplandor usando tu rosa */
+}
+
+/* Botón Principal - Inter 16 Bold */
+.btn-primary {
+  width: 100%;
+  padding: 14px;
+  background-color: var(--color-primario);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-texto);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.3s;
+  margin-top: 10px;
+}
+
+.btn-primary:hover {
+  opacity: 0.85;
+}
+
+/* Enlace de Invitado */
+.guest-link {
+  margin-top: 18px;
+}
+
+.guest-link a {
+  font-family: var(--font-texto);
+  color: var(--color-tipografia);
+  text-decoration: none;
+  font-size: 14px;
+  opacity: 0.7;
+  transition: color 0.3s, opacity 0.3s;
+}
+
+.guest-link a:hover {
+  color: var(--color-primario);
+  opacity: 1;
+}
+
+/* Separador */
+.divider {
+  border: none;
+  border-top: 1px solid #eee;
+  margin: 25px 0;
+}
+
+/* Sección de Registro */
+.register-section p {
+  font-family: var(--font-texto);
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+/* Botón Secundario (Tu naranja oficial) - Inter 16 Bold */
+.btn-secondary {
+  width: 100%;
+  padding: 12px;
+  background-color: transparent;
+  color: var(--color-secundario);
+  border: 2px solid var(--color-secundario);
+  border-radius: 8px;
+  font-family: var(--font-texto);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-secundario);
+  color: white;
+}

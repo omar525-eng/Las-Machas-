@@ -1,87 +1,72 @@
-<div style="padding: 20px; max-width: 800px; margin: 0 auto;">
+<div class="tablero-container">
   
-  <div style="margin-bottom: 24px;">
-    <h2 class="titulo-tarjeta" style="margin-bottom: 5px;">Tablero de Pedidos</h2>
-    <p style="color: var(--texto-secundario); font-size: 14px;">Gestiona las ventas y el estatus de entrega.</p>
+  <div class="header-seccion">
+    <h2 class="titulo-pagina">Tablero de Pedidos</h2>
+    <p class="subtitulo-pagina">Gestiona las ventas y el estatus de entrega.</p>
   </div>
 
-  <div style="display: flex; gap: 10px; margin-bottom: 24px; overflow-x: auto; padding-bottom: 5px;">
-    
-    <button (click)="cambiarFiltro('Todos')" 
-            [ngStyle]="{'background': filtroActual === 'Todos' ? 'var(--color-primario)' : 'white', 'color': filtroActual === 'Todos' ? 'white' : 'var(--texto-secundario)', 'border': filtroActual === 'Todos' ? 'none' : '1px solid #ddd'}" 
-            style="padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.3s;">
+  <div class="filtros-scroll">
+    <button (click)="cambiarFiltro('Todos')" class="btn-filtro" [class.activo]="filtroActual() === 'Todos'">
       Todos
     </button>
-    
-    <button (click)="cambiarFiltro('En Proceso')"
-            [ngStyle]="{'background': filtroActual === 'En Proceso' ? 'var(--color-primario)' : 'white', 'color': filtroActual === 'En Proceso' ? 'white' : 'var(--texto-secundario)', 'border': filtroActual === 'En Proceso' ? 'none' : '1px solid #ddd'}" 
-            style="padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.3s;">
+    <button (click)="cambiarFiltro('En Proceso')" class="btn-filtro" [class.activo]="filtroActual() === 'En Proceso'">
       En Proceso
     </button>
-    
-    <button (click)="cambiarFiltro('Entregados')"
-            [ngStyle]="{'background': filtroActual === 'Entregados' ? 'var(--color-primario)' : 'white', 'color': filtroActual === 'Entregados' ? 'white' : 'var(--texto-secundario)', 'border': filtroActual === 'Entregados' ? 'none' : '1px solid #ddd'}" 
-            style="padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.3s;">
+    <button (click)="cambiarFiltro('Entregados')" class="btn-filtro" [class.activo]="filtroActual() === 'Entregados'">
       Entregados
     </button>
-
-    <button (click)="cambiarFiltro('Cancelados')"
-            [ngStyle]="{'background': filtroActual === 'Cancelados' ? '#ef5350' : 'white', 'color': filtroActual === 'Cancelados' ? 'white' : 'var(--texto-secundario)', 'border': filtroActual === 'Cancelados' ? 'none' : '1px solid #ddd'}" 
-            style="padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.3s;">
+    <button (click)="cambiarFiltro('Cancelados')" class="btn-filtro btn-peligro" [class.activo-peligro]="filtroActual() === 'Cancelados'">
       Cancelados
     </button>
-
   </div>
 
-  <div style="display: flex; flex-direction: column; gap: 16px; width: 100%;">
+  <div class="pedidos-lista">
+    @for (pedido of pedidosFiltrados(); track pedido.PedidoID || pedido.id) {
 
-    @for (pedido of pedidosFiltrados; track pedido.PedidoID || pedido.id) {
-
-      <div [ngStyle]="{
-            'border-left-color': pedido.Estatus === 'Entregado' ? '#4CAF50' : 
-                                 pedido.Estatus === 'Cancelado' ? '#d32f2f' : '#F57F17'
-            }"
-            style="background-color: var(--color-tarjeta); border-radius: var(--radio-borde); box-shadow: var(--sombra-tarjeta); padding: 16px; border-left-width: 5px; border-left-style: solid; width: 100%;">
+      <div class="tarjeta-pedido" 
+           [class.border-entregado]="pedido.Estatus === 'Entregado'"
+           [class.border-cancelado]="pedido.Estatus === 'Cancelado'"
+           [class.border-proceso]="pedido.Estatus !== 'Entregado' && pedido.Estatus !== 'Cancelado'">
         
-        <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
-          <span style="font-weight: bold; font-size: 16px; color: var(--color-tipografia);">Folio: #{{ pedido.PedidoID || pedido.id }}</span>
-
-          <span [ngStyle]="{
-                  'background-color': pedido.Estatus === 'Entregado' ? '#E8F5E9' : 
-                                      pedido.Estatus === 'Cancelado' ? '#FFEBEE' : '#FFF9C4',
-                  'color': pedido.Estatus === 'Entregado' ? '#2E7D32' : 
-                           pedido.Estatus === 'Cancelado' ? '#C62828' : '#F57F17'
-                }"
-                style="padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: bold;">
+        <div class="pedido-header">
+          <span class="folio">Folio: #{{ pedido.PedidoID || pedido.id }}</span>
+          
+          <span class="badge" 
+                [class.badge-entregado]="pedido.Estatus === 'Entregado'"
+                [class.badge-cancelado]="pedido.Estatus === 'Cancelado'"
+                [class.badge-proceso]="pedido.Estatus !== 'Entregado' && pedido.Estatus !== 'Cancelado'">
             {{ pedido.Estatus || 'Pendiente' }}
           </span>
         </div>
         
-        <div style="margin-bottom: 4px; font-size: 14px;"><strong>Cliente:</strong> {{ pedido.ClienteNombre || pedido.Cliente || 'Usuario' }}</div>
+        <div class="info-linea">
+          <strong>Cliente:</strong> {{ pedido.ClienteNombre || pedido.Cliente || 'Usuario' }}
+        </div>
         
-        <div style="margin-bottom: 16px; color: var(--texto-secundario); font-size: 14px;"><strong>Fecha:</strong> {{ (pedido.FechaCreacion || pedido.Fecha) ? ((pedido.FechaCreacion || pedido.Fecha) | date:'mediumDate') : 'Reciente' }}</div>
+        <div class="info-linea texto-secundario mb-15">
+          <strong>Fecha:</strong> {{ (pedido.FechaCreacion || pedido.Fecha) ? ((pedido.FechaCreacion || pedido.Fecha) | date:'mediumDate') : 'Reciente' }}
+        </div>
         
-        @if (pedido.Estatus !== 'Entregado' && pedido.Estatus !== 'Cancelado') {
-          <div style="display: flex; gap: 10px; width: 100%;">
-            <button class="btn-machas" [routerLink]="['/admin/detalle-pedido', pedido.PedidoID || pedido.id]" style="flex: 1; padding: 10px 0; font-size: 14px;">
+        <div class="acciones-pedido">
+          @if (pedido.Estatus !== 'Entregado' && pedido.Estatus !== 'Cancelado') {
+            <button class="btn-primario" [routerLink]="['/admin/detalle-pedido', pedido.PedidoID || pedido.id]">
               Ver Detalles
             </button>
-            <button (click)="marcarComoEntregado(pedido)" style="flex: 1; padding: 10px 0; font-size: 14px; background: white; color: #4CAF50; border: 1px solid #4CAF50; border-radius: 8px; font-weight: bold; cursor: pointer;">
+            <button class="btn-exito-outline" (click)="marcarComoEntregado(pedido)">
               Marcar Entregado
             </button>
-          </div>
-        } @else {
-          <div style="display: flex; gap: 10px; width: 100%;">
-            <button class="btn-machas" [routerLink]="['/admin/detalle-pedido', pedido.PedidoID || pedido.id]" style="width: 100%; padding: 10px 0; font-size: 14px; background-color: #f5f5f5; color: var(--texto-secundario); border: none;">
+          } @else {
+            <button class="btn-secundario" [routerLink]="['/admin/detalle-pedido', pedido.PedidoID || pedido.id]">
               Ver Historial
             </button>
-          </div>
-        }
+          }
+        </div>
         
       </div>
+
     } @empty {
-      <div style="text-align: center; padding: 40px; color: var(--texto-secundario); background: #f9f9f9; border-radius: 8px; border: 1px dashed #ccc;">
-        <p style="font-weight: bold;">No hay pedidos en esta categoría.</p>
+      <div class="empty-state">
+        <p>No hay pedidos en esta categoría.</p>
       </div>
     }
 

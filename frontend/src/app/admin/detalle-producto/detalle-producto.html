@@ -1,72 +1,62 @@
-<div style="padding: 20px; max-width: 800px; margin: 0 auto;">
+<div class="detalle-container">
   
-  <button (click)="regresar()" style="background: none; border: none; color: var(--color-primario); font-weight: bold; cursor: pointer; margin-bottom: 20px; font-size: 16px;">
-    ← Regresar al Catálogo
+  <button (click)="regresar()" class="btn-regresar">
+    &larr; Regresar al Catálogo
   </button>
 
-  @if (cargando) {
-    <div style="text-align: center; padding: 50px; color: var(--color-primario); font-size: 18px;">
-      Cargando información de la salsa...
+  @if (cargando()) {
+    <div class="loader-container">
+      <div class="spinner"></div>
+      <h3 class="loading-text">Cargando información de la salsa...</h3>
     </div>
-  } @else if (!producto) {
-    <div style="text-align: center; padding: 50px; color: #666;">
+  } @else if (!producto()) {
+    <div class="empty-state">
       <h3>No se encontró la información de esta salsa.</h3>
     </div>
   } @else {
 
-    <div style="background: white; border-radius: 16px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; gap: 30px; flex-wrap: wrap;">
+    <div class="ficha-card">
       
-      <div style="flex: 1; min-width: 250px;">
-        <img [src]="producto.ImagenURL || 'https://via.placeholder.com/400x400?text=Sin+Imagen'" 
-             [alt]="producto.Nombre" 
-             style="width: 100%; border-radius: 12px; object-fit: cover; border: 1px solid #eee;">
+      <div class="imagen-container">
+        <img [src]="producto().ImagenURL || 'https://via.placeholder.com/400x400?text=Sin+Imagen'" 
+             [alt]="producto().Nombre" 
+             class="img-detalle">
       </div>
 
-      <div style="flex: 2; min-width: 300px;">
-        <div style="color: var(--color-primario); font-weight: bold; text-transform: uppercase; font-size: 12px; letter-spacing: 1px; margin-bottom: 5px;">
+      <div class="info-container">
+        <div class="etiqueta-ficha">
           Ficha Técnica del Producto
         </div>
         
-        <h2 style="margin-top: 0; font-size: 28px; color: #333;">{{ producto.Nombre || producto.NombreProducto }}</h2>
+        <h2 class="producto-titulo">{{ producto().Nombre || producto().NombreProducto }}</h2>
         
-        <p style="color: #666; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
-          {{ producto.Descripcion || producto.descripcion || producto.Detalle || 'Sin descripción detallada.' }}
+        <p class="producto-descripcion">
+          {{ producto().Descripcion || producto().descripcion || producto().Detalle || 'Sin descripción detallada.' }}
         </p>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; background: #f9f9f9; padding: 15px; border-radius: 8px;">
-          <div>
-            <span style="display: block; color: #888; font-size: 12px;">Presentación</span>
-            <span style="font-weight: bold; color: #333;">{{ producto.Tamano || producto.Presentacion || 'Única' }}</span>
+        <div class="grid-detalles">
+          <div class="detalle-item">
+            <span class="detalle-label">Presentación</span>
+            <span class="detalle-valor">{{ producto().Tamano || producto().Presentacion || 'Única' }}</span>
           </div>
-          <div>
-            <span style="display: block; color: #888; font-size: 12px;">Categoría</span>
-            <span style="font-weight: bold; color: #333;">{{ producto.Categoria || 'Salsas Machas' }}</span>
+          <div class="detalle-item">
+            <span class="detalle-label">Categoría</span>
+            <span class="detalle-valor">{{ producto().Categoria || 'Salsas Machas' }}</span>
           </div>
-          <div>
-            <span style="display: block; color: #888; font-size: 12px;">Precio Público</span>
-            <span style="font-weight: bold; color: #2e7d32; font-size: 18px;">${{ producto.PrecioRegular || producto.Precio || '0.00' }}</span>
+          <div class="detalle-item">
+            <span class="detalle-label">Precio Público</span>
+            <span class="detalle-precio">${{ producto().PrecioRegular || producto().Precio || '0.00' }}</span>
           </div>
-          <div>
-            <span style="display: block; color: #888; font-size: 12px;">Inventario Actual</span>
-            <span style="font-weight: bold; color: #d32f2f;">{{ producto.Stock || producto.StockActual || 0 }} pzas</span>
+          <div class="detalle-item">
+            <span class="detalle-label">Inventario Actual</span>
+            <span class="detalle-stock">{{ producto().Stock || producto().StockActual || 0 }} pzas</span>
           </div>
         </div>
 
-        <!-- Si es administrador, mostramos el botón de Editar -->
-        @if (esAdmin) {
-          <button [routerLink]="['/admin/actualizar-producto', producto.SkuID]" 
-                  class="btn-machas" 
-                  style="width: 100%; padding: 12px; font-size: 16px; cursor: pointer;">
-            ✏️ Editar Producto
-          </button>
-        } 
-        <!-- Si NO es administrador (es cliente), mostramos el botón del Carrito -->
-        @else {
-          <button class="btn-agregar" (click)="agregarAlCarrito()"
-                  style="width: 100%; padding: 12px; font-size: 16px; cursor: pointer; background-color: var(--color-primario); color: white; border: none; border-radius: 8px; font-weight: bold;">
-            🛒 Agregar al carrito
-          </button>
-        }
+        <!-- BOTÓN EXCLUSIVO DEL ADMINISTRADOR -->
+        <button [routerLink]="['/admin/actualizar-producto', producto().SkuID]" class="btn-editar-full">
+          Editar Producto
+        </button>
 
       </div>
     </div>

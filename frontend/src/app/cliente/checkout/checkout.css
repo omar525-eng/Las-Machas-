@@ -1,0 +1,187 @@
+/* CONTENEDOR PRINCIPAL */
+.checkout-container {
+  padding: 40px 30px;
+  max-width: 550px;
+  margin: 40px auto;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+  border: 1px solid #f2f2f2;
+  font-family: var(--font-texto, 'Inter', sans-serif);
+}
+
+.checkout-titulo {
+  text-align: center;
+  color: var(--color-tipografia, #212121);
+  margin: 0 0 5px 0;
+  font-family: var(--font-encabezado, 'Montserrat', sans-serif);
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.checkout-subtitulo {
+  text-align: center;
+  color: #666;
+  margin-bottom: 30px;
+  font-size: 15px;
+}
+
+.checkout-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* DATOS DEL USUARIO */
+.datos-guardados {
+  background: #fafafa;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #eee;
+}
+
+.datos-guardados h3 {
+  margin-top: 0;
+  font-size: 16px;
+  color: var(--color-tipografia, #212121);
+  margin-bottom: 15px;
+  font-weight: 700;
+}
+
+.datos-grid p {
+  margin: 0 0 8px 0;
+  color: #444;
+  font-size: 14px;
+}
+
+.datos-guardados small {
+  color: #888;
+  display: block;
+  margin-top: 15px;
+  font-size: 12px;
+}
+
+/* Formulario manual */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--color-tipografia, #212121);
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 15px;
+  font-family: var(--font-texto, 'Inter', sans-serif);
+  transition: border-color 0.3s;
+  box-sizing: border-box;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--color-primario, #E75A88);
+}
+
+/* RESUMEN DEL PEDIDO */
+.resumen-pedido {
+  background: #f8f9fa;
+  padding: 25px;
+  border-radius: 16px;
+  margin-top: 10px;
+  border: 1px solid #eee;
+}
+
+.resumen-pedido h4 {
+  margin: 0 0 15px 0;
+  color: #555;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.resumen-items {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.resumen-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 15px;
+  color: #444;
+}
+
+.item-precio {
+  font-weight: 600;
+}
+
+.divisor {
+  border: 0;
+  border-top: 1px dashed #ccc;
+  margin: 15px 0;
+}
+
+.resumen-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-tipografia, #212121);
+}
+
+.total-monto {
+  color: var(--color-primario, #E75A88);
+  font-size: 24px;
+  font-weight: 800;
+}
+
+/* BOTONES */
+.btn-whatsapp {
+  background-color: #25D366;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 16px;
+  font-size: 16px;
+  font-family: var(--font-texto, 'Inter', sans-serif);
+  font-weight: 700;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  margin-top: 10px;
+  box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-whatsapp:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+}
+
+.btn-volver {
+  background: transparent;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  text-decoration: underline;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 10px;
+  transition: color 0.2s;
+}
+
+.btn-volver:hover {
+  color: var(--color-secundario, #F57F17);
+}

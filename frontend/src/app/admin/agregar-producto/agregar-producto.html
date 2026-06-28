@@ -1,109 +1,118 @@
-<div style="padding: 20px; max-width: 800px; margin: 0 auto;">
+<div class="form-container">
   
-  <h2 class="titulo-tarjeta" style="margin-bottom: 5px;">Agregar Nuevo Producto</h2>
-  <p style="color: var(--texto-secundario); margin-bottom: 24px;">Registra un nuevo producto.</p>
+  <h2 class="titulo-pagina">Agregar Nuevo Producto</h2>
+  <p class="subtitulo-pagina">Registra una nueva salsa en el catálogo.</p>
 
-  <div style="background-color: var(--color-tarjeta); border-radius: var(--radio-borde); box-shadow: var(--sombra-tarjeta); padding: 24px;">
+  <div class="card-formulario">
     
-    <form [formGroup]="productoForm" (ngSubmit)="guardarProducto()" style="display: flex; flex-direction: column; gap: 24px;">
+    <form [formGroup]="productoForm" (ngSubmit)="guardarProducto()" class="form-layout">
 
-      <div>
-        <h3 style="font-size: 16px; color: var(--color-primario); margin-bottom: 12px; border-bottom: 1px solid #eee; padding-bottom: 8px;">1. Datos Generales</h3>
+      <div class="seccion-form">
+        <h3 class="titulo-seccion">1. Datos Generales</h3>
         
-        <div>
-          <label style="font-size: 14px; font-weight: bold; color: var(--color-tipografia);">Nombre del Producto</label>
-          <input type="text" formControlName="Nombre" placeholder="Ej. Salsa Macha con Ajo" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-top: 6px; font-family: 'Inter', sans-serif; outline-color: var(--color-primario);">
+        <div class="form-group">
+          <label>Nombre del Producto *</label>
+          <input type="text" formControlName="Nombre" placeholder="Ej. Salsa Macha con Ajo" 
+                 [class.input-error]="productoForm.get('Nombre')?.invalid && productoForm.get('Nombre')?.touched">
         </div>
 
-        <div style="margin-top: 16px;">
-          <label style="font-size: 14px; font-weight: bold; color: var(--color-tipografia);">Categoría</label>
-          <select formControlName="CategoriaID" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-top: 6px; font-family: 'Inter', sans-serif; outline-color: var(--color-primario); background-color: white;">
+        <div class="form-group">
+          <label>Categoría *</label>
+          <select formControlName="CategoriaID">
             <option value="1">Salsas</option>
             <option value="2">Encurtidos</option>
+            <option value="nueva" disabled>+ Registrar Nueva Categoría (Próximamente)</option>
           </select>
         </div>
 
-        <div style="margin-top: 16px;">
-          <label style="font-size: 14px; font-weight: bold; color: var(--color-tipografia);">Descripción</label>
-          <textarea formControlName="Descripcion" rows="3" placeholder="Ej. Deliciosa mezcla artesanal con notas de ajo..." style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-top: 6px; font-family: 'Inter', sans-serif; outline-color: var(--color-primario); resize: vertical;"></textarea>
+        <div class="form-group">
+          <label>Descripción</label>
+          <textarea formControlName="Descripcion" rows="3" placeholder="Ej. Deliciosa mezcla artesanal con notas de ajo..."></textarea>
         </div>
 
-        <div style="margin-top: 16px;">
-          <label style="font-size: 14px; font-weight: bold; color: var(--color-tipografia); display: block; margin-bottom: 8px;">Fotografía de la Salsa</label>
+        <div class="form-group">
+          <label class="mb-8">Fotografía de la Salsa</label>
+          <input type="file" #fileInput accept="image/*" (change)="onFileSelected($event)" class="hidden-input">
           
-          <input type="file" #fileInput accept="image/*" (change)="onFileSelected($event)" style="display: none;">
-          
-          <button type="button" (click)="fileInput.click()" 
-                  style="width: 100%; padding: 12px; background-color: white; border: 1px solid var(--color-primario); color: var(--color-primario); border-radius: 8px; font-size: 14px; cursor: pointer; transition: 0.3s; text-align: center;">
+          <button type="button" (click)="fileInput.click()" class="btn-upload">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
             Seleccionar imagen desde la computadora
           </button>
 
-          <div style="text-align: center; margin-top: 8px;" *ngIf="imagenSeleccionada">
-            <span style="font-size: 12px; color: #4CAF50; font-weight: bold;">
+          <div *ngIf="imagenSeleccionada" class="file-status">
             Archivo listo: {{ imagenSeleccionada.name }}
-            </span>
           </div>
           
           @if (imagenPreview) {
-            <div style="margin-top: 15px; display: flex; align-items: center; gap: 20px; background: #fdfdfd; padding: 20px; border-radius: 12px; border: 1px dashed #e0e0e0;">
-              <div style="position: relative; width: 120px; height: 120px;">
-                <img [src]="imagenPreview" alt="Vista previa de salsa" 
-                     style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px; border: 1px solid #eee; box-shadow: 0 4px 8px rgba(0,0,0,0.05);">
-                <span style="position: absolute; top: -5px; right: -5px; background: #4CAF50; color: white; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: bold;">
-                  Nueva
-                </span>
+            <div class="preview-box">
+              <div class="preview-img-wrapper">
+                <img [src]="imagenPreview" alt="Vista previa" class="preview-img">
+                <span class="badge-nueva">Nueva</span>
+                
+                <button type="button" class="btn-remover-img" (click)="removerImagen(fileInput)" title="Quitar imagen">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+                
               </div>
-              <div>
-                <p style="font-size: 13px; font-weight: bold; color: var(--color-primario); margin: 0;">Vista previa de la imagen</p>
-                <p style="font-size: 12px; color: #888; margin: 4px 0 0 0;">Así se verá la salsa en el catálogo cuando la subas.</p>
+              <div class="preview-text">
+                <p class="preview-title">Vista previa de la imagen</p>
+                <p class="preview-desc">Así se verá la salsa en el catálogo cuando la subas.</p>
               </div>
             </div>
           }
         </div>
       </div>
 
-      <div>
-        <h3 style="font-size: 16px; color: var(--color-primario); margin-bottom: 12px; border-bottom: 1px solid #eee; padding-bottom: 8px;">2. Precios e Inventario</h3>
+      <div class="seccion-form">
+        <h3 class="titulo-seccion">2. Precios e Inventario</h3>
         
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-          <div>
-            <label style="font-size: 14px; font-weight: bold; color: var(--color-tipografia);">Tamaño / Presentación</label>
-            <select formControlName="Tamano" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-top: 6px; font-family: 'Inter', sans-serif; outline-color: var(--color-primario); background-color: white;">
+        <div class="grid-2-col">
+          <div class="form-group">
+            <label>Tamaño / Presentación *</label>
+            <select formControlName="Tamano">
               <option value="Frasco 250ml">Frasco 250ml</option>
               <option value="Frasco 500ml">Frasco 500ml</option>
+              <option value="otro" disabled>+ Registrar otra presentación (Próximamente)</option>
             </select>
           </div>
           
-          <div style="display: flex; gap: 12px;">
-            <div style="flex: 1;">
-              <label style="font-size: 14px; font-weight: bold; color: var(--color-tipografia);">Precio Regular</label>
-              <input type="number" formControlName="PrecioRegular" placeholder="$ 0.00" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-top: 6px; font-family: 'Inter', sans-serif; outline-color: var(--color-primario);">
+          <div class="grid-2-col-inner">
+            <div class="form-group">
+              <label>Precio Regular *</label>
+              <input type="number" min="0" step="0.01" formControlName="PrecioRegular" placeholder="$ 0.00"
+                     [class.input-error]="productoForm.get('PrecioRegular')?.invalid && productoForm.get('PrecioRegular')?.touched">
             </div>
-            <div style="flex: 1;">
-              <label style="font-size: 14px; font-weight: bold; color: var(--color-tipografia);">Precio Mayoreo</label>
-              <input type="number" formControlName="PrecioMayoreo" placeholder="$ 0.00" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-top: 6px; font-family: 'Inter', sans-serif; outline-color: var(--color-primario);">
+            <div class="form-group">
+              <label>Precio Mayoreo</label>
+              <input type="number" min="0" step="0.01" formControlName="PrecioMayoreo" placeholder="$ 0.00"
+                     [class.input-error]="productoForm.get('PrecioMayoreo')?.invalid && productoForm.get('PrecioMayoreo')?.touched">
             </div>
           </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px;">
-          <div>
-            <label style="font-size: 14px; font-weight: bold; color: var(--color-tipografia);">Stock Inicial</label>
-            <input type="number" formControlName="Stock" placeholder="0" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-top: 6px; font-family: 'Inter', sans-serif; outline-color: var(--color-primario);">
+        <div class="grid-2-col">
+          <div class="form-group">
+            <label>Stock Inicial *</label>
+            <input type="number" min="0" formControlName="Stock" placeholder="0"
+                   [class.input-error]="productoForm.get('Stock')?.invalid && productoForm.get('Stock')?.touched">
           </div>
-          <div>
-            <label style="font-size: 14px; font-weight: bold; color: var(--color-tipografia);">Stock Mínimo (Alerta)</label>
-            <input type="number" formControlName="StockMinimo" placeholder="5" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-top: 6px; font-family: 'Inter', sans-serif; outline-color: var(--color-primario);">
+          <div class="form-group">
+            <label>Stock Mínimo (Alerta)</label>
+            <input type="number" min="0" formControlName="StockMinimo" placeholder="5"
+                   [class.input-error]="productoForm.get('StockMinimo')?.invalid && productoForm.get('StockMinimo')?.touched">
           </div>
         </div>
       </div>
 
-      <div style="display: flex; gap: 16px; margin-top: 10px;">
-        <button type="button" routerLink="/admin/catalogo" style="flex: 1; padding: 14px; background-color: #f5f5f5; color: var(--texto-secundario); font-weight: bold; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+      <div class="form-actions">
+        <button type="button" routerLink="/admin/catalogo" class="btn-cancelar">
           Cancelar
         </button>
-        <button type="submit" class="btn-machas" style="flex: 2; padding: 14px; cursor: pointer;">
-          Guardar Producto
+        <button type="submit" class="btn-guardar" [disabled]="guardando()">
+          {{ guardando() ? 'Guardando y subiendo imagen...' : 'Guardar Producto' }}
         </button>
       </div>
 

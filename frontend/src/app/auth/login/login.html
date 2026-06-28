@@ -1,30 +1,43 @@
-<div style="max-width: 400px; margin: 50px auto; background: var(--color-tarjeta); padding: 30px; border-radius: var(--radio-borde); box-shadow: var(--sombra-tarjeta); text-align: center;">
-  
-  <h2 style="color: var(--color-primario); margin-bottom: 10px;">¡Hola!, Bienvenido a las Machas</h2>
-  <p style="color: var(--texto-secundario); margin-bottom: 20px;">Listo para empezar tu compra?.</p>
-
-  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" style="display: flex; flex-direction: column; gap: 15px; text-align: left;">
-    <div>
-      <label style="font-size: 14px; font-weight: bold;">Correo Electrónico</label>
-      <input type="email" formControlName="correo" placeholder="tu.correo@email.com" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; margin-top: 5px;">
-    </div>
+<div class="login-wrapper">
+  <div class="login-card">
     
-    <div>
-      <label style="font-size: 14px; font-weight: bold;">Contraseña</label>
-      <input type="password" formControlName="password" placeholder="********" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; margin-top: 5px;">
+    <div class="brand-header">
+      <h1 class="brand-title">Las Machas</h1>
+      <h2 class="welcome-text">¡Hola! Bienvenido</h2>
+      <p class="subtitle">¿Listo para empezar tu compra?</p>
     </div>
 
-    <button type="submit" class="btn-machas" [disabled]="!loginForm.valid" style="margin-top: 10px;">Iniciar Sesión</button>
-  </form>
+    <!-- 1. Conectamos el form al FormBuilder de Mike y a su función onSubmit -->
+    <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      
+      <div class="input-group">
+        <label for="email">Correo Electrónico</label>
+        <!-- 2. Conectamos el input al control "correo" -->
+        <input type="email" id="email" formControlName="correo" placeholder="ejemplo@correo.com">
+      </div>
 
-  <p style="margin-top: 20px; font-size: 14px;">
-    <a (click)="entrarComoInvitado()" style="color: var(--texto-secundario); text-decoration: underline; cursor: pointer;">← Echar un vistazo como invitado</a>
-  </p>
+      <div class="input-group">
+        <label for="password">Contraseña</label>
+        <!-- 3. Conectamos el input al control "password" -->
+        <input type="password" id="password" formControlName="password" placeholder="••••••••">
+      </div>
 
-  <div style="margin-top: 25px; border-top: 1px solid #eee; padding-top: 20px;">
-    <p style="color: var(--texto-secundario); margin-bottom: 15px;">¿No tienes cuenta?</p>
-    <button type="button" routerLink="/registro" class="btn-machas" style="background-color: var(--color-secundario); width: 100%;">
-        ¡Regístrate aquí!
-    </button>
+      <!-- 4. Cambiamos type="button" por type="submit" para que dispare el formulario -->
+      <button type="submit" class="btn-primary">Iniciar Sesión</button>
+    </form>
+
+    <div class="guest-link">
+      <!-- 5. Quitamos el href="#" que recargaba la página y le conectamos el (click) -->
+      <a style="cursor: pointer;" (click)="entrarComoInvitado()">&larr; Echar un vistazo como invitado</a>
+    </div>
+
+    <hr class="divider">
+
+    <div class="register-section">
+      <p>¿No tienes cuenta?</p>
+      <!-- 6. Conectamos el botón al routerLink para que mande al registro -->
+      <button type="button" class="btn-secondary" routerLink="/registro">¡Regístrate aquí!</button>
+    </div>
+
   </div>
 </div>

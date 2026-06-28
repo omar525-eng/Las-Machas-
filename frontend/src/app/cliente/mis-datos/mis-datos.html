@@ -10,7 +10,6 @@
     </div>
   } @else {
     
-    <!-- MODO LECTURA: Solo muestra la información -->
     @if (!modoEdicion) {
       <div style="display: flex; flex-direction: column; gap: 15px; padding: 10px;">
         <div>
@@ -29,16 +28,19 @@
         <button (click)="modoEdicion = true" class="btn-machas" style="margin-top: 15px; width: 100%; padding: 12px; cursor: pointer;">Editar mis datos</button>
       </div>
     } 
-    <!-- MODO EDICIÓN: Muestra las cajas de texto para modificar -->
     @else {
       <div style="display: flex; flex-direction: column; gap: 15px;">
         <div>
-          <label style="font-weight: bold; font-size: 14px;">Nombre Completo:</label>
-          <input type="text" [(ngModel)]="usuario.nombreCompleto" placeholder="Ej. Juan Pérez" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; margin-top: 5px; outline-color: var(--color-primario);">
+          <label style="font-weight: bold; font-size: 14px;">Nombre Completo *:</label>
+          <input type="text" [(ngModel)]="usuario.nombreCompleto" name="nombreCompleto" required
+                 #nombreCtrl="ngModel" [class.input-error]="nombreCtrl.invalid && nombreCtrl.touched"
+                 placeholder="Ej. Juan Pérez" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; margin-top: 5px; outline-color: var(--color-primario);">
         </div>
         <div>
-          <label style="font-weight: bold; font-size: 14px;">Teléfono:</label>
-          <input type="tel" [(ngModel)]="usuario.telefono" placeholder="Ej. 4491234567" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; margin-top: 5px; outline-color: var(--color-primario);">
+          <label style="font-weight: bold; font-size: 14px;">Teléfono (WhatsApp) *:</label>
+          <input type="tel" [(ngModel)]="usuario.telefono" name="telefono" required maxlength="10" pattern="[0-9]{10}"
+                 #telCtrl="ngModel" [class.input-error]="telCtrl.invalid && telCtrl.touched"
+                 placeholder="Ej. 4491234567" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; margin-top: 5px; outline-color: var(--color-primario);">
         </div>
         <div>
           <label style="font-weight: bold; font-size: 14px;">Dirección Predeterminada:</label>

@@ -1,68 +1,111 @@
-<div style="padding: 20px; max-width: 800px; margin: 0 auto;">
+<div class="form-container">
   
-  <h2 class="titulo-tarjeta" style="margin-bottom: 5px;">Editar Producto</h2>
-  <p style="color: var(--texto-secundario); margin-bottom: 24px;">Modifica la descripción o ajusta los precios y el inventario de esta presentación.</p>
+  <h2 class="titulo-pagina">Editar Producto</h2>
+  <p class="subtitulo-pagina">Modifica la descripción, cambia la imagen o ajusta los precios de esta presentación.</p>
 
-  <div style="background-color: var(--color-tarjeta); border-radius: var(--radio-borde); box-shadow: var(--sombra-tarjeta); padding: 24px;">
+  <div class="card-formulario">
     
-    @if (cargando) {
-      <p style="text-align: center; color: var(--texto-secundario); padding: 20px;">Cargando información del producto...</p>
+    @if (cargando()) {
+      <div class="loader-container">
+        <div class="spinner"></div>
+        <p class="loading-text">Cargando información del producto...</p>
+      </div>
     } @else {
-      <form [formGroup]="productoForm" (ngSubmit)="guardarCambios()" style="display: flex; flex-direction: column; gap: 24px;">
+      <form [formGroup]="productoForm" (ngSubmit)="guardarCambios()" class="form-layout">
 
-        <div>
-          <h3 style="font-size: 16px; color: var(--color-primario); margin-bottom: 12px; border-bottom: 1px solid #eee; padding-bottom: 8px;">Datos Generales</h3>
+        <div class="seccion-form">
+          <h3 class="titulo-seccion">Datos Generales</h3>
           
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-            <div>
-              <label style="font-size: 14px; font-weight: bold; color: var(--color-tipografia);">Nombre del Producto</label>
-              <input type="text" formControlName="Nombre" style="width: 100%; padding: 12px; border: 1px dashed #ccc; border-radius: 8px; margin-top: 6px; font-family: 'Inter', sans-serif; background-color: #f9f9f9; color: #9e9e9e; cursor: not-allowed;">
+          <div class="grid-2-col">
+            <div class="form-group">
+              <label>Nombre del Producto</label>
+              <input type="text" formControlName="Nombre" class="input-disabled">
             </div>
-            <div>
-              <label style="font-size: 14px; font-weight: bold; color: var(--color-tipografia);">Categoría</label>
-              <input type="text" formControlName="Categoria" style="width: 100%; padding: 12px; border: 1px dashed #ccc; border-radius: 8px; margin-top: 6px; font-family: 'Inter', sans-serif; background-color: #f9f9f9; color: #9e9e9e; cursor: not-allowed;">
+            <div class="form-group">
+              <label>Categoría</label>
+              <input type="text" formControlName="Categoria" class="input-disabled">
             </div>
           </div>
 
-          <div style="margin-top: 16px;">
-            <label style="font-size: 14px; font-weight: bold; color: var(--color-tipografia);">Descripción</label>
-            <textarea formControlName="Descripcion" rows="3" placeholder="Ej. Deliciosa mezcla artesanal con notas de ajo..." style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-top: 6px; font-family: 'Inter', sans-serif; outline-color: var(--color-primario); resize: vertical;"></textarea>
+          <div class="form-group">
+            <label>Descripción</label>
+            <textarea formControlName="Descripcion" rows="3"></textarea>
           </div>
-        </div>
 
-        <div>
-          <h3 style="font-size: 16px; color: var(--color-primario); margin-bottom: 12px; border-bottom: 1px solid #eee; padding-bottom: 8px;">Precios e Inventario</h3>
-          
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-            <div>
-              <label style="font-size: 14px; font-weight: bold; color: var(--color-tipografia);">Tamaño o Presentación</label>
-              <input type="text" formControlName="Tamano" style="width: 100%; padding: 12px; border: 1px dashed #ccc; border-radius: 8px; margin-top: 6px; font-family: 'Inter', sans-serif; background-color: #f9f9f9; color: #9e9e9e; cursor: not-allowed;">
+          <div class="form-group" style="margin-top: 10px;">
+            <label class="mb-8">Fotografía de la Salsa</label>
+
+            @if (!imagenPreview && imagenOriginal) {
+              <div class="current-image-box">
+                <p class="current-image-text">Imagen actual en el catálogo:</p>
+                <img [src]="imagenOriginal" alt="Imagen actual" class="img-actual">
+              </div>
+            }
+
+            <input type="file" #fileInput accept="image/*" (change)="onFileSelected($event)" class="hidden-input">
+            
+            <button type="button" (click)="fileInput.click()" class="btn-upload" style="margin-top: 10px;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              Seleccionar nueva imagen
+            </button>
+
+            <div *ngIf="imagenSeleccionada" class="file-status">
+              Nuevo archivo listo: {{ imagenSeleccionada.name }}
             </div>
             
-            <div style="flex: 1;">
-              <label style="font-size: 14px; font-weight: bold; color: var(--color-tipografia);">Precio Regular</label>
-              <input type="number" formControlName="PrecioRegular" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-top: 6px; font-family: 'Inter', sans-serif; outline-color: var(--color-primario);">
+            @if (imagenPreview) {
+              <div class="preview-box">
+                <div class="preview-img-wrapper">
+                  <img [src]="imagenPreview" alt="Vista previa" class="preview-img">
+                  <span class="badge-nueva">Nueva</span>
+                  <button type="button" class="btn-remover-img" (click)="removerImagen(fileInput)" title="Quitar imagen">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                  </button>
+                </div>
+                <div class="preview-text">
+                  <p class="preview-title">Vista previa de la nueva imagen</p>
+                  <p class="preview-desc">Esta imagen reemplazará a la actual.</p>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="seccion-form">
+          <h3 class="titulo-seccion">Precios e Inventario</h3>
+          
+          <div class="grid-2-col">
+            <div class="form-group">
+              <label>Tamaño o Presentación</label>
+              <input type="text" formControlName="Tamano" class="input-disabled">
+            </div>
+            <div class="form-group">
+              <label>Precio Regular *</label>
+              <input type="number" min="0" step="0.01" formControlName="PrecioRegular" [class.input-error]="productoForm.get('PrecioRegular')?.invalid && productoForm.get('PrecioRegular')?.touched">
             </div>
           </div>
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px;">
-            <div>
-              <label style="font-size: 14px; font-weight: bold; color: var(--color-tipografia);">Stock Actual</label>
-              <input type="number" formControlName="StockActual" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-top: 6px; font-family: 'Inter', sans-serif; outline-color: var(--color-primario);">
+          <div class="grid-2-col mt-15">
+            <div class="form-group">
+              <label>Stock Actual *</label>
+              <input type="number" min="0" formControlName="StockActual" [class.input-error]="productoForm.get('StockActual')?.invalid && productoForm.get('StockActual')?.touched">
             </div>
-            <div>
-              <label style="font-size: 14px; font-weight: bold; color: var(--color-tipografia);">Stock Mínimo (Alerta)</label>
-              <input type="number" formControlName="StockMinimo" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-top: 6px; font-family: 'Inter', sans-serif; outline-color: var(--color-primario);">
+            <div class="form-group">
+              <label>Stock Mínimo (Alerta)</label>
+              <input type="number" min="0" formControlName="StockMinimo">
             </div>
           </div>
         </div>
 
-        <div style="display: flex; gap: 16px; margin-top: 10px;">
-          <button type="button" routerLink="/admin/catalogo" style="flex: 1; padding: 14px; background-color: #f5f5f5; color: var(--texto-secundario); font-weight: bold; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+        <div class="form-actions">
+          <button type="button" routerLink="/admin/catalogo" class="btn-cancelar">
             Cancelar
           </button>
-          <button type="submit" class="btn-machas" style="flex: 2; padding: 14px; cursor: pointer;">
-            Guardar Cambios
+          <button type="submit" class="btn-guardar" [disabled]="guardando()">
+            {{ guardando() ? 'Guardando...' : 'Guardar Cambios' }}
           </button>
         </div>
 

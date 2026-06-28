@@ -1,12 +1,16 @@
-/* ==========================================================================
-   SISTEMA DE DISEÑO GLOBAL - LAS MACHAS v2.0 (Pegar en styles.css)
-   ========================================================================== */
+/* SISTEMA DE DISEÑO GLOBAL - LAS MACHAS v2.0 */
 
-/* 🔤 Importación de Tipografías desde Google Fonts (Montserrat e Inter) */
+/* Importación de Tipografías desde Google Fonts (Montserrat e Inter) */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Montserrat:wght@700&display=swap');
-
+/* Reseteo de márgenes del navegador para que los fondos cubran el 100% */
+html, body {
+  margin: 0;
+  padding: 0;
+ width: 100%;
+  height: 100%;
+} 
 :root {
-  /* 🎨 Paleta de Colores Oficial (Desde UI Kit) */
+  /* Paleta de Colores Oficial (Desde UI Kit) */
   --color-primario: #E75A88;      /* Rosa vibrante */
   --color-secundario: #F57F17;    /* Naranja */
   --color-fondo: #FAFAFA;         /* Fondo clarito oficial */
@@ -17,15 +21,13 @@
   --texto-secundario: #757575;    /* Gris medio para "Frasco 250ml" y precios */
   --texto-blanco: #FFFFFF;        /* Para botones y header */
   
-  /* 📏 Espaciados y Bordes (Auto Layout) */
+  /* Espaciados y Bordes (Auto Layout) */
   --padding-tarjeta: 16px;
   --radio-borde: 12px;
   --sombra-tarjeta: 0px 4px 10px rgba(0, 0, 0, 0.06); /* Sombra suave y elegante */
 }
 
-/* ==========================================================================
-   RESETEO BÁSICO Y FONDOS
-   ========================================================================== */
+/* RESETEO BÁSICO Y FONDOS */
 * {
   margin: 0;
   padding: 0;
@@ -47,9 +49,7 @@ h1, h2, h3, .titulo-tarjeta {
   color: var(--color-tipografia);
 }
 
-/* ==========================================================================
-   CLASES REUTILIZABLES (Componentes Maestros)
-   ========================================================================== */
+/* CLASES REUTILIZABLES (Componentes Maestros) */
 
 /* Botón Principal Rosa */
 .btn-machas {

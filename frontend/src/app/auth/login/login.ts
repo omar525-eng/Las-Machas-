@@ -1,10 +1,10 @@
-
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import Swal from 'sweetalert2'; 
 
 @Component({
   selector: 'app-login',
@@ -29,10 +29,10 @@ export class Login {
       const credentials = this.loginForm.getRawValue();
       this.http.post<any>('http://localhost:3000/api/usuarios/login', credentials).subscribe({
         next: (response) => {
-          // 1. Extraemos el rol. Añadimos 'Rol' (con mayúscula) para blindarlo contra el backend
+          // 1. Extraemos el rol
           let userRole = response.Rol || response.rol || response.role || response.usuario?.rol || response.data?.rol;
 
-          // 2. Si no viene suelto, decodificamos el token de forma segura
+          // 2. Decodificamos el token si es necesario
           if (!userRole && response.token) {
             try {
               const base64Url = response.token.split('.')[1];
@@ -46,12 +46,41 @@ export class Login {
           console.log('✅ Rol detectado para la sesión:', userRole);
 
           this.authService.login(response.token, userRole || '');
-          this.router.navigate([this.authService.isAdmin() ? '/admin/catalogo' : '/tienda']);
+          
+          const destino = this.authService.isAdmin() ? '/admin/catalogo' : '/tienda';
+
+          // Alerta de Bienvenida (Se cierra sola)
+          Swal.fire({
+            title: '¡Bienvenido!',
+            text: 'Iniciando sesión...',
+            icon: 'success',
+            timer: 1000, // 1.5 segundos
+            showConfirmButton: false // Ocultamos el botón para que sea automático
+          }).then(() => {
+            this.router.navigate([destino]);
+          });
+          
         },
-        error: (err) => alert('Usuario no encontrado o credenciales incorrectas: ' + err.message)
+        error: (err) => {
+          // Alerta de Error (Credenciales incorrectas)
+          Swal.fire({
+            title: '¡Ups!',
+            text: 'Usuario no encontrado o contraseña incorrecta.',
+            icon: 'error',
+            confirmButtonText: 'Reintentar',
+            confirmButtonColor: '#E75A88' // El rosa de Las Machas
+          });
+        }
       });
     } else {
-      alert('Por favor, completa el formulario correctamente.');
+      // Alerta de Validación (Faltan datos)
+      Swal.fire({
+        title: 'Datos incompletos',
+        text: 'Por favor, ingresa un correo válido y tu contraseña.',
+        icon: 'warning',
+        confirmButtonText: 'Revisar',
+        confirmButtonColor: '#E75A88'
+      });
     }
   }
 

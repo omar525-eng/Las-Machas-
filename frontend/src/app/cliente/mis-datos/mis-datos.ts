@@ -3,12 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
+import Swal from 'sweetalert2'; 
 
 @Component({
   selector: 'app-mis-datos',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
-  templateUrl: './mis-datos.html'
+  templateUrl: './mis-datos.html',
+  styleUrls: ['./mis-datos.css'] // Asegúrate de enlazar el CSS aquí
 })
 export class MisDatosComponent implements OnInit {
   private http = inject(HttpClient);
@@ -27,11 +29,9 @@ export class MisDatosComponent implements OnInit {
     this.cargarDatos();
   }
 
-  // Función para leer el ID que viene oculto en el Token de sesión
   private obtenerUsuarioId(token: string) {
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
-      console.log('Token Payload:', payload); // Para depurar
       return payload.UsuarioID || payload.id || payload.userId || payload.usuarioId || payload.idUsuario;
     } catch (e) {
       return null;
@@ -54,13 +54,10 @@ export class MisDatosComponent implements OnInit {
       headers: { Authorization: `Bearer ${token}` }
     }).subscribe({
       next: (res) => {
-        console.log('Datos GET recibidos:', res);
-        
         let nombre = '';
         let telefono = '';
         let direccion = '';
         
-        // Buscador recursivo: encuentra el dato sin importar cómo lo mande el backend
         const buscarDatos = (obj: any) => {
           if (!obj || typeof obj !== 'object') return;
           for (const key of Object.keys(obj)) {
@@ -77,11 +74,9 @@ export class MisDatosComponent implements OnInit {
         this.usuario.telefono = telefono || '';
         this.usuario.direccionDefecto = direccion || '';
         
-        // Obligar a Angular a refrescar la pantalla de inmediato
         this.cdr.detectChanges();
       },
       error: (err) => {
-        console.error('Error al cargar los datos del usuario:', err);
         if (err.status === 401 || err.status === 403) {
           this.isLoggedIn = false;
         }
@@ -92,17 +87,46 @@ export class MisDatosComponent implements OnInit {
   guardarDatos() {
     const token = localStorage.getItem('token');
     if (!token) {
-      alert('Debes iniciar sesión para actualizar tus datos.');
+      Swal.fire({
+        title: 'Sesión expirada',
+        text: 'Debes iniciar sesión para actualizar tus datos.',
+        icon: 'warning',
+        confirmButtonColor: '#E75A88'
+      });
+      return;
+    }
+
+    // Validación 1: Campos vacíos
+    if (!this.usuario.nombreCompleto || !this.usuario.telefono) {
+      Swal.fire({
+        title: 'Faltan datos',
+        text: 'Tu nombre completo y teléfono son obligatorios.',
+        icon: 'warning',
+        confirmButtonText: 'Revisar',
+        confirmButtonColor: '#E75A88'
+      });
+      return;
+    }
+
+    // Validación 2: Formato de teléfono
+    const regexTelefono = /^[0-9]{10}$/;
+    if (!regexTelefono.test(this.usuario.telefono)) {
+      Swal.fire({
+        title: 'Teléfono inválido',
+        text: 'El número debe tener exactamente 10 dígitos numéricos.',
+        icon: 'warning',
+        confirmButtonText: 'Corregir',
+        confirmButtonColor: '#E75A88'
+      });
       return;
     }
 
     const usuarioId = this.obtenerUsuarioId(token);
     if (!usuarioId) return;
 
-    // Enviamos una copia con los nombres exactos que piden tus amigos
     const datosAEnviar = {
       ...this.usuario,
-      UsuarioID: usuarioId, // Inyectamos el ID por si lo esperan en el body
+      UsuarioID: usuarioId, 
       NombreCompleto: this.usuario.nombreCompleto,
       nombre: this.usuario.nombreCompleto,
       Telefono: this.usuario.telefono,
@@ -115,14 +139,27 @@ export class MisDatosComponent implements OnInit {
       headers: { Authorization: `Bearer ${token}` }
     }).subscribe({
       next: () => {
-        alert('¡Tus datos han sido actualizados correctamente!');
-        this.modoEdicion = false; // Ocultamos el formulario al guardar
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: '¡Datos guardados!',
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true
+        });
+        this.modoEdicion = false;
       },
       error: (err) => {
-        console.error('Error al guardar datos:', err);
-        // Extraemos el error exacto para saber qué falló
         const mensajeReal = err.error?.message || err.error?.error || err.message || 'Error del servidor';
-        alert(`No se pudieron guardar los datos. Razón: ${mensajeReal}`);
+        // Alerta de error
+        Swal.fire({
+          title: 'Error al guardar',
+          text: `No se pudieron actualizar los datos: ${mensajeReal}`,
+          icon: 'error',
+          confirmButtonText: 'Entendido',
+          confirmButtonColor: '#E75A88'
+        });
       }
     });
   }

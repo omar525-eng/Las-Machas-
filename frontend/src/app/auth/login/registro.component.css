@@ -1,77 +1,161 @@
-.registro-container {
-  max-width: 500px;
-  margin: 40px auto;
-  padding: 30px;
-  background: var(--color-tarjeta);
-  border-radius: var(--radio-borde);
-  box-shadow: var(--sombra-tarjeta);
+/* Importamos tus tipografías oficiales */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Montserrat:wght@700&display=swap');
+
+/* Tus Variables del Manual de Marca */
+:root {
+  --color-primario: #E75A88;
+  --color-secundario: #F57F17;
+  --color-fondo: #FAFAFA;
+  --color-tipografia: #212121;
+  
+  --font-encabezado: 'Montserrat', sans-serif;
+  --font-texto: 'Inter', sans-serif;
+}
+
+/* Modo Fuerza Bruta con el fondo elegante */
+.auth-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  min-height: 100vh;
+  box-sizing: border-box;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(231, 90, 136, 0.08) 0%, var(--color-fondo) 100%);
+  padding: 40px 20px; /* Padding extra para scroll en pantallas pequeñas */
+  font-family: var(--font-texto);
+  color: var(--color-tipografia);
+}
+
+/* La tarjeta (un poquito más ancha para acomodar la dirección) */
+.auth-card {
+  background: white;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  max-width: 450px; 
   text-align: center;
 }
 
-.registro-container h2 {
+/* Encabezados y Textos */
+.brand-title {
+  font-family: var(--font-encabezado);
   color: var(--color-primario);
-  margin-bottom: 10px;
+  font-weight: 700;
+  font-size: 24px;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-.subtitulo {
-  color: var(--texto-secundario);
-  margin-bottom: 30px;
-  font-size: 15px;
-  line-height: 1.5;
+.welcome-text {
+  font-family: var(--font-encabezado);
+  font-weight: 700;
+  font-size: 22px;
+  margin-bottom: 5px;
 }
 
-.registro-form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  text-align: left;
-}
-
-.form-group label {
+.subtitle {
+  font-family: var(--font-texto);
+  font-weight: 400;
   font-size: 14px;
-  font-weight: bold;
-  color: var(--color-tipografia);
+  margin-bottom: 25px;
+  opacity: 0.7;
+}
+
+/* Inputs y Textarea */
+.input-group {
+  text-align: left;
+  margin-bottom: 15px;
+}
+
+.input-group label {
   display: block;
+  font-family: var(--font-texto);
+  font-weight: 700;
+  font-size: 13px;
   margin-bottom: 6px;
 }
 
-.form-group input,
-.form-group textarea {
+.input-group input, 
+.input-group textarea {
   width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
+  padding: 12px 15px;
+  border: 1.5px solid #eaeaea;
   border-radius: 8px;
-  font-family: 'Inter', sans-serif;
+  background-color: var(--color-fondo);
+  color: var(--color-tipografia);
+  font-family: var(--font-texto);
   font-size: 14px;
-  outline-color: var(--color-primario);
+  transition: all 0.3s ease;
+  box-sizing: border-box;
 }
 
-.btn-registrar {
-  margin-top: 15px;
+.input-group textarea {
+  resize: vertical; /* Solo permite hacer el cuadro más alto, no más ancho */
+}
+
+.input-group input:focus,
+.input-group textarea:focus {
+  border-color: var(--color-primario);
+  outline: none;
+  background-color: white;
+  box-shadow: 0 0 0 3px rgba(231, 90, 136, 0.15);
+}
+
+/* Botón Principal */
+.btn-primary {
+  width: 100%;
+  padding: 14px;
   background-color: var(--color-primario);
   color: white;
   border: none;
-  padding: 15px;
   border-radius: 8px;
+  font-family: var(--font-texto);
   font-size: 16px;
-  font-weight: bold;
+  font-weight: 700;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: opacity 0.3s;
+  margin-top: 15px;
 }
 
-.btn-registrar:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
+.btn-primary:hover {
+  opacity: 0.85;
 }
 
-.link-login {
-  margin-top: 25px;
+/* Separador */
+.divider {
+  border: none;
+  border-top: 1px solid #eee;
+  margin: 25px 0;
+}
+
+/* Sección Inferior */
+.login-link-section p {
+  font-family: var(--font-texto);
   font-size: 14px;
-  color: var(--texto-secundario);
+  margin-bottom: 12px;
 }
 
-.link-login a {
-  color: var(--color-primario);
-  font-weight: bold;
-  text-decoration: none;
+.btn-secondary {
+  width: 100%;
+  padding: 12px;
+  background-color: transparent;
+  color: var(--color-secundario);
+  border: 2px solid var(--color-secundario);
+  border-radius: 8px;
+  font-family: var(--font-texto);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-secundario);
+  color: white;
 }

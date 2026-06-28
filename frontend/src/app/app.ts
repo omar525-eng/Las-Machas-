@@ -4,10 +4,10 @@ import { CommonModule } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith } from 'rxjs/operators';
  
-// --- SERVICIOS NAOMI (SE RESPETAN) ---
+// SERVICIOS NAOMI
 import { SearchService } from './core/services/search.service';
  
-// --- SERVICIOS MIKE (SE INTEGRAN) ---
+// SERVICIOS MIKE
 import { AuthService } from './core/services/auth.service';
 import { CartService } from './core/services/cart.service';
  
@@ -22,15 +22,15 @@ export class App {
  
   title = 'Las Machas';
  
-  // 🔥 NAOMI (se mantiene)
+  // NAOMI (se mantiene)
   private searchService = inject(SearchService);
  
-  // 🔥 MIKE (se integran)
+  // MIKE (se integran)
   public authService = inject(AuthService);
   public cartService = inject(CartService);
   public router = inject(Router);
  
-  // 🔥 SIGNAL DE MIKE (para detectar ruta actual)
+  // SIGNAL DE MIKE (para detectar ruta actual)
   private currentUrlSignal = toSignal(
     this.router.events.pipe(
       filter((e): e is NavigationEnd => e instanceof NavigationEnd),
@@ -39,13 +39,13 @@ export class App {
     )
   );
  
-  // 🔥 LAYOUT CONDICIONAL (MEJORADO)
+  // LAYOUT CONDICIONAL
   public showLayout = computed(() => {
     const currentUrl = this.currentUrlSignal();
     return !currentUrl?.includes('/login') && !currentUrl?.includes('/registro');
   });
  
-  // 🔥 MÉTODO UNIFICADO (USA EL DE NAOMI)
+  // MÉTODO UNIFICADO (USA EL DE NAOMI)
   actualizarBusqueda(event: Event) {
     const input = event.target as HTMLInputElement;
     this.searchService.searchTerm.set(input.value);

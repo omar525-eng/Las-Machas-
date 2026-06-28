@@ -1,7 +1,8 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
-import { RouterLink, ActivatedRoute } from '@angular/router';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CatalogoService } from '../../core/services/catalogo.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-detalle-pedido',
@@ -13,12 +14,22 @@ import { CatalogoService } from '../../core/services/catalogo.service';
 export class DetallePedido implements OnInit {
   private route = inject(ActivatedRoute);
   private catalogoService = inject(CatalogoService);
-  private cdr = inject(ChangeDetectorRef); // <--- El codazo para Angular
-
+  private router = inject(Router);
   pedidoId: string | null = null;
-  cabecera: any = null;
-  detalle: any[] = [];
-  cargando = true;
+  
+  // Modernizamos a Signals
+  cabecera = signal<any>(null);
+  detalle = signal<any[]>([]);
+  cargando = signal<boolean>(true);
+
+  // Calculamos el total automáticamente en el Front
+  totalPedido = computed(() => {
+    const items = this.detalle();
+    if (!items || items.length === 0) return 0;
+    
+    // Sumamos el SubtotalLinea de cada producto
+    return items.reduce((acc, item) => acc + (Number(item.SubtotalLinea) || 0), 0);
+  });
 
   ngOnInit() {
     this.pedidoId = this.route.snapshot.paramMap.get('id');
@@ -27,28 +38,41 @@ export class DetallePedido implements OnInit {
       this.cargarDetalle(this.pedidoId);
     } else {
       console.warn('No se recibió ningún ID de pedido en la URL.');
-      this.cargando = false;
-      this.cdr.detectChanges(); // Actualizamos la vista
+      this.cargando.set(false);
     }
   }
 
   cargarDetalle(id: string) {
     this.catalogoService.obtenerDetallePedido(id).subscribe({
       next: (res: any) => {
-        console.log('¡Llegó el pedido desde el backend!', res); // Chismoso F12
-        
         if (res && res.data) {
-          this.cabecera = res.data.cabecera;
-          this.detalle = res.data.detalle;
+          this.cabecera.set(res.data.cabecera);
+          this.detalle.set(res.data.detalle);
+        } else {
+          // Alerta si el pedido no existe
+          Swal.fire({
+            title: 'No encontrado',
+            text: 'No pudimos encontrar la información de este pedido.',
+            icon: 'info',
+            confirmButtonText: 'Regresar',
+            confirmButtonColor: '#E75A88'
+          }).then(() => {
+            this.router.navigate(['/admin/tablero-pedidos']);
+          });
         }
-        
-        this.cargando = false;
-        this.cdr.detectChanges(); // <--- ¡AQUÍ ESTÁ LA MAGIA PARA QUITAR LA CARGA!
+        this.cargando.set(false);
       },
       error: (err) => {
         console.error('Error al cargar el detalle', err);
-        this.cargando = false;
-        this.cdr.detectChanges(); // Actualizamos la vista aunque haya error
+        this.cargando.set(false);
+        // Alerta de error de conexión
+        Swal.fire({
+          title: 'Error de red',
+          text: 'Hubo un fallo al conectar con el servidor.',
+          icon: 'error',
+          confirmButtonText: 'Entendido',
+          confirmButtonColor: '#E75A88'
+        });
       }
     });
   }
@@ -56,18 +80,49 @@ export class DetallePedido implements OnInit {
   cambiarEstatus(nuevoEstatus: string) {
     if (!this.pedidoId) return;
     
-    const confirmar = confirm(`¿Seguro que quieres marcar el pedido como ${nuevoEstatus}?`);
-    if (!confirmar) return;
+    // SweetAlert de confirmación para cambiar el estatus
+    Swal.fire({
+      title: `¿Marcar como ${nuevoEstatus}?`,
+      text: `El estatus del pedido cambiará a ${nuevoEstatus} de forma permanente.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: nuevoEstatus === 'Entregado' ? '#4CAF50' : '#E75A88',
+      cancelButtonColor: '#9e9e9e',
+      confirmButtonText: 'Sí, cambiar',
+      cancelButtonText: 'Cancelar',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        
+        // Actualización optimista (cambio visual rápido)
+        const currentCabecera = this.cabecera();
+        this.cabecera.set({ ...currentCabecera, Estatus: nuevoEstatus });
 
-    this.catalogoService.actualizarEstatusPedido(Number(this.pedidoId), nuevoEstatus).subscribe({
-      next: () => {
-        this.cabecera.Estatus = nuevoEstatus;
-        this.cdr.detectChanges(); // Actualizamos la etiqueta de estatus visualmente
-        alert(`¡Pedido marcado como ${nuevoEstatus}!`);
-      },
-      error: (err) => {
-        console.error('Error al actualizar', err);
-        alert('Hubo un error al actualizar el pedido.');
+        this.catalogoService.actualizarEstatusPedido(Number(this.pedidoId), nuevoEstatus).subscribe({
+          next: () => {
+            // Alerta de éxito pequeña
+            Swal.fire({
+              title: `¡${nuevoEstatus}!`,
+              text: `Estatus actualizado correctamente.`,
+              icon: 'success',
+              timer: 1500,
+              showConfirmButton: false
+            });
+          },
+          error: (err) => {
+            console.error('Error al actualizar', err);
+            // Alerta de error si falla la BD
+            Swal.fire({
+              title: 'Error',
+              text: 'No se pudo actualizar el estatus. Intenta de nuevo.',
+              icon: 'error',
+              confirmButtonText: 'Entendido',
+              confirmButtonColor: '#E75A88'
+            });
+            // Revertir si falla
+            this.cabecera.set(currentCabecera);
+          }
+        });
       }
     });
   }

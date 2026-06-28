@@ -4,27 +4,28 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { CartService } from '../../core/services/cart.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
- 
+import Swal from 'sweetalert2'; 
+
 @Component({
   selector: 'app-checkout',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
-  templateUrl: './checkout.html'
+  templateUrl: './checkout.html',
+  styleUrl: './checkout.css'
 })
 export class Checkout implements OnInit {
   public cartService = inject(CartService);
   private http = inject(HttpClient);
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
- 
   isLoggedIn = false;
- 
+
   usuario = {
     nombreCompleto: '',
     direccionDefecto: '',
     telefono: ''
   };
- 
+
   private obtenerUsuarioId(token: string) {
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
@@ -33,7 +34,7 @@ export class Checkout implements OnInit {
       return null;
     }
   }
- 
+
   ngOnInit() {
     const token = localStorage.getItem('token');
     if (token) {
@@ -47,6 +48,7 @@ export class Checkout implements OnInit {
             let nombre = '';
             let telefono = '';
             let direccion = '';
+            
             const buscarDatos = (obj: any) => {
               if (!obj || typeof obj !== 'object') return;
               for (const key of Object.keys(obj)) {
@@ -57,8 +59,9 @@ export class Checkout implements OnInit {
                 if (typeof obj[key] === 'object') buscarDatos(obj[key]);
               }
             };
+            
             buscarDatos(res);
- 
+
             this.usuario.nombreCompleto = nombre || '';
             this.usuario.telefono = telefono || '';
             this.usuario.direccionDefecto = direccion || '';
@@ -74,16 +77,36 @@ export class Checkout implements OnInit {
       }
     }
   }
- 
+
   enviarPedido() {
+    // Validación 1: Campos vacíos
     if (!this.usuario.nombreCompleto || !this.usuario.direccionDefecto || !this.usuario.telefono) {
-      alert('Por favor, llena todos los campos para el envío.');
+      Swal.fire({
+        title: 'Faltan datos',
+        text: 'Por favor, llena todos los campos obligatorios marcados en rojo para poder realizar el envío.',
+        icon: 'warning',
+        confirmButtonText: 'Revisar',
+        confirmButtonColor: '#E75A88' 
+      });
       return;
     }
- 
+
+    // Validación 2: Formato exacto de teléfono (10 dígitos)
+    const regexTelefono = /^[0-9]{10}$/;
+    if (!regexTelefono.test(this.usuario.telefono)) {
+      Swal.fire({
+        title: 'Teléfono inválido',
+        text: 'El número de WhatsApp debe tener exactamente 10 dígitos numéricos.',
+        icon: 'warning',
+        confirmButtonText: 'Corregir',
+        confirmButtonColor: '#E75A88' 
+      });
+      return;
+    }
+
     const token = localStorage.getItem('token');
     const usuarioId = token ? this.obtenerUsuarioId(token) : null;
- 
+
     const pedido = {
       UsuarioID: usuarioId,
       ClienteNombre: this.usuario.nombreCompleto,
@@ -95,46 +118,60 @@ export class Checkout implements OnInit {
         Precio: this.cartService.getPrecioUnitarioFinal(item)
       }))
     };
- 
+
     let headers = new HttpHeaders();
     if (token) {
       headers = headers.set('Authorization', `Bearer ${token}`);
     }
- 
+
     this.http.post('http://localhost:3000/api/pedidos', pedido, { headers }).subscribe({
       next: (res: any) => {
-        //  CONFIRMACIÓN CLARA del pedido creado
         const folio = res.data?.Folio || 'Tu pedido';
-        alert(` ¡${folio} registrado exitosamente!\n\n📱 Se abrirá WhatsApp para confirmar...`);
         
-        this.abrirWhatsApp();
-        this.cartService.clearCart();
-        
-        // Esperar 1 segundo antes de navegar
-        setTimeout(() => {
-          this.router.navigate(['/tienda']);
-        }, 1000);
+        Swal.fire({
+          title: '¡Pedido Confirmado!',
+          html: `<b>${folio}</b> se ha registrado exitosamente.<br><br>Se abrirá WhatsApp para coordinar la entrega con nuestro equipo.`,
+          icon: 'success',
+          confirmButtonText: 'Ir a WhatsApp',
+          confirmButtonColor: '#25D366', 
+          allowOutsideClick: false 
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.abrirWhatsApp();
+            this.cartService.clearCart();
+            this.router.navigate(['/tienda']);
+          }
+        });
+
       },
       error: (err) => {
         console.error('Error al procesar el pedido:', err);
-        alert(' Hubo un problema al procesar tu pedido. Intenta nuevamente.');
+        Swal.fire({
+          title: 'Error de conexión',
+          text: 'Hubo un problema al procesar tu pedido. Por favor, intenta nuevamente.',
+          icon: 'error',
+          confirmButtonText: 'Entendido',
+          confirmButtonColor: '#E75A88'
+        });
       }
     });
   }
- 
+
   abrirWhatsApp() {
-    let msg = `* NUEVO PEDIDO - LAS MACHAS *\n\n`;
+    let msg = `*NUEVO PEDIDO - LAS MACHAS*\n\n`;
     msg += `*Cliente:* ${this.usuario.nombreCompleto}\n`;
     msg += `*Teléfono:* ${this.usuario.telefono}\n`;
     msg += `*Dirección:* ${this.usuario.direccionDefecto}\n\n`;
-    msg += `*📦 Productos:*\n`;
+    msg += `*Productos:*\n`;
+    
     this.cartService.getItems()().forEach(item => {
       const precioUnitario = this.cartService.getPrecioUnitarioFinal(item);
       msg += `- ${item.cantidad}x ${item.nombre} ($${precioUnitario * item.cantidad})\n`;
     });
+    
     msg += `\n*Total a pagar:* $${this.cartService.total()}\n\n`;
     msg += `¡Gracias por tu compra!`;
- 
+
     const numeroTel = "523461130968"; 
     const url = `https://wa.me/${numeroTel}?text=${encodeURIComponent(msg)}`;
     window.open(url, '_blank');

@@ -1,0 +1,263 @@
+/* CONTENEDOR GLOBAL */
+.carrito-container {
+  padding: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+  font-family: var(--font-texto, 'Inter', sans-serif);
+}
+
+.carrito-titulo {
+  color: var(--color-tipografia, #212121);
+  margin-bottom: 25px;
+  font-family: var(--font-encabezado, 'Montserrat', sans-serif);
+  font-size: 28px;
+  font-weight: 700; 
+}
+
+.carrito-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.items-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* TARJETA DE CADA PRODUCTO (ITEM) */
+.item-card {
+  display: flex;
+  align-items: center;
+  background: white;
+  padding: 15px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+  gap: 15px;
+  border: 1px solid #f2f2f2;
+  transition: transform 0.2s ease;
+  flex-wrap: wrap; 
+}
+
+.item-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+}
+
+/* El Aparador Inteligente en miniatura */
+.item-img-wrapper {
+  width: 80px;
+  height: 80px;
+  background: #fafafa;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  border: 1px solid #eee;
+}
+
+.item-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; 
+}
+
+/* Textos del Item */
+.item-info {
+  flex: 1;
+  min-width: 150px;
+}
+
+.item-nombre {
+  margin: 0 0 5px 0;
+  font-size: 16px;
+  color: var(--color-tipografia, #212121);
+  font-weight: 700;
+}
+
+.item-precio {
+  margin: 0;
+  color: var(--color-primario, #E75A88);
+  font-weight: 700; 
+  font-size: 15px;
+}
+
+.descuento-tag {
+  color: #2e7d32;
+  font-size: 11px;
+  display: inline-block;
+  margin-top: 4px;
+  font-weight: 700;
+  background: #e8f5e9;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+/* CONTROLES DE CANTIDAD Y ELIMINAR */
+.item-controles {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #f8f9fa;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid #eee;
+}
+
+.btn-ctrl {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 18px;
+  color: var(--color-tipografia, #212121);
+  padding: 0 5px;
+  transition: color 0.2s;
+}
+
+.btn-ctrl:hover { color: var(--color-primario, #E75A88); }
+
+.item-cantidad {
+  font-weight: 700;
+  font-size: 15px;
+  min-width: 20px;
+  text-align: center;
+}
+
+.btn-eliminar {
+  border: none;
+  background: #fff0f0;
+  color: #ff5252;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.btn-eliminar:hover {
+  background: #ff5252;
+  color: white;
+}
+
+/* TARJETA DE RESUMEN (TOTAL) */
+.resumen-card {
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+  border: 1px solid #f2f2f2;
+}
+
+.resumen-fila {
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 15px;
+}
+
+.resumen-total {
+  display: flex;
+  justify-content: space-between;
+  font-size: 22px;
+  font-weight: 700; 
+  color: var(--color-tipografia, #212121);
+  margin-top: 15px;
+  border-top: 2px dashed #eee;
+  padding-top: 20px;
+}
+
+.btn-confirmar {
+  width: 100%;
+  background: var(--color-primario, #E75A88);
+  color: white;
+  border: none;
+  padding: 16px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-family: var(--font-texto, 'Inter', sans-serif);
+  font-weight: 600; /* Elegancia pura */
+  margin-top: 25px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(231, 90, 136, 0.25);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-confirmar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(231, 90, 136, 0.35);
+}
+
+.btn-seguir {
+  width: 100%;
+  background: none;
+  border: none;
+  color: #888;
+  margin-top: 15px;
+  cursor: pointer;
+  text-decoration: underline;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.btn-seguir:hover { color: var(--color-secundario, #F57F17); }
+
+/* ESTADO VACÍO (PROFESIONAL) */
+.empty-state {
+  text-align: center;
+  padding: 80px 20px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+  border: 1px solid #f9f9f9;
+}
+
+.empty-icon {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  opacity: 0.5;
+}
+
+.empty-state h3 {
+  color: #888;
+  margin: 0 0 25px 0;
+  font-weight: 600;
+}
+
+.btn-ver-salsas {
+  background: var(--color-primario, #E75A88);
+  color: white;
+  border: none;
+  padding: 14px 30px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: var(--font-texto, 'Inter', sans-serif);
+  font-weight: 600;
+  font-size: 16px;
+  transition: opacity 0.3s;
+}
+
+.btn-ver-salsas:hover { opacity: 0.85; }
+
+/* DISEÑO RESPONSIVO (ESCRITORIO) */
+@media (min-width: 768px) {
+  .carrito-layout {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+  .items-lista {
+    flex: 2;
+  }
+  .resumen-card {
+    flex: 1;
+    position: sticky;
+    top: 100px; /* Se queda flotando al bajar */
+  }
+}

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CatalogoService } from '../../core/services/catalogo.service';
@@ -13,25 +13,24 @@ import { CartService } from '../../core/services/cart.service';
   styleUrl: './detalle-producto.css'
 })
 export class DetalleProductoAdmin implements OnInit {
-  producto: any = null;
-  cargando = true;
-  esAdmin = false;
-
   private route = inject(ActivatedRoute);
   private catalogoService = inject(CatalogoService);
   private location = inject(Location);
-  private cdr = inject(ChangeDetectorRef); 
   private authService = inject(AuthService);
   private cartService = inject(CartService);
 
+  producto = signal<any>(null);
+  cargando = signal<boolean>(true);
+  esAdmin = signal<boolean>(false);
+
   ngOnInit() {
-    this.esAdmin = this.authService.isAdmin();
+    this.esAdmin.set(this.authService.isAdmin());
     const id = this.route.snapshot.paramMap.get('id');
+    
     if (id) {
       this.cargarDetalle(id);
     } else {
-      this.cargando = false;
-      this.cdr.detectChanges();
+      this.cargando.set(false);
     }
   }
 
@@ -39,30 +38,23 @@ export class DetalleProductoAdmin implements OnInit {
     this.catalogoService.obtenerDetalleProducto(id).subscribe({
       next: (res: any) => {
         const datos = res.data || res;
-        
-        // 1. Sacamos la información de sus respectivas "cajas"
         const infoProducto = datos.producto || {};
         const infoSku = (datos.skus && datos.skus.length > 0) ? datos.skus[0] : {};
 
-        // 2. Juntamos todo en un solo objeto para que el HTML funcione perfecto
-        this.producto = {
+        // Juntamos la info y actualizamos el Signal
+        this.producto.set({
           ...infoProducto,
           ...infoSku,
-          // Aseguramos que los nombres coincidan con los que pusimos en el HTML
           Nombre: infoProducto.NombreProducto || infoProducto.Nombre,
           Descripcion: infoProducto.Descripcion,
           ImagenURL: infoProducto.ImagenURL
-        };
-
-        console.log('DATOS LISTOS PARA MOSTRAR:', this.producto);
+        });
         
-        this.cargando = false;
-        this.cdr.detectChanges(); 
+        this.cargando.set(false);
       },
       error: (err) => {
         console.error('Error al cargar la ficha técnica completa:', err);
-        this.cargando = false; 
-        this.cdr.detectChanges();
+        this.cargando.set(false);
       }
     });
   }
@@ -72,16 +64,17 @@ export class DetalleProductoAdmin implements OnInit {
   }
 
   agregarAlCarrito() {
-    if (!this.producto) return;
-    // 🔑 El SkuID es lo que SQL Server necesita para descontar inventario
-    const skuId = this.producto.SkuID || this.producto.ProductoID;
+    const prod = this.producto(); // Leemos el valor actual del signal
+    if (!prod) return;
+    
+    const skuId = prod.SkuID || prod.ProductoID;
     this.cartService.addToCart({
-      id: skuId,                  // ← SkuID (primero intento, sino ProductoID)
-      nombre: this.producto.Nombre,
-      precio: this.producto.PrecioRegular || this.producto.Precio,
+      id: skuId,
+      nombre: prod.Nombre,
+      precio: prod.PrecioRegular || prod.Precio,
       cantidad: 1,
-      imagen: this.producto.ImagenURL,
-      tamano: this.producto.Tamano
+      imagen: prod.ImagenURL,
+      tamano: prod.Tamano
     });
     alert('¡Producto agregado al carrito!');
   }

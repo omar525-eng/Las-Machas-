@@ -69,3 +69,12 @@ input:focus, textarea:focus {
 .btn-guardar:hover {
   opacity: 0.85;
 }
+
+.input-error {
+  border-color: #E75A88 !important;
+  background-color: #fff8fa !important;
+}
+
+.input-error:focus {
+  box-shadow: 0 0 0 2px rgba(231, 90, 136, 0.4) !important;
+}

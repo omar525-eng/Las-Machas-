@@ -33,6 +33,7 @@
         <p>{{ prod.Descripcion || $any(prod).descripcion || 'Esta deliciosa Macha no tiene descripción aún.' }}</p>
       </div>
 
+      <!-- BOTÓN EXCLUSIVO DEL CLIENTE -->
       <button class="btn-agregar" (click)="agregarAlCarrito()">
         Agregar al Carrito
       </button>
@@ -41,6 +42,6 @@
 </div>
 } @else {
 <div class="loader-container">
-  <h2>Cocinando tu Macha... </h2>
+  <h2>Cocinando tu Macha... 🌶️</h2>
 </div>
 }

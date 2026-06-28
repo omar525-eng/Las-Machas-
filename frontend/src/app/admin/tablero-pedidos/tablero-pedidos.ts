@@ -1,7 +1,8 @@
-import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { CatalogoService } from '../../core/services/catalogo.service'; 
+import { CatalogoService } from '../../core/services/catalogo.service';
+import Swal from 'sweetalert2'; 
 
 @Component({
   selector: 'app-tablero-pedidos',
@@ -11,73 +12,101 @@ import { CatalogoService } from '../../core/services/catalogo.service';
   styleUrl: './tablero-pedidos.css'
 })
 export class TableroPedidos implements OnInit, OnDestroy {
-  pedidos: any[] = [];
-  pedidosFiltrados: any[] = []; 
-  filtroActual: string = 'Todos'; 
-  private intervaloId: any; // Para guardar el ID del intervalo
+  private catalogoService = inject(CatalogoService);
+  private intervaloId: any;
 
-  private catalogoService = inject(CatalogoService); 
-  private cdr = inject(ChangeDetectorRef);
+  // Signals que reemplazan las variables normales
+  pedidos = signal<any[]>([]);
+  filtroActual = signal<string>('Todos');
+
+  // Computed: Se auto-calcula instantáneamente cuando cambia la lista o el filtro
+  pedidosFiltrados = computed(() => {
+    const filtro = this.filtroActual();
+    const lista = this.pedidos();
+
+    if (filtro === 'Todos') return lista;
+    if (filtro === 'Entregados') return lista.filter(p => p.Estatus === 'Entregado');
+    if (filtro === 'Cancelados') return lista.filter(p => p.Estatus === 'Cancelado');
+    return lista.filter(p => p.Estatus !== 'Entregado' && p.Estatus !== 'Cancelado');
+  });
 
   ngOnInit() {
     this.cargarPedidos();
-    // 🔄 RELOAD cada 3 segundos para ver pedidos nuevos en TIEMPO REAL
+    // Recarga cada 3 segundos
     this.intervaloId = setInterval(() => {
       this.cargarPedidos();
     }, 3000);
   }
 
   ngOnDestroy() {
-    // ⚠️ IMPORTANTE: Limpiar el intervalo cuando el componente se destruye
-    if (this.intervaloId) {
-      clearInterval(this.intervaloId);
-    }
+    if (this.intervaloId) clearInterval(this.intervaloId);
   }
 
   cargarPedidos() {
     this.catalogoService.obtenerPedidos().subscribe({
       next: (respuesta: any) => {
         if (respuesta && respuesta.data) {
-          this.pedidos = respuesta.data;
-          this.cambiarFiltro(this.filtroActual); 
+          this.pedidos.set(respuesta.data);
         }
-        this.cdr.detectChanges();
       },
-      error: (error) => {
-        console.error('Hubo un error al traer los pedidos:', error);
-      }
+      error: (error) => console.error('Hubo un error al traer los pedidos:', error)
     });
   }
 
   cambiarFiltro(filtro: string) {
-    this.filtroActual = filtro;
-
-    if (filtro === 'Todos') {
-      this.pedidosFiltrados = this.pedidos;
-    } else if (filtro === 'Entregados') {
-      this.pedidosFiltrados = this.pedidos.filter(p => p.Estatus === 'Entregado');
-    } else if (filtro === 'Cancelados') {
-      this.pedidosFiltrados = this.pedidos.filter(p => p.Estatus === 'Cancelado');
-    } else if (filtro === 'En Proceso') {
-      this.pedidosFiltrados = this.pedidos.filter(p => p.Estatus !== 'Entregado' && p.Estatus !== 'Cancelado'); 
-    }
+    this.filtroActual.set(filtro);
   }
 
   marcarComoEntregado(pedido: any) {
     const idPedido = pedido.PedidoID || pedido.id;
-    const confirmar = confirm(`¿Seguro que quieres marcar el folio #${idPedido} como Entregado?`);
-    if (!confirmar) return;
+    
+    // SweetAlert para confirmar la acción
+    Swal.fire({
+      title: '¿Confirmar entrega?',
+      text: `¿Seguro que quieres marcar el folio #${idPedido} como Entregado?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#4CAF50', // Verde de éxito
+      cancelButtonColor: '#9e9e9e', // Gris para cancelar
+      confirmButtonText: 'Sí, marcar',
+      cancelButtonText: 'Cancelar',
+      reverseButtons: true // Pone el botón de confirmar a la derecha
+    }).then((result) => {
+      if (result.isConfirmed) {
+        
+        // Actualización optimista: Cambiamos el estatus visualmente al instante
+        const listaActualizada = this.pedidos().map(p => {
+          if ((p.PedidoID || p.id) === idPedido) return { ...p, Estatus: 'Entregado' };
+          return p;
+        });
+        this.pedidos.set(listaActualizada);
 
-    pedido.Estatus = 'Entregado';
-    this.cambiarFiltro(this.filtroActual);
-
-    this.catalogoService.actualizarEstatusPedido(idPedido, 'Entregado').subscribe({
-      next: (res) => {
-        console.log('Estatus actualizado:', res);
-      },
-      error: (err) => {
-        console.error('Error:', err);
-        alert('Hubo un error al guardar el estatus.');
+        // Mandamos la petición al servidor
+        this.catalogoService.actualizarEstatusPedido(idPedido, 'Entregado').subscribe({
+          next: (res) => {
+            console.log('Estatus actualizado:', res);
+            // Alerta de éxito cortita (se cierra sola)
+            Swal.fire({
+              title: '¡Entregado!',
+              text: `El pedido #${idPedido} ha sido marcado como entregado.`,
+              icon: 'success',
+              timer: 1500,
+              showConfirmButton: false
+            });
+          },
+          error: (err) => {
+            console.error('Error:', err);
+            // 🔥 Alerta de error si falla la BD
+            Swal.fire({
+              title: 'Error de sincronización',
+              text: 'Hubo un error al guardar el estatus. Se revertirá el cambio.',
+              icon: 'error',
+              confirmButtonText: 'Entendido',
+              confirmButtonColor: '#E75A88' // Rosa Machas
+            });
+            this.cargarPedidos(); // Revertimos si falla
+          }
+        });
       }
     });
   }

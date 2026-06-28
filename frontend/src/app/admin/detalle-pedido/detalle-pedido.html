@@ -1,77 +1,85 @@
-<div style="padding: 20px; max-width: 800px; margin: 0 auto;">
+<div class="detalle-container">
   
-  <button routerLink="/admin/tablero-pedidos" style="background: transparent; border: none; color: var(--color-primario); font-weight: bold; cursor: pointer; margin-bottom: 20px; font-size: 14px; display: flex; align-items: center;">
-    <span style="font-size: 18px; margin-right: 5px;">←</span> Regresar al Tablero
+  <button routerLink="/admin/tablero-pedidos" class="btn-back">
+    <span class="flecha">&larr;</span> Regresar al Tablero
   </button>
 
-  @if (cargando) {
-    <p style="text-align: center; color: var(--texto-secundario);">Cargando información del pedido...</p>
-  } @else if (!cabecera) {
-    <div style="text-align: center; padding: 40px; background: #fff0f0; border-radius: 8px; border: 1px dashed #ffcdd2;">
-      <h3 style="color: #d32f2f; margin-bottom: 10px;">¡Ups! Pedido no encontrado</h3>
-      <p style="color: var(--texto-secundario); font-size: 14px;">Parece que este folio fue eliminado de la base de datos o hubo un error en el servidor.</p>
+  @if (cargando()) {
+    <div class="loader-container">
+      <div class="spinner"></div>
+      <p class="loading-text">Cargando información del pedido...</p>
+    </div>
+  } @else if (!cabecera()) {
+    <div class="empty-state error-state">
+      <h3>¡Ups! Pedido no encontrado</h3>
+      <p>Parece que este folio fue eliminado de la base de datos o hubo un error en el servidor.</p>
     </div>
   } @else {
     
-    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
+    <div class="header-pedido">
       <div>
-        <h2 class="titulo-tarjeta" style="margin-bottom: 5px;">Pedido #{{ cabecera?.FolioCorto || cabecera?.PedidoID }}</h2>
-        <p style="color: var(--texto-secundario); font-size: 14px;">Fecha: {{ cabecera?.FechaCreacion | date:'medium' }}</p>
+        <h2 class="titulo-pagina">Pedido #{{ cabecera().FolioCorto || cabecera().PedidoID }}</h2>
+        <p class="subtitulo-pagina">Fecha: {{ cabecera().FechaCreacion | date:'medium' }}</p>
       </div>
-      <span [ngStyle]="{'background-color': (cabecera?.Estatus === 'Entregado' ? '#E8F5E9' : (cabecera?.Estatus === 'Cancelado' ? '#ffebee' : '#FFF9C4')), 'color': (cabecera?.Estatus === 'Entregado' ? '#2E7D32' : (cabecera?.Estatus === 'Cancelado' ? '#c62828' : '#F57F17'))}"
-            style="padding: 6px 14px; border-radius: 20px; font-size: 14px; font-weight: bold;">
-        {{ cabecera?.Estatus || 'Sin Estatus' }}
+      
+      <span class="badge" 
+            [class.badge-entregado]="cabecera().Estatus === 'Entregado'"
+            [class.badge-cancelado]="cabecera().Estatus === 'Cancelado'"
+            [class.badge-proceso]="cabecera().Estatus !== 'Entregado' && cabecera().Estatus !== 'Cancelado'">
+        {{ cabecera().Estatus || 'Sin Estatus' }}
       </span>
     </div>
 
-    <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">
+    <div class="grid-layout">
       
-      <div style="background-color: var(--color-tarjeta); border-radius: var(--radio-borde); box-shadow: var(--sombra-tarjeta); padding: 24px;">
-        <h3 style="font-size: 16px; color: var(--color-primario); margin-bottom: 16px; border-bottom: 1px solid #eee; padding-bottom: 8px;"> Información del Cliente</h3>
+      <div class="card-info">
+        <h3 class="titulo-seccion">Información del Cliente</h3>
         
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-          <div>
-            <p style="font-size: 12px; color: var(--texto-secundario); margin-bottom: 4px;">Nombre Completo</p>
-            <p style="font-size: 14px; font-weight: bold;">{{ cabecera?.ClienteNombre || 'Dato no disponible' }}</p>
+        <div class="grid-2-col">
+          <div class="info-group">
+            <span class="info-label">Nombre Completo</span>
+            <span class="info-valor">{{ cabecera().ClienteNombre || 'Dato no disponible' }}</span>
           </div>
-          <div>
-            <p style="font-size: 12px; color: var(--texto-secundario); margin-bottom: 4px;">Teléfono de Contacto</p>
-            <p style="font-size: 14px; font-weight: bold;">{{ cabecera?.ClienteTelefono || 'Dato no disponible' }}</p>
+          <div class="info-group">
+            <span class="info-label">Teléfono de Contacto</span>
+            <span class="info-valor">{{ cabecera().ClienteTelefono || 'Dato no disponible' }}</span>
           </div>
         </div>
-        <div style="margin-top: 16px;">
-          <p style="font-size: 12px; color: var(--texto-secundario); margin-bottom: 4px;">Dirección de Entrega</p>
-          <p style="font-size: 14px; font-weight: bold;">{{ cabecera?.ClienteDireccion || 'Dato no disponible' }}</p>
+        <div class="info-group mt-15">
+          <span class="info-label">Dirección de Entrega</span>
+          <span class="info-valor">{{ cabecera().ClienteDireccion || 'Dato no disponible' }}</span>
         </div>
       </div>
 
-      <div style="background-color: var(--color-tarjeta); border-radius: var(--radio-borde); box-shadow: var(--sombra-tarjeta); padding: 24px;">
-        <h3 style="font-size: 16px; color: var(--color-primario); margin-bottom: 16px; border-bottom: 1px solid #eee; padding-bottom: 8px;">Artículos Solicitados</h3>
+      <div class="card-info">
+        <h3 class="titulo-seccion">Artículos Solicitados</h3>
         
-        @for (item of detalle; track item?.DetalleID) {
-          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #eee; padding-bottom: 12px; margin-bottom: 12px;">
-            <div>
-              <p style="font-size: 14px; font-weight: bold;">{{ item?.NombreProducto || 'Producto desconocido' }} ({{ item?.Presentacion || 'N/A' }})</p>
-              <p style="font-size: 12px; color: var(--texto-secundario);">{{ item?.Cantidad || 0 }} x ${{ item?.PrecioUnitarioAplicado || 0 }}</p>
+        <div class="items-lista">
+          @for (item of detalle(); track item?.DetalleID) {
+            <div class="item-linea">
+              <div class="item-info">
+                <p class="item-nombre">{{ item?.NombreProducto || 'Producto desconocido' }} ({{ item?.Presentacion || 'N/A' }})</p>
+                <p class="item-cantidad">{{ item?.Cantidad || 0 }} x ${{ item?.PrecioUnitarioAplicado || 0 }}</p>
+              </div>
+              <p class="item-subtotal">${{ item?.SubtotalLinea || 0 }}</p>
             </div>
-            <p style="font-size: 14px; font-weight: bold;">${{ item?.SubtotalLinea || 0 }}</p>
-          </div>
-        } @empty {
-          <p style="font-size: 14px; color: var(--texto-secundario);">No hay artículos en este pedido.</p>
-        }
+          } @empty {
+            <p class="empty-items">No hay artículos en este pedido.</p>
+          }
+        </div>
 
-        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 8px;">
-          <p style="font-size: 16px; color: var(--texto-secundario);">Total estimado:</p>
-          <p style="font-size: 22px; font-weight: bold; color: var(--color-primario);">Por calcular</p>
+        <div class="total-seccion">
+          <p class="total-label">Total a cobrar:</p>
+          <p class="total-monto">${{ totalPedido() }}</p>
         </div>
       </div>
 
-      @if (cabecera?.Estatus === 'Pendiente' || cabecera?.Estatus === 'En Proceso') {
-        <div style="display: flex; gap: 16px; margin-top: 10px;">
-          <button (click)="cambiarEstatus('Entregado')" class="btn-machas" style="flex: 2; padding: 14px; background-color: #4CAF50; border: none; color: white; cursor: pointer; border-radius: 8px;">
+      @if (cabecera().Estatus === 'Pendiente' || cabecera().Estatus === 'En Proceso') {
+        <div class="form-actions">
+          <button (click)="cambiarEstatus('Entregado')" class="btn-entregar">
             Marcar como Entregado
           </button>
-          <button (click)="cambiarEstatus('Cancelado')" style="flex: 1; padding: 14px; background-color: #ffebee; color: #c62828; font-weight: bold; border: 1px solid #ffcdd2; border-radius: 8px; cursor: pointer;">
+          <button (click)="cambiarEstatus('Cancelado')" class="btn-cancelar">
             Cancelar Pedido
           </button>
         </div>

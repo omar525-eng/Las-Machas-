@@ -1,0 +1,190 @@
+/* CONTENEDOR Y HEADER */
+.tablero-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  font-family: var(--font-texto, 'Inter', sans-serif);
+}
+
+.header-seccion {
+  margin-bottom: 24px;
+}
+
+.titulo-pagina {
+  color: var(--color-tipografia, #212121);
+  margin-bottom: 5px;
+  font-family: var(--font-encabezado, 'Montserrat', sans-serif);
+  font-size: 28px;
+  font-weight: 700;
+  margin-top: 0;
+}
+
+.subtitulo-pagina {
+  color: #666;
+  font-size: 15px;
+  margin: 0;
+}
+
+/* BARRA DE FILTROS (CON SCROLL HORIZONTAL) */
+.filtros-scroll {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 24px;
+  overflow-x: auto;
+  padding-bottom: 5px;
+  /* Ocultar barra de scroll en navegadores webkit */
+  scrollbar-width: none;
+}
+.filtros-scroll::-webkit-scrollbar { display: none; }
+
+.btn-filtro {
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s;
+  background: white;
+  color: #666;
+  border: 1px solid #ddd;
+  white-space: nowrap;
+}
+
+.btn-filtro:hover { border-color: var(--color-primario, #E75A88); color: var(--color-primario, #E75A88); }
+
+/* Estados activos */
+.btn-filtro.activo {
+  background: var(--color-primario, #E75A88);
+  color: white;
+  border-color: var(--color-primario, #E75A88);
+}
+
+.btn-peligro:hover { border-color: #ef5350; color: #ef5350; }
+.btn-filtro.activo-peligro {
+  background: #ef5350;
+  color: white;
+  border-color: #ef5350;
+}
+
+/* TARJETAS DE PEDIDO */
+.pedidos-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.tarjeta-pedido {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+  padding: 20px;
+  border-left-width: 6px;
+  border-left-style: solid;
+  border-top: 1px solid #f2f2f2;
+  border-right: 1px solid #f2f2f2;
+  border-bottom: 1px solid #f2f2f2;
+  width: 100%;
+  box-sizing: border-box;
+  transition: transform 0.2s;
+}
+
+.tarjeta-pedido:hover { transform: translateX(4px); }
+
+/* Bordes dinámicos */
+.border-entregado { border-left-color: #4CAF50; }
+.border-cancelado { border-left-color: #d32f2f; }
+.border-proceso { border-left-color: #F57F17; }
+
+/* Cabecera del Pedido */
+.pedido-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.folio {
+  font-weight: 800;
+  font-size: 16px;
+  color: var(--color-tipografia, #212121);
+}
+
+/* Badges de Estatus */
+.badge {
+  padding: 5px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-entregado { background-color: #E8F5E9; color: #2E7D32; }
+.badge-cancelado { background-color: #FFEBEE; color: #C62828; }
+.badge-proceso { background-color: #FFF9C4; color: #F57F17; }
+
+/* Textos */
+.info-linea {
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: #333;
+}
+
+.texto-secundario { color: #666; }
+.mb-15 { margin-bottom: 15px; }
+
+/* BOTONES DE ACCIÓN */
+.acciones-pedido {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  margin-top: 15px;
+}
+
+.btn-primario, .btn-secundario, .btn-exito-outline {
+  flex: 1;
+  padding: 12px 0;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: var(--font-texto, 'Inter', sans-serif);
+}
+
+.btn-primario {
+  background-color: var(--color-primario, #E75A88);
+  color: white;
+  border: none;
+}
+.btn-primario:hover { opacity: 0.85; }
+
+.btn-exito-outline {
+  background: white;
+  color: #4CAF50;
+  border: 1.5px solid #4CAF50;
+}
+.btn-exito-outline:hover { background: #4CAF50; color: white; }
+
+.btn-secundario {
+  background-color: #f5f5f5;
+  color: #666;
+  border: 1px solid #ddd;
+}
+.btn-secundario:hover { background-color: #e0e0e0; }
+
+/* ESTADO VACÍO */
+.empty-state {
+  text-align: center;
+  padding: 50px 20px;
+  color: #888;
+  background: #fafafa;
+  border-radius: 12px;
+  border: 2px dashed #ddd;
+}
+
+.empty-state p {
+  font-weight: 600;
+  margin: 0;
+}

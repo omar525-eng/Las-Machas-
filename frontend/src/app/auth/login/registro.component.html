@@ -1,40 +1,52 @@
-<div class="registro-container">
-  <h2>¡Hola, bienvenido! 👋</h2>
-  <p class="subtitulo">Si quieres evitar llenar tus datos para el envío en cada compra, ¡es mejor que te registres!</p>
-
-  <form [formGroup]="registroForm" (ngSubmit)="registrarUsuario()" class="registro-form">
+<div class="auth-wrapper">
+  <div class="auth-card">
     
-    <div class="form-group">
-      <label>Nombre Completo</label>
-      <input type="text" formControlName="nombreCompleto" placeholder="Tu nombre y apellido">
+    <div class="brand-header">
+      <h1 class="brand-title">Las Machas</h1>
+      <h2 class="welcome-text">¡Hola, bienvenido!</h2>
+      <p class="subtitle">Regístrate para agilizar tus compras.</p>
     </div>
 
-    <div class="form-group">
-      <label>Correo Electrónico</label>
-      <input type="email" formControlName="correo" placeholder="tu_correo@ejemplo.com">
+    <form class="auth-form" [formGroup]="registroForm" (ngSubmit)="registrarUsuario()">
+      
+      <div class="input-group">
+        <label for="nombreCompleto">Nombre Completo *</label>
+        <input type="text" id="nombreCompleto" formControlName="nombreCompleto" placeholder="Ej. Juan Pérez"
+               [class.input-error]="registroForm.get('nombreCompleto')?.invalid && registroForm.get('nombreCompleto')?.touched">
+      </div>
+
+      <div class="input-group">
+        <label for="correo">Correo Electrónico *</label>
+        <input type="email" id="correo" formControlName="correo" placeholder="tu_correo@ejemplo.com"
+               [class.input-error]="registroForm.get('correo')?.invalid && registroForm.get('correo')?.touched">
+      </div>
+
+      <div class="input-group">
+        <label for="password">Contraseña *</label>
+        <input type="password" id="password" formControlName="password" placeholder="••••••••••••"
+               [class.input-error]="registroForm.get('password')?.invalid && registroForm.get('password')?.touched">
+      </div>
+
+      <div class="input-group">
+        <label for="telefono">Teléfono (WhatsApp)</label>
+        <input type="tel" id="telefono" formControlName="telefono" placeholder="Tu número a 10 dígitos" maxlength="10"
+               [class.input-error]="registroForm.get('telefono')?.invalid && registroForm.get('telefono')?.touched">
+      </div>
+
+      <div class="input-group">
+        <label for="direccionDefecto">Dirección de Envío</label>
+        <textarea id="direccionDefecto" formControlName="direccionDefecto" placeholder="Tu calle, número, colonia, etc." rows="3"></textarea>
+      </div>
+
+      <button type="submit" class="btn-primary">Crear mi Cuenta</button>
+    </form>
+
+    <hr class="divider">
+
+    <div class="login-link-section">
+      <p>¿Ya tienes cuenta?</p>
+      <button type="button" class="btn-secondary" routerLink="/login">Inicia Sesión aquí</button>
     </div>
 
-    <div class="form-group">
-      <label>Contraseña</label>
-      <input type="password" formControlName="password" placeholder="Mínimo 6 caracteres">
-    </div>
-
-    <div class="form-group">
-      <label>Teléfono (WhatsApp)</label>
-      <input type="tel" formControlName="telefono" placeholder="Tu número a 10 dígitos">
-    </div>
-
-    <div class="form-group">
-      <label>Dirección de Envío</label>
-      <textarea formControlName="direccionDefecto" placeholder="Tu calle, número, colonia, etc." rows="3"></textarea>
-    </div>
-
-    <button type="submit" class="btn-registrar" [disabled]="!registroForm.valid">
-      Crear mi Cuenta
-    </button>
-  </form>
-
-  <p class="link-login">
-    ¿Ya tienes una cuenta? <a routerLink="/login">Inicia sesión aquí</a>
-  </p>
+  </div>
 </div>

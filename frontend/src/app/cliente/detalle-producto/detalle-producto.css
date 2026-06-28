@@ -1,127 +1,152 @@
+/* CONTENEDOR GLOBAL */
 .detalle-container {
-  max-width: 1000px;
-  margin: 40px auto;
-  padding: 0 20px;
+  padding: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: var(--font-texto, 'Inter', sans-serif);
 }
 
 .btn-regresar {
   background: none;
   border: none;
-  color: #e91e63;
-  font-weight: 600;
+  color: var(--color-primario, #E75A88);
+  font-weight: 700;
   cursor: pointer;
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: transform 0.2s;
+  margin-bottom: 25px;
+  font-size: 15px;
+  padding: 0;
+  transition: opacity 0.2s;
 }
 
-.btn-regresar:hover {
-  transform: translateX(-5px);
-}
+.btn-regresar:hover { opacity: 0.8; }
 
+/* TARJETA PRINCIPAL */
 .tarjeta-detalle {
-  display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 50px;
-  background: #ffffff;
-  padding: 40px;
-  border-radius: 20px;
-  box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+  border: 1px solid #f2f2f2;
+}
+
+/* EL APARADOR INTELIGENTE (Imagen) */
+.imagen-seccion {
+  flex: 1;
+  min-width: 280px;
+  min-height: 380px; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fafafa;
+  border: 1px solid #f0f0f0;
+  border-radius: 12px;
+  padding: 15px;
 }
 
 .img-producto {
   width: 100%;
-  height: auto;
-  border-radius: 15px;
-  object-fit: cover;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  height: 100%;
+  object-fit: contain; 
+  border-radius: 8px;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.05));
+}
+
+/* INFORMACIÓN Y TEXTOS */
+.info-seccion {
+  flex: 2;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
 }
 
 .badge-categoria {
-  background: #fff0f5;
-  color: #e91e63;
-  padding: 5px 15px;
+  align-self: flex-start;
+  background-color: rgba(245, 127, 23, 0.1);
+  color: var(--color-secundario, #F57F17);
+  padding: 4px 10px;
   border-radius: 20px;
-  font-size: 0.85rem;
-  font-weight: bold;
+  font-size: 12px;
+  font-weight: 800;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
 }
 
 .titulo-producto {
-  font-size: 2.8rem;
-  color: #2d2d2d;
-  margin: 15px 0 10px 0;
-  line-height: 1.1;
+  margin-top: 0;
+  font-size: 32px;
+  color: var(--color-tipografia, #212121);
+  font-family: var(--font-encabezado, 'Montserrat', sans-serif);
+  line-height: 1.2;
+  margin-bottom: 15px;
 }
 
 .presentacion {
   color: #666;
-  font-size: 1.1rem;
+  font-size: 15px;
+  margin-bottom: 20px;
 }
 
+/* PRECIO Y DESCRIPCIÓN */
 .precio-box {
-  margin: 25px 0;
-  color: #e91e63;
   display: flex;
   align-items: baseline;
-  gap: 5px;
+  gap: 4px;
+  margin-bottom: 25px;
+  color: var(--color-tipografia, #212121);
 }
 
-.moneda { font-size: 1.5rem; font-weight: bold; }
-.monto { font-size: 3rem; font-weight: 800; }
-.divisa { font-size: 1.2rem; font-weight: 600; }
+.moneda { font-size: 20px; font-weight: 700; }
+.monto { font-size: 36px; font-weight: 800; }
+.divisa { font-size: 16px; font-weight: 700; color: #888; margin-left: 4px; }
 
 .descripcion-box {
+  background: #fafafa;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #f0f0f0;
   margin-bottom: 30px;
-  border-top: 1px solid #eee;
-  padding-top: 20px;
 }
 
 .descripcion-box h3 {
-  font-size: 1.2rem;
-  color: #333;
-  margin-bottom: 10px;
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  text-transform: uppercase;
+  color: #888;
+  letter-spacing: 0.5px;
 }
 
 .descripcion-box p {
+  margin: 0;
   color: #555;
   line-height: 1.6;
+  font-size: 15px;
 }
 
+/* BOTÓN AGREGAR Y LOADER */
 .btn-agregar {
-  width: 100%;
-  background: #e91e63;
+  background-color: var(--color-primario, #E75A88);
   color: white;
   border: none;
-  padding: 18px;
-  border-radius: 12px;
-  font-size: 1.2rem;
-  font-weight: bold;
+  border-radius: 10px;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 10px 20px rgba(233, 30, 99, 0.2);
+  width: 100%;
+  transition: opacity 0.3s;
+  margin-top: auto;
 }
 
-.btn-agregar:hover {
-  background: #c2185b;
-  transform: translateY(-3px);
-  box-shadow: 0 15px 25px rgba(233, 30, 99, 0.3);
-}
+.btn-agregar:hover { opacity: 0.85; }
 
-/* Responsivo */
-@media (max-width: 850px) {
-  .tarjeta-detalle {
-    grid-template-columns: 1fr;
-    padding: 25px;
-  }
-  .titulo-producto { font-size: 2rem; }
-}
-
-/* Loader Simple */
 .loader-container {
-  text-align: center;
-  padding: 100px;
-  color: #e91e63;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+  color: var(--color-primario, #E75A88);
 }

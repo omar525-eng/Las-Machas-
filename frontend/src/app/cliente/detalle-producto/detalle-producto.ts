@@ -1,80 +1,91 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { Producto } from '../../core/models/producto.interface';
+import { ActivatedRoute } from '@angular/router';
+import { CatalogoService } from '../../core/services/catalogo.service';
 import { CartService } from '../../core/services/cart.service';
+import Swal from 'sweetalert2'; 
 
 @Component({
-  selector: 'app-detalle-producto',
+  selector: 'app-detalle-producto-cliente',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './detalle-producto.html',
+  templateUrl: './detalle-producto.html', 
   styleUrl: './detalle-producto.css'
 })
-export class DetalleProducto implements OnInit {
+export class DetalleProductoCliente implements OnInit {
   private route = inject(ActivatedRoute);
-  private http = inject(HttpClient);
-  private cartService = inject(CartService);
+  private catalogoService = inject(CatalogoService);
   private location = inject(Location);
-  private router = inject(Router);
+  private cartService = inject(CartService);
 
-  // El signal almacenará solo el objeto del producto
-  producto = signal<Producto | null>(null);
+  producto = signal<any>(null);
 
-  ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
-      const id = params.get('id');
-      if (id) {
-
-        // 🔥 REDIRECCIÓN FORZADA: Si Angular entra por error al archivo viejo, 
-        // lo expulsamos inmediatamente a la ruta del diseño del administrador.
-        this.router.navigate(['/producto', id]);
-        return;
-        
-      this.http.get<any>(`http://localhost:3000/api/productos/${id}`).subscribe({
-  next: (response) => {
-    console.log('--- EXTRACCIÓN DE DATOS ---', response);
-    
-    // Entramos a data -> producto
-    let p = response.data?.producto;
-
-    // Si 'p' es una lista (Array), tomamos el primer elemento [0]
-    if (Array.isArray(p)) {
-      p = p[0];
+  ngOnInit() {
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.cargarDetalle(id);
     }
-
-    if (p) {
-      this.producto.set(p);
-    }
-  },
-  error: (err) => {
-    console.error('Error al conectar con la API', err);
-    this.producto.set(null);
   }
-});
+
+  cargarDetalle(id: string) {
+    this.catalogoService.obtenerDetalleProducto(id).subscribe({
+      next: (res: any) => {
+        const datos = res.data || res;
+        const infoProducto = datos.producto || {};
+        const infoSku = (datos.skus && datos.skus.length > 0) ? datos.skus[0] : {};
+
+        this.producto.set({
+          ...infoProducto,
+          ...infoSku,
+          Nombre: infoProducto.NombreProducto || infoProducto.Nombre,
+          Descripcion: infoProducto.Descripcion,
+          ImagenURL: infoProducto.ImagenURL
+        });
+      },
+      error: (err) => {
+        console.error('Error al cargar la macha:', err);
+        // 🔥 Alerta de error y redirección automática
+        Swal.fire({
+          title: '¡Ups!',
+          text: 'No pudimos cargar los detalles de esta salsa. Intenta de nuevo.',
+          icon: 'error',
+          confirmButtonText: 'Regresar',
+          confirmButtonColor: '#E75A88'
+        }).then(() => {
+          this.regresar();
+        });
       }
     });
   }
 
-  agregarAlCarrito(): void {
-    const p = this.producto();
-    if (p) {
-      // 🔑 Usar SkuID porque es lo que SQL Server necesita para descontar inventario
-      const skuId = p.SkuID || p.ProductoID;
-      this.cartService.addToCart({ 
-        id: skuId,                // ← SkuID (o ProductoID si no existe)
-        nombre: p.Nombre, 
-        precio: p.PrecioRegular, 
-        cantidad: 1, 
-        imagen: p.ImagenURL, 
-        tamano: p.Tamano 
-      });
-      alert(`¡${p.Nombre} se agregó al carrito!`);
-    }
+  regresar() {
+    this.location.back();
   }
 
-  regresar(): void {
-    this.location.back();
+  agregarAlCarrito() {
+    const prod = this.producto();
+    if (!prod) return;
+    
+    const skuId = prod.SkuID || prod.ProductoID;
+    this.cartService.addToCart({
+      id: skuId,
+      nombre: prod.Nombre,
+      precio: prod.PrecioRegular || prod.Precio,
+      cantidad: 1,
+      imagen: prod.ImagenURL,
+      tamano: prod.Tamano
+    });
+    
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon: 'success',
+      title: `¡${prod.Nombre} en tu carrito!`,
+      showConfirmButton: false,
+      timer: 1500,
+      timerProgressBar: true,
+      background: '#fff',
+      color: '#212121'
+    });
   }
 }
